@@ -2,7 +2,8 @@
 
 # MongoDB Compass
 +Add New Connection <br>
-mongodb://localhost:27017/
+mongodb://localhost:27017/ <br>
+Click Connect
 
 # New Terminal
 cd backend <br>
