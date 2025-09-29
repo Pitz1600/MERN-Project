@@ -1,21 +1,24 @@
-import { useState } from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Signup from './pages/Signup'
-import Login from './pages/Login'
-import Dashboard from './pages/Dashboard'
+import { Routes, Route, Link } from 'react-router-dom';
+import Signup from './pages/Signup';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
 
 function App() {
-
   return (
-    <BrowserRouter>
-    <Routes>
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-    </Routes>
-    </BrowserRouter>
-  )
+    <>
+      <nav>
+        <Link to="/signup">Signup</Link> |{' '}
+        <Link to="/login">Login</Link> |{' '}
+        <Link to="/dashboard">Dashboard</Link>
+      </nav>
+      <Routes>
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/" element={<Signup />} /> {/* Default route goes to Signup */}
+      </Routes>
+    </>
+  );
 }
 
-export default App
+export default App;
