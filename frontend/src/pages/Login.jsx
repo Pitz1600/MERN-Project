@@ -1,70 +1,70 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import axios from 'axios'
-import { useNavigate } from "react-router-dom";
+import React, { useContext, useState } from 'react';
+import '../index.css';
+import { useNavigate } from 'react-router-dom';
+import { AppContext } from '../context/AppContext.jsx';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
-function Login() {    
+const Login = () => {
 
-    const [email, setEmail] = useState()
-    const [password, setPassword] = useState()
-    const navigate = useNavigate()
+  const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        axios.post("http://localhost:3001/login", { email, password })
-        .then(result => {
-            console.log(result)
-            if(result.data === "Login Successful"){
-                navigate("/dashboard")
-            }else{
-                alert("You are not registered to this service")
-            }
-        })
-        .catch(err => console.log(err))
+  const {backendUrl, setIsLoggedIn, getUserData} = useContext(AppContext);
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const onSubmitLogin = async (e) => {
+    try {
+        e.preventDefault();
+        axios.defaults.withCredentials = true;
+        const {data} = await axios.post(backendUrl + '/api/auth/login', { email, password });
+        if (data.success) {
+            setIsLoggedIn(true);
+            getUserData();
+            navigate('/');   
+        } else {
+            toast.error(data.message + 'else');
+        }
+    } catch (error) {
+        toast.error(error.message);
     }
-
+  };
 
   return (
-    <div className="d-flex justify-content-center align-items-center bg-secondary vh-100">
-        <div className="bg-white p-3 rounded w-25">
-            <h2><center>Login</center></h2>
-            <form onSubmit={handleSubmit}>
-                
-                <div className="mb-3">
-                    <label htmlFor="email">
-                        <strong>Email</strong>
-                    </label>
-                    <input type="text" 
-                    placeholder='Enter Email' 
-                    autoComplete='off' 
-                    name='email' 
-                    className='form-control rounded-0' 
-                    onChange={(e) => setEmail(e.target.value)}
-
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="email">
-                        <strong>Password</strong>
-                    </label>
-                    <input type="password" 
-                    placeholder='Enter Password' 
-                    name='password' 
-                    className='form-control rounded-0' 
-                    onChange={(e) => setPassword(e.target.value)}
-
-                    />
-                </div>
-                <button type="submit" className="btn btn-success w-100 rounded-0">
-                    Login
-                </button>
-                </form>
-                <p>Don't have an account?</p>
-                <Link to="/signup" className="btn btn-default border w-100 bg-light rounded-0 text-decoration-none">
-                    Sign Up
-                </Link>
-            
-        </div>
+    <div>
+      <div className="card">
+        <img className="logo" alt='Logo'/>
+        <h2 className="title">PureText</h2>
+        <h4 className="subtitle">Login</h4>
+        <form onSubmit={onSubmitLogin}>
+          <div className="inputGroup">
+            <label className="label">Email address:</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="input"
+              placeholder="Enter your email"
+            />
+          </div>
+          <div className="inputGroup">
+            <label className="label">Password:</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input"
+              placeholder="Enter your password"
+            />
+          </div>
+          <a href="/reset-password" className="authLink">Forgot Password?</a>
+          <div className="buttonContainer">
+            <button type="submit">Login</button>
+            <button onClick={() => navigate('/register')} type="button">Create New Account</button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

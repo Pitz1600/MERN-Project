@@ -1,20 +1,26 @@
-import { useState } from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Signup from './pages/Signup'
-import Login from './pages/Login'
-import Dashboard from './pages/Dashboard'
+import React, { useContext } from 'react'
+import { Routes, Route } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify';
+import Home from './pages/Home.jsx'
+import Login from './pages/Login.jsx'
+import EmailVerify from './pages/EmailVerify.jsx' 
+import ResetPassword from './pages/ResetPassword.jsx'
+import Register from './pages/Register.jsx'
+import { AppContext } from './context/AppContext.jsx';
 
-function App() {
-
+const App = () => {
+  const { isLoggedIn } = useContext(AppContext);
   return (
-    <BrowserRouter>
-    <Routes>
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-    </Routes>
-    </BrowserRouter>
+    <div>
+      <ToastContainer />
+      <Routes>
+        <Route path="/" element={isLoggedIn ? <Home /> : <Login />} />
+        <Route path="/register" element={<Register />} />
+        {/* <Route path="/home" element={<Home />} /> */}
+        <Route path="/email-verify" element={<EmailVerify />} />
+        <Route path="/reset-password" element={<ResetPassword/>} />
+      </Routes>
+    </div>
   )
 }
 
