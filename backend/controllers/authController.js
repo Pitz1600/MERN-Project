@@ -203,11 +203,11 @@ export const sendResetOtp = async (req, res) => {
     }
 }
 
-export const resetPassword = async (req, res) => {
-    const { email, otp, newPassword } = req.body;
+export const verifyResetEmail = async (req, res) => {
+    const { email, otp } = req.body;
 
-    if (!email || !otp || !newPassword) {
-        return res.json({ success: false, message: 'Email, OTP, and new password are required' });
+    if (!email || !otp) {
+        return res.json({ success: false, message: 'OTP is required' });
     }
 
     try {
@@ -222,11 +222,32 @@ export const resetPassword = async (req, res) => {
         if (user.resetOtpExpiry < Date.now()) {
             return res.json({ success: false, message: 'OTP has expired' });
         }
+        
+        user.resetOtp = '';
+        user.resetOtpExpiry = 0;
+
+        await user.save();
+        return res.json({ success: true, message: 'OTP verified successfully' });
+    } catch (error) {
+        res.json({ success: false, message: error.message });
+    }
+}
+
+export const resetPassword = async (req, res) => {
+    const { email, newPassword } = req.body;
+
+    if (!email || !newPassword) {
+        return res.json({ success: false, message: 'Email, OTP, and new password are required' });
+    }
+
+    try {
+        const user = await userModel.findOne({ email });
+        if (!user) {
+            return res.json({ success: false, message: 'No user found with this email' });
+        }
 
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         user.password = hashedPassword;
-        user.resetOtp = '';
-        user.resetOtpExpiry = 0;
 
         await user.save();
         return res.json({ success: true, message: 'Password reset successfully' });

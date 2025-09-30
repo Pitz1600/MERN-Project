@@ -12,7 +12,7 @@ const Header = () => {
 
   const sendVerificationOtp = async () => {
     try {
-        setIsLoading(true);      
+        setIsLoading(true);
         axios.defaults.withCredentials = true;
         const {data} = await axios.post(backendUrl + '/api/auth/send-verify-otp', {userId: userData.id});
         if (data.success) {

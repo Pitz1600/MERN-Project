@@ -42,7 +42,7 @@ const EmailVerify = () => {
       if (data.success) {
         toast.success(data.message)
         getUserData();
-        navigate('/home')
+        navigate('/')
       } else {
         toast.error(data.message)
       }
