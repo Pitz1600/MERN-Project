@@ -16,7 +16,7 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: #03045E;
   text-decoration: inherit;
 }
 a:hover {
@@ -39,7 +39,7 @@ h1 {
 }
 
 button {
-  background-color: #EEC643;
+  background-color: #69D84F;
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
@@ -51,11 +51,14 @@ button {
 }
 button:hover {
   border-color: #646cff;
-  background-color: #F79824;
+  background-color: #EEC643;
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+button:disabled {
+  background-color: gray;
 }
 
 @media (prefers-color-scheme: light) {
