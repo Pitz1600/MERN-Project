@@ -1,0 +1,217 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #003366 0%, #00bfff 100%);
+  color: #222;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  align-items: center;
+  background: #00cfff;
+  padding: 10px 20px;
+  border-radius: 0 0 0px 0px;
+  flex-wrap: wrap;
+}
+
+.logo {
+  background: #fff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 20px;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  color: #222;
+  font-size: 1rem;
+  margin: 0 10px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.nav-btn.active {
+  background: #fff;
+  font-weight: bold;
+}
+
+.profile {
+  margin-left: auto;
+  background: #fff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* Version bar */
+.version-bar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 30px 0 0;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.version-btn {
+  background: #7be67b;
+  border: none;
+  color: #222;
+  font-weight: bold;
+  padding: 5px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+/* Main container */
+.main-container {
+  background: #00cfff;
+  border-radius: 20px;
+  margin: 30px;
+  padding: 30px 20px 20px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  min-width: 0;
+}
+
+.welcome {
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: 25px;
+  color: #222;
+}
+
+/* Cards layout */
+.cards {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 20px;
+  flex: 1 1 260px;
+  min-width: 220px;
+  max-width: 340px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.card-content {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.start-btn {
+  background: #7be67b;
+  color: #222;
+  font-size: 1.3rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 12px;
+  padding: 18px 0;
+  margin: 0 auto;
+  width: 80%;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  transition: background 0.2s;
+}
+
+.start-btn:hover {
+  background: #5fc55f;
+}
+
+.stats-content .stats-circle {
+  width: 120px;
+  height: 120px;
+  background: #ccefff;
+  border-radius: 50%;
+  margin: 0 auto 10px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stats-desc {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* Responsive styles */
+@media (max-width: 900px) {
+  .main-container {
+    margin: 15px;
+    padding: 15px 5px 10px 5px;
+  }
+  .cards {
+    gap: 15px;
+  }
+  .card {
+    max-width: 100%;
+    min-width: 0;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+    border-radius: 0 0 10px 10px;
+  }
+  .profile {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+  .main-container {
+    margin: 5px;
+    padding: 5px;
+  }
+  .welcome {
+    font-size: 1rem;
+    margin-bottom: 15px;
+  }
+  .cards {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .card {
+    padding: 10px;
+    margin-bottom: 5px;
+  }
+  .start-btn {
+    font-size: 1.1rem;
+    padding: 12px 0;
+    width: 100%;
+  }
+  .stats-content .stats-circle {
+    width: 80px;
+    height: 80px;
+  }
+}
