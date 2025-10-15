@@ -1,0 +1,15 @@
+@import "tailwindcss/preflight";
+@import "tailwindcss/theme";
+@import "tailwindcss/utilities";
+
+/* Always hide horizontal scroll */
+body {
+  overflow-x: hidden;
+}
+
+/* Disable all scrolling on desktop screens (lg and up) */
+@media (min-width: 1024px) {
+  body {
+    overflow: hidden;
+  }
+}
