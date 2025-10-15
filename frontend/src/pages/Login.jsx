@@ -1,72 +1,92 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import axios from 'axios'
-import { useNavigate } from "react-router-dom";
+import React, { useContext, useState } from 'react';
+import '../index.css';
+import { useNavigate } from 'react-router-dom';
+import { AppContext } from '../context/AppContext.jsx';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
-function Login() {    
+const Login = () => {
 
-    const [email, setEmail] = useState()
-    const [password, setPassword] = useState()
-    const navigate = useNavigate()
+  const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        axios.post("http://localhost:3001/login", { email, password })
-        .then(result => {
-            console.log(result)
-            if(result.data === "Login Successful"){
-                navigate("/dashboard")
-            }else{
-                alert("You are not registered to this service")
-            }
-        })
-        .catch(err => console.log(err))
+  const {backendUrl, setIsLoggedIn, getUserData} = useContext(AppContext);
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const onSubmitLogin = async (e) => {
+    try {
+        e.preventDefault();
+        axios.defaults.withCredentials = true;
+        const {data} = await axios.post(backendUrl + '/api/auth/login', { email, password });
+        if (data.success) {
+            setIsLoggedIn(true);
+            getUserData();
+            navigate('/');   
+        } else {
+            toast.error(data.message);
+        }
+    } catch (error) {
+        toast.error(error.message);
     }
-
+  };
 
   return (
-    <div className="d-flex justify-content-center align-items-center bg-secondary vh-100">
-        <div className="bg-white p-3 rounded w-25">
-            <h2><center>Login</center></h2>
-            <form onSubmit={handleSubmit}>
-                
-                <div className="mb-3">
-                    <label htmlFor="email">
-                        <strong>Email</strong>
-                    </label>
-                    <input type="text" 
-                    placeholder='Enter Email' 
-                    autoComplete='off' 
-                    name='email' 
-                    className='form-control rounded-0' 
-                    onChange={(e) => setEmail(e.target.value)}
+    <div className="relative min-h-screen flex justify-center items-center bg-gradient-to-b from-[#023E8A] to-black">
+      
+<div className="card w-[400px] text-white rounded-2xl shadow-lg p-8 text-center" style={{ backgroundColor: '#00B4D8' }}>
+        <img className="logo mx-auto mb-4" alt="Logo" />
+        <h2 className="title text-2xl font-bold mb-1 text-black">PureText</h2>
+        <h4 className="subtitle text-black mb-6">Login</h4>
 
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="email">
-                        <strong>Password</strong>
-                    </label>
-                    <input type="password" 
-                    placeholder='Enter Password' 
-                    name='password' 
-                    className='form-control rounded-0' 
-                    onChange={(e) => setPassword(e.target.value)}
+        <form onSubmit={onSubmitLogin}>
+          <div className="inputGroup mb-4 text-left">
+            <label className="label block text-sm font-medium text-gray-700">Email address:</label>
+           <input
+    type="email"
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+    className="input mt-1 block w-full bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+    placeholder=""
+  />
+          </div>
 
-                    />
-                </div>
-                <button type="submit" className="btn btn-success w-100 rounded-0">
-                    Login
-                </button>
-                </form>
-                <p>Don't have an account?</p>
-                <Link to="/signup" className="btn btn-default border w-100 bg-light rounded-0 text-decoration-none">
-                    Sign Up
-                </Link>
-            
-        </div>
+          <div className="inputGroup mb-4 text-left">
+            <label className="label block text-sm font-medium text-gray-700">Password:</label>
+           <input
+    type="password"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    className="input mt-1 block w-full bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+    placeholder=""
+  />
+          </div>
+
+<div className="w-full text-right mb-4">
+  <a
+    href="/reset-password"
+    className="authLink text-blue-700 font-bold hover:underline text-sm"
+  >
+    Forgot Password?
+  </a>
+</div>
+
+          <div className="buttonContainer flex flex-col gap-3 mt-4">
+            <button type="submit" className="bg-green-600 hover:bg-green-500 text-black font-medium py-2 rounded-lg">
+              Login
+            </button>
+            <button
+              onClick={() => navigate('/register')}
+              type="button"
+              className="bg-green-500 hover:bg-green-400 text-black font-medium py-2 rounded-lg"
+            >
+              Create New Account
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
-}
+};
 
 export default Login;

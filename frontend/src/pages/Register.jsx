@@ -1,78 +1,116 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import axios from 'axios'
-import { useNavigate } from "react-router-dom";
+import React, { useContext, useState } from 'react';
+import '../index.css';
+import { useNavigate } from 'react-router-dom';
+import { AppContext } from '../context/AppContext.jsx';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
-function Register() {    
+function Register() {
+    const navigate = useNavigate();
 
-    const [name, setName] = useState()
-    const [email, setEmail] = useState()
-    const [password, setPassword] = useState()
-    const navigate = useNavigate()
+    const {backendUrl, getUserData} = useContext(AppContext)
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        axios.post("http://localhost:1234/api/users/register", { name, email, password })
-        .then(result => {console.log(result)
-        navigate("/login")
-        })
-        .catch(err => console.log(err))
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
+  const onSubmitRegister = async (e) => {
+    try {
+        e.preventDefault();
+        axios.defaults.withCredentials = true;
+        if (password === confirmPassword) {
+            const {data} = await axios.post(backendUrl + '/api/auth/register', { name, email, password });
+            if (data.success) {
+                getUserData();
+                navigate('/');   
+            } else {
+                toast.error(data.message);
+            }
+        } else {
+            toast.error('Passwords do not match!');
+        }
+    } catch (error) {
+        toast.error(error.message);
     }
+  };
 
+ return (
+    <div className="relative min-h-screen flex justify-center items-center bg-gradient-to-b from-[#023E8A] to-black">
 
-  return (
-    <div className="d-flex justify-content-center align-items-center bg-secondary vh-100">
-        <div className="bg-white p-3 rounded w-25">
-        <h2><center>Sign Up</center></h2>
+<div className="card w-[400px] text-white rounded-2xl shadow-lg p-8 text-center" style={{ backgroundColor: '#00B4D8' }}>
+        <div className="logo mx-auto mb-4 text-black text-4 xl font-bold">PureText</div>
+        <h4 className="subtitle text-black  font-medium mb-6 text-lg">Register</h4>
 
-            <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                    <label htmlFor="email">
-                        <strong>Name</strong>
-                    </label>
-                    <input type="text" 
-                    placeholder='Enter Name' 
-                    autoComplete='off' 
-                    name='email' 
-                    className='form-control rounded-0'
-                    onChange={(e) => setName(e.target.value)}
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="email">
-                        <strong>Email</strong>
-                    </label>
-                    <input type="text" 
-                    placeholder='Enter Email' 
-                    autoComplete='off' 
-                    name='email' 
-                    className='form-control rounded-0' 
-                    onChange={(e) => setEmail(e.target.value)}
+        <form onSubmit={onSubmitRegister}>
+          {/* Full Name */}
+          <div className="inputGroup mb-4 text-left">
+            <label className="label block text-sm font-medium text-black">Full Name:</label>
+            <input
+              type="text"
+              value={name}
+              required
+              onChange={(e) => setName(e.target.value)}
+               className="input mt-1 block w-full bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+             
+            />
+          </div>
 
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="email">
-                        <strong>Password</strong>
-                    </label>
-                    <input type="password" 
-                    placeholder='Enter Password' 
-                    name='password' 
-                    className='form-control rounded-0' 
-                    onChange={(e) => setPassword(e.target.value)}
+          {/* Email */}
+          <div className="inputGroup mb-4 text-left">
+            <label className="label block text-sm font-medium text-black">Email address:</label>
+            <input
+              type="email"
+              value={email}
+              required
+              onChange={(e) => setEmail(e.target.value)}
+               className="input mt-1 block w-full bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+             
+            />
+          </div>
 
-                    />
-                </div>
-                <button type="submit" className="btn btn-success w-100 rounded-0">
-                    Sign Up
-                </button>
-                </form>
-                <p>Already have an account?</p>
-                <Link to="/login" className="btn btn-default border w-100 bg-light rounded-0 text-decoration-none">
-                    Login
-                </Link>
-            
-        </div>
+          {/* Password */}
+          <div className="inputGroup mb-4 text-left">
+            <label className="label block text-sm font-medium text-black">Password:</label>
+            <input
+              type="password"
+              value={password}
+              required
+              onChange={(e) => setPassword(e.target.value)}
+            className="input mt-1 block w-full bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+             
+            />
+          </div>
+
+          {/* Confirm Password */}
+          <div className="inputGroup mb-4 text-left">
+            <label className="label block text-sm font-medium text-black">Confirm Password:</label>
+            <input
+              type="password"
+              value={confirmPassword}
+              required
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="input mt-1 block w-full bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+              
+            />
+          </div>
+
+          {/* Link + Button */}
+          <a href="/" className="authLink text-blue-600 hover:underline text-sm block mb-4">
+            Already have an account? Login
+          </a>
+
+          <div className="buttonContainer flex flex-col gap-3">
+            <button
+              type="submit"
+              className="bg-green-500 hover:bg-green-400 text-white font-medium py-2 rounded-lg"
+            >
+              Register
+            </button>
+           
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
