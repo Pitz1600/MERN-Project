@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { AppContext } from '../context/AppContext.jsx'
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import PieChartElement from '../components/PieChartElement.jsx';
 
 const Home = () => {
 
@@ -46,13 +47,13 @@ const Home = () => {
       </div>
       ) : (
       <main className="min-w-screen flex-grow flex flex-col items-center justify-center p-8">
-        <div className="bg-white text-black w-full max-w-6xl rounded-3xl p-8 shadow-lg">
+        <div className="bg-white text-black w-full min-w-6xl min-h-200 rounded-3xl p-8 shadow-lg">
           <h2 className="text-center text-xl font-semibold mb-8">
             Welcome back,{" "}
             <span className="text-[#023E8A]">{userData ? userData.name : 'User'}</span>!
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 min-h-150">
             {/* Recent Activity */}
             <div className="bg-[#CAF0F8] border border-gray-300 rounded-2xl shadow-md p-6 flex flex-col justify-between">
               <div>
@@ -61,7 +62,8 @@ const Home = () => {
                 </h3>
                 <p className="text-gray-600 mb-6">No analyzed text yet?</p>
               </div>
-              <button className="bg-[#023E8A] hover:bg-[#0077B6] text-white font-semibold py-2 rounded-full transition-all">
+              <button onClick={() => {navigate("/analyzer");}}
+              className="bg-[#023E8A] hover:bg-[#0077B6] text-white font-semibold py-2 rounded-full transition-all">
                 Start Analyzing
               </button>
             </div>
@@ -71,7 +73,8 @@ const Home = () => {
               <h3 className="text-lg font-semibold text-gray-800 mb-4">
                 Usage Statistics
               </h3>
-              <div className="w-40 h-40 bg-[#90E0EF] rounded-full mb-4"></div>
+              <PieChartElement />
+              {/* <div className="w-40 h-40 bg-[#90E0EF] rounded-full mb-4"></div> */}
               <p className="text-gray-600">No statistics yet.</p>
               <p className="text-gray-500 mt-4 text-sm">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.

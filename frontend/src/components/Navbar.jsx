@@ -44,11 +44,12 @@ const Navbar = () => {
       }}
       className="w-10 h-10 bg-white rounded-full flex items-center justify-center font-bold text-black cursor-pointer"
     >
-      Logo
+      💧
     </div>
 
     {/* Desktop nav links */}
     <div className="hidden md:flex items-center gap-4 text-black font-medium">
+      {!userData.isAccountVerified ? (<></>) : (<>
       {navItems.map((item, index) => {
         const isActive = location.pathname === item.path;
         return (
@@ -68,6 +69,7 @@ const Navbar = () => {
           </button>
         );
       })}
+      </>)}
     </div>
   </div>
 
@@ -85,17 +87,7 @@ const Navbar = () => {
         >
           {userData.name[0].toUpperCase()}
         </div>
-        <div className="absolute hidden group-hover:block top-10 right-0 z-10 text-black rounded shadow-md">
-          <ul className="list-none m-0 p-2 bg-gray-100 text-sm rounded">
-            <li
-              onClick={logout}
-              className="py-1 px-3 hover:bg-gray-300 cursor-pointer"
-            >
-              Logout
-            </li>
-                </ul>
-              </div>
-            </div>
+      </div>
           ) : (
             <button
               onClick={() => {

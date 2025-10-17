@@ -35,7 +35,7 @@ const Login = () => {
     <div className="relative min-h-screen flex justify-center items-center bg-gradient-to-b from-[#023E8A] to-black">
       
 <div className="card w-[400px] text-white rounded-2xl shadow-lg p-8 text-center" style={{ backgroundColor: '#00B4D8' }}>
-        <img className="logo mx-auto mb-4" alt="Logo" />
+        <img className="logo mx-auto mb-4" alt="💧" />
         <h2 className="title text-2xl font-bold mb-1 text-black">PureText</h2>
         <h4 className="subtitle text-black mb-6">Login</h4>
 

@@ -1,27 +1,32 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Pencil, Moon, Trash2, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { AppContext } from "../context/AppContext";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const ProfileSettings = () => {
   const navigate = useNavigate();
+  const { userData, backendUrl, setUserData, setIsLoggedIn } = useContext(AppContext);
 
-  // ✅ Logout handler
-  const handleLogout = () => {
-    // 1️⃣ Remove auth token (or user data)
-    localStorage.removeItem("token"); // or whatever key you use
-
-    // 2️⃣ Optionally clear other saved info
-    localStorage.removeItem("user");
-    sessionStorage.clear();
-
-    // 3️⃣ Redirect to login page
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      axios.defaults.withCredentials = true;
+      const { data } = await axios.post(backendUrl + "/api/auth/logout");
+      if (data.success) {
+        setIsLoggedIn(false);
+        setUserData(false);
+        navigate("/");
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
 
 return (
-  <div className="min-h-screen w-full bg-[#001F3F] flex flex-col overflow-x-hidden">
+  <div className="min-w-screen min-h-screen w-full bg-[#001F3F] flex flex-col overflow-x-hidden">
     {/* Navbar */}
     <Navbar />
 
@@ -34,10 +39,10 @@ return (
               👤
             </div>
             <h2 className="mt-3 text-2xl font-semibold text-center">
-              Full Name Long Example
+              {userData ? userData.name : 'Full Name Long Example'}
             </h2>
             <p className="text-base text-gray-800 text-center">
-              example@email.com
+              {userData ? userData.email : 'example@email.com'}              
             </p>
           </div>
 

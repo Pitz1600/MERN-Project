@@ -46,19 +46,10 @@ const Analyzer = () => {
       <Navbar />
 
       <Container>
-        {/* Versions */}
-        <div className="flex justify-center sm:justify-end flex-wrap gap-2 w-full mt-2 px-2">
-          <button className="min-w-[100px] h-[36px] bg-[#69D84F] rounded-[20px] text-black text-sm font-semibold shadow h hover:bg-green-700  transition">
-            Version 1
-          </button>
-          <button className="min-w-[100px] h-[36px] bg-[#69D84F] rounded-[20px] text-black text-sm font-semibold shadow  hover:bg-green-700  transition">
-            Version 2
-          </button>
-        </div>
 
         {/* Main Input/Result Box */}
         <div className="mx-auto bg-[#00B4D8] rounded-[20px] shadow-lg p-6 sm:p-8 md:p-10 w-full max-w-full">
-          <div className="flex flex-col md:flex-row gap-6 h-auto">
+          <div className="flex flex-col md:flex-row gap-6 h-auto min-w-5xl min-h-200">
             {/* Left Input */}
             <div className="bg-white p-6 flex flex-col justify-between shadow-md flex-grow md:flex-[3] min-h-[300px]">
               <textarea

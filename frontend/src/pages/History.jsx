@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import PopupModal from "../components/Popupmodal";
 import StartAnalyzingButton from "../components/StartAnalyzingButton";
@@ -6,7 +7,7 @@ import SearchBar from "../components/SearchBar";
 import deleteIcon from "../assets/icon_delete.png"; // Import the delete icon
 
 const History = () => {
-  const [showPopup, setShowPopup] = useState(false);
+  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const [searchBy, setSearchBy] = useState("text");
   const [historyData, setHistoryData] = useState([]);
@@ -24,7 +25,6 @@ const History = () => {
     console.log("Searching for:", searchValue, "by", searchBy);
   };
   const handleSearchByChange = (e) => setSearchBy(e.target.value);
-  const handleStartAnalyzing = () => setShowPopup(true);
   const handleEmptyClick = () => setHistoryData([]);
   const handleWithDataClick = () => {
     setCurrentPage(1); // Reset to first page
@@ -86,7 +86,7 @@ const History = () => {
     <div className="min-w-screen min-h-screen w-full bg-[#001F3F] flex flex-col overflow-x-hidden">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-6 flex flex-col gap-4 w-full">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-6 flex flex-col gap-4 w-full">
         {/* Top Buttons */}
         <div className="flex justify-center sm:justify-end flex-wrap gap-2 w-full mt-2 px-2">
           <button
@@ -104,7 +104,7 @@ const History = () => {
         </div>
 
         {/* Main Container */}
-        <div className="mx-auto bg-[#00B4D8] rounded-[20px] shadow-lg p-6 sm:p-8 md:p-10 w-full max-w-5xl flex flex-col gap-6">
+        <div className="mx-auto bg-[#00B4D8] rounded-[20px] shadow-lg p-6 sm:p-8 md:p-10 w-full flex flex-col gap-6 min-w-6xl min-h-200">
           
           {/* Search Bar */}
           <div className="bg-white p-4 rounded-lg shadow">
@@ -122,7 +122,7 @@ const History = () => {
             {historyData.length === 0 ? (
               <div className="border border-gray-200 rounded-lg h-[300px] flex flex-col items-center justify-center">
                 <p className="text-gray-700 text-base mb-4">History is empty.</p>
-                <StartAnalyzingButton onClick={handleStartAnalyzing} />
+                <StartAnalyzingButton onClick={() => navigate("/analyzer")} />
               </div>
             ) : (
               <>
@@ -211,12 +211,6 @@ const History = () => {
           </div>
         </div>
       </div>
-
-      {/* Modal */}
-      <PopupModal show={showPopup} onClose={() => setShowPopup(false)}>
-        <h2 className="text-xl font-bold mb-4">Analyzing...</h2>
-        <p className="text-base">Your input is being processed.</p>
-      </PopupModal>
     </div>
   );
 };
