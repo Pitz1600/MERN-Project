@@ -35,60 +35,79 @@ function Register() {
     }
   };
 
-  return (
-    <div>
-      <div className="card">
-        <div className="logo">Logo</div>
-        <h2 className="title">PureText</h2>
-        <h4 className="subtitle">Register</h4>
+ return (
+    <div className="relative min-h-screen flex justify-center items-center bg-gradient-to-b from-[#023E8A] to-black">
+
+<div className="card w-[400px] text-white rounded-2xl shadow-lg p-8 text-center" style={{ backgroundColor: '#00B4D8' }}>
+        <div className="logo mx-auto mb-4 text-black text-4 xl font-bold">PureText</div>
+        <h4 className="subtitle text-black  font-medium mb-6 text-lg">Register</h4>
+
         <form onSubmit={onSubmitRegister}>
-          <div className="inputGroup">
-            <label className="label">Full Name:</label>
+          {/* Full Name */}
+          <div className="inputGroup mb-4 text-left">
+            <label className="label block text-sm font-medium text-black">Full Name:</label>
             <input
               type="text"
               value={name}
-              required={true}
+              required
               onChange={(e) => setName(e.target.value)}
-              className="input"
-              placeholder="Enter your full name"
+               className="input mt-1 block w-full bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+             
             />
           </div>
-          <div className="inputGroup">
-            <label className="label">Email address:</label>
+
+          {/* Email */}
+          <div className="inputGroup mb-4 text-left">
+            <label className="label block text-sm font-medium text-black">Email address:</label>
             <input
               type="email"
               value={email}
-              required={true}
+              required
               onChange={(e) => setEmail(e.target.value)}
-              className="input"
-              placeholder="Enter your email"
+               className="input mt-1 block w-full bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+             
             />
           </div>
-          <div className="inputGroup">
-            <label className="label">Password:</label>
+
+          {/* Password */}
+          <div className="inputGroup mb-4 text-left">
+            <label className="label block text-sm font-medium text-black">Password:</label>
             <input
               type="password"
               value={password}
-              required={true}
+              required
               onChange={(e) => setPassword(e.target.value)}
-              className="input"
-              placeholder="Enter your password"
+            className="input mt-1 block w-full bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+             
             />
           </div>
-          <div className="inputGroup">
-            <label className="label">Confirm Password:</label>
+
+          {/* Confirm Password */}
+          <div className="inputGroup mb-4 text-left">
+            <label className="label block text-sm font-medium text-black">Confirm Password:</label>
             <input
               type="password"
               value={confirmPassword}
-              required={true}
+              required
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="input"
-              placeholder="Confirm your password"
+              className="input mt-1 block w-full bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+              
             />
           </div>
-          <a href="/" className="authLink">Already have an account? Login</a>
-          <div className="buttonContainer">
-            <button type="submit" className="button">Register</button>
+
+          {/* Link + Button */}
+          <a href="/" className="authLink text-blue-600 hover:underline text-sm block mb-4">
+            Already have an account? Login
+          </a>
+
+          <div className="buttonContainer flex flex-col gap-3">
+            <button
+              type="submit"
+              className="bg-green-500 hover:bg-green-400 text-white font-medium py-2 rounded-lg"
+            >
+              Register
+            </button>
+           
           </div>
         </form>
       </div>
