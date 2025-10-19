@@ -1,0 +1,27 @@
+# Load model directly
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+import torch
+
+model_name = "tabularisai/multilingual-sentiment-analysis"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForSequenceClassification.from_pretrained(model_name)
+
+def predict_sentiment(texts):
+    inputs = tokenizer(texts, return_tensors="pt", truncation=True, padding=True, max_length=512)
+    with torch.no_grad():
+        outputs = model(**inputs)
+    probabilities = torch.nn.functional.softmax(outputs.logits, dim=-1)
+    sentiment_map = {0: "Very Negative", 1: "Negative", 2: "Neutral", 3: "Positive", 4: "Very Positive"}
+    return [sentiment_map[p] for p in torch.argmax(probabilities, dim=-1).tolist()]
+
+run_model = True
+while(run_model):
+    get_text = input("Enter Text(type 'quit' to quit): ")
+    if get_text == "quit":
+        print("Quiting...")
+        run_model = False
+    convert_text_list = get_text.split(".")
+    for text, sentiment in zip(convert_text_list, predict_sentiment(convert_text_list)):
+        print(f"Text: {text}\nSentiment: {sentiment}\n")
+
+
