@@ -9,6 +9,7 @@ import "../styles/History.css";
 
 const History = () => {
   const navigate = useNavigate();
+  const [showPopup, setShowPopup] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchBy, setSearchBy] = useState("text");
   const [historyData, setHistoryData] = useState([]);
@@ -20,6 +21,10 @@ const History = () => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  const handleStartAnalyzing = () => {
+    navigate("/analyzer");
+  };
 
   const handleSearchChange = (e) => setSearchValue(e.target.value);
   const handleSearchClick = () => {

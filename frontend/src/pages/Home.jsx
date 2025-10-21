@@ -5,8 +5,7 @@ import { AppContext } from '../context/AppContext.jsx';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import '../styles/Home.css';
-import PopupModal from '../components/Popupmodal.jsx';
-import StartAnalyzingButton from '../components/StartAnalyzingButton.jsx'; // ✅ make sure this is imported
+import StartAnalyzingButton from '../components/StartAnalyzingButton.jsx';
 import PieChartElement from '../components/PieChartElement.jsx';
 
 const Home = () => {
@@ -14,7 +13,6 @@ const Home = () => {
   const { userData, backendUrl } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
   const [hasData, setHasData] = useState(false);
-  const [popupModal, setPopupModal] = useState(false); // ✅ for modal visibility
 
   const sendVerificationOtp = async () => {
     try {
@@ -88,7 +86,7 @@ const Home = () => {
                 )}
                 {/* ✅ Start Analyzing button opens popup */}
                 {!hasData && (
-                  <StartAnalyzingButton onClick={() => setPopupModal(true)} />
+                  <StartAnalyzingButton onClick={() => navigate("/analyzer")} />
                 )}
               </div>
 
@@ -125,9 +123,6 @@ const Home = () => {
           </div>
         </main>
       )}
-
-      {/* ✅ Popup Modal */}
-      {popupModal && <PopupModal show={popupModal} onClose={() => setPopupModal(false)} />}
     </div>
   );
 };

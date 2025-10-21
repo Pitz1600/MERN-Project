@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext.jsx';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import logoDrop from '../assets/logo.png'; 
+import logoDrop from '../assets/logo_transparent.png'; 
 import eyeOpen from '../assets/eye_on.png';
 import eyeClosed from '../assets/eye_off.png';
 

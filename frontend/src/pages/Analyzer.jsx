@@ -136,9 +136,9 @@ const Analyzer = () => {
                   <div key={idx} className="result-card">
                     <p>
                       Result:{" "}
-                      <span className={`label ${res.labelColor}`}>{res.label}</span>
+                      <span className={`label ${res.labelColor}`}>{res.sentiment}</span>
                     </p>
-                    <p className="suggestion">{res.suggestion}</p>
+                    <p className="suggestion">{res.text}</p>
                     <p className="date">{res.date}</p>
                   </div>
                 ))}

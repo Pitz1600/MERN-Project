@@ -4,7 +4,7 @@ import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "../styles/Navbar.css"; 
-import logo from "../assets/logo.png";
+import logo from "../assets/logo_transparent.png";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -38,11 +38,11 @@ const Navbar = () => {
       <div className="navbar-inner">
         <div className="nav-left">
         <div
-  onClick={() => { navigate("/"); setMenuOpen(false); }}
-  className="nav-logo"
->
-  <img src={logo} alt="Logo" className="logo-img" />
-</div>
+          onClick={() => { navigate("/"); setMenuOpen(false); }}
+          className="nav-logo"
+        >
+          <img src={logo} alt="Logo" className="logo-img" />
+        </div>
 
           <div className="nav-links">
             {navItems.map((item, index) => {
@@ -66,9 +66,6 @@ const Navbar = () => {
               <span onClick={() => { navigate("/profile-settings"); setMenuOpen(false); }}>
                 {userData.name[0].toUpperCase()}
               </span>
-              <ul className="profile-dropdown">
-                <li onClick={logout}>Logout</li>
-              </ul>
             </div>
           ) : (
             <button
@@ -109,7 +106,6 @@ const Navbar = () => {
           {userData ? (
             <div className="mobile-divider">
               <button onClick={() => { navigate("/profile-settings"); setMenuOpen(false); }}>Profile Settings</button>
-              <button onClick={() => { logout(); setMenuOpen(false); }}>Logout</button>
             </div>
           ) : (
             <button onClick={() => { navigate("/"); setMenuOpen(false); }}>Login</button>

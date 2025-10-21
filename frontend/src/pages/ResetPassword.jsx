@@ -5,7 +5,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import backIcon from '../assets/icon_back.png'
 import '../styles/ResetPassword.css'
-import logo from "../assets/logo.png";
+import logo from "../assets/logo_transparent.png";
 
 const ResetPassword = () => {
   const { backendUrl } = useContext(AppContext)
