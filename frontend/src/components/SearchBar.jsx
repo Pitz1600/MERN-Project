@@ -1,34 +1,38 @@
 import React from "react";
+import "../styles/components/SearchBar.css"; 
 
-const SearchBar = ({ searchValue, onSearchChange, onSearchClick, searchBy, onSearchByChange }) => {
+const SearchBar = ({
+  searchValue,
+  onSearchChange,
+  onSearchClick,
+  searchBy,
+  onSearchByChange,
+}) => {
   return (
-    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full">
+    <div className="searchbar-container">
       {/* Search Input + Button */}
-      <div className="flex w-full md:w-[60%]">
+      <div className="searchbar-input-group">
         <input
           type="text"
           placeholder="Search"
           value={searchValue}
           onChange={onSearchChange}
-          className="flex-grow px-4 py-2 border border-gray-300  text-sm focus:outline-none"
+          className="searchbar-input"
         />
-        <button
-          onClick={onSearchClick}
-          className="bg-white border border-gray-300 border-l-0 px-4 py-2 rounded-r-full"
-        >
+        <button onClick={onSearchClick} className="searchbar-button">
           <img
             src="/src/assets/icon_search.png"
             alt="Search Icon"
-            className="w-4 h-4"
+            className="searchbar-icon"
           />
         </button>
       </div>
 
       {/* Dropdown */}
-      <div className="flex items-center gap-2 text-sm">
-        <span className="text-gray-800 font-medium">Search By:</span>
+      <div className="searchbar-dropdown">
+        <span className="searchbar-label">Search By:</span>
         <select
-          className="border border-gray-300 rounded-md px-2 py-1 text-sm"
+          className="searchbar-select"
           value={searchBy}
           onChange={onSearchByChange}
         >

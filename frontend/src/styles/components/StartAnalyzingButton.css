@@ -1,0 +1,17 @@
+.start-analyzing-btn {
+  background-color: #22c55e; /* Tailwind bg-green-500 */
+  color: #000000; /* text-black */
+  font-weight: 600; /* font-semibold */
+  padding: 1rem 2rem; /* px-8 py-4 */
+  border: none;
+  border-radius: 0.5rem; /* rounded-lg */
+  text-align: center;
+  font-size: 1rem; /* text-base */
+  line-height: 1.5; /* leading-tight */
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.start-analyzing-btn:hover {
+  background-color: #16a34a; /* hover:bg-green-600 */
+}

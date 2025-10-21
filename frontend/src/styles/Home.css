@@ -1,0 +1,186 @@
+/* Root container */
+.home-container {
+  min-width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #012a54; 
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.data-toggle {
+  display: flex;
+  justify-content: flex-end;  
+  align-items: center;
+  gap: 1rem;                 
+  width: 100%;                
+  box-sizing: border-box;     
+}
+.data-toggle button {
+  width: 120px;              
+  height: 36px;         
+  font-size: 14px;
+}
+/* Navbar adjustments already in Navbar.css */
+.navbar {
+  background-color: #00bcd4; 
+  color: black;
+}s
+
+/* Email verification section */
+.verify-email-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 6rem;
+  padding: 0 1rem;
+  text-align: center;
+  color: white;
+}
+
+.verify-email-section img {
+  width: 9rem;
+  height: 9rem;
+  border-radius: 9999px;
+  margin-bottom: 1.5rem;
+}
+
+.verify-email-section h1 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.verify-email-section p {
+  margin-bottom: 1rem;
+}
+
+.verify-email-section button {
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 2rem;
+  cursor: pointer;
+  background-color: #69d84f; /* green like Start Analyzing */
+  color: black;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.verify-email-section button:hover {
+  background-color: #5cc13b;
+}
+
+.verify-email-section button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Main dashboard section */
+.dashboard-main {
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;
+  padding: 2rem;
+}
+
+.dashboard-wrapper {
+  background-color: #00bcd4; 
+  color: black;
+  width: 100%;
+  max-width: 96rem;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+.dashboard-wrapper h2 {
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+.dashboard-wrapper h2 span {
+  color: #ffffff; /* make name white */
+}
+
+/* Grid layout */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media(min-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Card styling */
+.dashboard-card {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  text-align: center;
+}
+
+/* Card headings */
+.dashboard-card h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #023e8a;
+}
+
+/* Card paragraphs */
+.dashboard-card p {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+/* Recent Activity button */
+.recent-activity button {
+  background-color: #69d84f;
+  color: black;
+  font-weight: bold;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.recent-activity button:hover {
+  background-color: #5cc13b;
+}
+
+
+.usage-stats .circle {
+  width: 10rem;
+  height: 10rem;
+  background-color: #d0f0f9;
+  border-radius: 50%;
+  margin: 0 auto 1rem auto;
+}
+
+/* Additional tips text */
+.tips-card p {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+
+
+/* Small responsive tweaks */
+@media(max-width: 767px) {
+  .dashboard-wrapper {
+    padding: 1rem;
+  }
+  .dashboard-card {
+    padding: 1rem;
+  }
+}
