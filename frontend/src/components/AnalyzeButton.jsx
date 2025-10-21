@@ -1,10 +1,10 @@
-    // components/AnalyzeButton.jsx
 import React from "react";
+import "../styles/components/AnalyzeButton.css";
 
 const AnalyzeButton = ({ onClick, disabled }) => {
   return (
     <button
-      className="bg-green-400 rounded px-6 py-2 text-black font-semibold hover:bg-green-500 transition disabled:opacity-50 disabled:cursor-not-allowed"
+      className="analyze-button"
       onClick={onClick}
       disabled={disabled}
     >

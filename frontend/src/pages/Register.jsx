@@ -1,114 +1,114 @@
 import React, { useContext, useState } from 'react';
-import '../index.css';
+import '../styles/Register.css';
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext.jsx';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import logoDrop from '../assets/logo.png'; 
+import eyeOpen from '../assets/eye_on.png';
+import eyeClosed from '../assets/eye_off.png';
 
 function Register() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { backendUrl, getUserData } = useContext(AppContext);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
-    const {backendUrl, getUserData} = useContext(AppContext)
-
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const onSubmitRegister = async (e) => {
+    e.preventDefault();
     try {
-        e.preventDefault();
-        axios.defaults.withCredentials = true;
-        if (password === confirmPassword) {
-            const {data} = await axios.post(backendUrl + '/api/auth/register', { name, email, password });
-            if (data.success) {
-                getUserData();
-                navigate('/');   
-            } else {
-                toast.error(data.message);
-            }
+      axios.defaults.withCredentials = true;
+      if (password === confirmPassword) {
+        const { data } = await axios.post(`${backendUrl}/api/auth/register`, {
+          name,
+          email,
+          password,
+        });
+        if (data.success) {
+          getUserData();
+          navigate('/');
         } else {
-            toast.error('Passwords do not match!');
+          toast.error(data.message);
         }
+      } else {
+        toast.error('Passwords do not match!');
+      }
     } catch (error) {
-        toast.error(error.message);
+      toast.error(error.message);
     }
   };
 
- return (
-    <div className="relative min-h-screen flex justify-center items-center bg-gradient-to-b from-[#023E8A] to-black">
-
-<div className="card w-[400px] text-white rounded-2xl shadow-lg p-8 text-center" style={{ backgroundColor: '#00B4D8' }}>
-        <div className="logo mx-auto mb-4 text-black text-4 xl font-bold">PureText</div>
-        <h4 className="subtitle text-black  font-medium mb-6 text-lg">Register</h4>
+  return (
+    <div className="register-page">
+      <div className="register-card">
+        <div className="logo-circle">
+          <img src={logoDrop} alt="logo" />
+        </div>
+        <div className="register-logo">PureText</div>
+        <h4 className="register-title">Register</h4>
 
         <form onSubmit={onSubmitRegister}>
-          {/* Full Name */}
-          <div className="inputGroup mb-4 text-left">
-            <label className="label block text-sm font-medium text-black">Full Name:</label>
-            <input
-              type="text"
-              value={name}
-              required
-              onChange={(e) => setName(e.target.value)}
-               className="input mt-1 block w-full bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:outline-none"
-             
-            />
+          <div className="input-group">
+            <label>Full Name:</label>
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
           </div>
 
-          {/* Email */}
-          <div className="inputGroup mb-4 text-left">
-            <label className="label block text-sm font-medium text-black">Email address:</label>
-            <input
-              type="email"
-              value={email}
-              required
-              onChange={(e) => setEmail(e.target.value)}
-               className="input mt-1 block w-full bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:outline-none"
-             
-            />
+          <div className="input-group">
+            <label>Email address:</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
           </div>
+<div className="input-group password-wrapper">
+  <label>Password:</label>
+  <input
+    type={showPassword ? 'text' : 'password'}
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    required
+  />
+  <span
+    className="toggle-icon"
+    onClick={() => setShowPassword(!showPassword)} 
+  >
+    <img
+      src={showPassword ? eyeClosed : eyeOpen} 
+      alt="toggle password visibility"
+      className="eye-icon"
+    />
+  </span>
+</div>
 
-          {/* Password */}
-          <div className="inputGroup mb-4 text-left">
-            <label className="label block text-sm font-medium text-black">Password:</label>
-            <input
-              type="password"
-              value={password}
-              required
-              onChange={(e) => setPassword(e.target.value)}
-            className="input mt-1 block w-full bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:outline-none"
-             
-            />
-          </div>
+<div className="input-group password-wrapper">
+  <label>Confirm Password:</label>
+  <input
+    type={showConfirm ? 'text' : 'password'}
+    value={confirmPassword}
+    onChange={(e) => setConfirmPassword(e.target.value)}
+    required
+  />
+  <span
+    className="toggle-icon"
+    onClick={() => setShowConfirm(!showConfirm)} 
+  >
+    <img
+      src={showConfirm ? eyeClosed : eyeOpen}
+      alt="toggle confirm password visibility"
+      className="eye-icon"
+    />
+  </span>
+</div>
 
-          {/* Confirm Password */}
-          <div className="inputGroup mb-4 text-left">
-            <label className="label block text-sm font-medium text-black">Confirm Password:</label>
-            <input
-              type="password"
-              value={confirmPassword}
-              required
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="input mt-1 block w-full bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:outline-none"
-              
-            />
-          </div>
-
-          {/* Link + Button */}
-          <a href="/" className="authLink text-blue-600 hover:underline text-sm block mb-4">
+          <a href="/" className="auth-link">
             Already have an account? Login
           </a>
 
-          <div className="buttonContainer flex flex-col gap-3">
-            <button
-              type="submit"
-              className="bg-green-500 hover:bg-green-400 text-white font-medium py-2 rounded-lg"
-            >
-              Register
-            </button>
-           
-          </div>
+          <button type="submit" className="btn-register">
+            Register
+          </button>
         </form>
       </div>
     </div>

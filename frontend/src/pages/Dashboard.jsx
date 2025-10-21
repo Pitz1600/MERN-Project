@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "../components/Navbar.jsx";
 
+
 const Dashboard = () => {
   return (
     <div className="min-w-screen min-h-screen w-full bg-[#001F3F] flex flex-col overflow-x-hidden">
@@ -18,7 +19,7 @@ const Dashboard = () => {
             activities, view reports, and track performance.
           </p>
 
-          {/* Example Cards */}
+          
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-10">
             <div className="bg-blue-100 rounded-2xl p-6 shadow-md hover:scale-105 transition-transform duration-200">
               <h3 className="text-lg font-semibold text-blue-700 mb-2">Total Users</h3>

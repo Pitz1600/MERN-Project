@@ -1,11 +1,9 @@
 import React from "react";
+import "../styles/components/StartAnalyzingButton.css";
 
 const StartAnalyzingButton = ({ onClick }) => {
   return (
-    <button
-      onClick={onClick}
-      className="bg-green-500 hover:bg-green-600 text-black font-semibold px-8 py-4 rounded-lg text-center text-base leading-tight"
-    >
+    <button onClick={onClick} className="start-analyzing-btn">
       Start<br />Analyzing
     </button>
   );

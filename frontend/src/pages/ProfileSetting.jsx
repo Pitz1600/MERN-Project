@@ -21,7 +21,7 @@ const ProfileSettings = () => {
 
 
 return (
-  <div className="min-h-screen w-full bg-[#001F3F] flex flex-col overflow-x-hidden">
+  <div className="min-w-screen min-h-screen w-full bg-[#001F3F] flex flex-col overflow-x-hidden">
     {/* Navbar */}
     <Navbar />
 
