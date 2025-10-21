@@ -4,11 +4,11 @@ import PopupModal from "../components/Popupmodal";
 import Container from "../components/Container"; 
 import AnalyzeButton from "../components/AnalyzeButton";
 
-
 const Analyzer = () => {
   const [text, setText] = useState("");
   const [wordCount, setWordCount] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
+  const [results, setResults] = useState([]); // State to store analysis results
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -16,37 +16,40 @@ const Analyzer = () => {
     setWordCount(value.trim().split(/\s+/).filter(Boolean).length);
   };
 
-  const handleAnalyze = () => {
-    setShowPopup(true);
-  };
+  const handleAnalyze = async () => {
+    if (!text.trim()) return;
 
-  const results = [
-    {
-      label: "BIASED",
-      suggestion: "This is 51% accurate",
-      date: "Oct 1, 2025 | 12:55am",
-      labelColor: "text-yellow-700 font-bold",
-    },
-    {
-      label: "NEUTRAL",
-      suggestion: "Good response...",
-      date: "Oct 1, 2025 | 01:23am",
-      labelColor: "text-green-900 font-bold",
-    },
-    {
-      label: "UNCLEAR",
-      suggestion: "Please clarify...",
-      date: "Oct 1, 2025 | 02:06pm",
-      labelColor: "text-gray-800 font-bold",
-    },
-  ];
+    setShowPopup(true); // Show the popup while processing
+
+    try {
+      const response = await fetch("http://localhost:5000/predict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text }), // Send the input text to the backend
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to analyze text");
+      }
+
+      const data = await response.json(); // Parse the JSON response
+      setResults(data); // Update the results state with the backend 
+      console.log("Response status:", response.status);
+      console.log("Response data:", data);
+    } catch (error) {
+      console.error("Error analyzing text:", error);
+    } finally {
+      setShowPopup(false); // Hide the popup after processing
+    }
+  };
 
   return (
     <div className="min-w-screen min-h-screen w-full bg-[#001F3F] flex flex-col overflow-x-hidden relative">
       <Navbar />
 
       <Container>
-
         {/* Main Input/Result Box */}
         <div className="mx-auto bg-[#00B4D8] rounded-[20px] shadow-lg p-6 sm:p-8 md:p-10 w-full max-w-full">
           <div className="flex flex-col md:flex-row gap-6 h-auto min-w-5xl min-h-200">
@@ -63,41 +66,40 @@ const Analyzer = () => {
                 <span className="text-black text-sm">{wordCount} words</span>
                 <div className="w-full border-t border-black" />
 
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
-  <div className="flex gap-4">
-    <button
-      className="p-2 bg-gray-100 rounded hover:bg-gray-200"
-      title="Clear"
-      onClick={() => {
-        setText("");
-        setWordCount(0);
-      }}
-    >
-      <img
-        src="/src/assets/icon_trash.png"
-        alt="Trash Icon"
-        className="w-5 h-5"
-      />
-    </button>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
+                  <div className="flex gap-4">
+                    <button
+                      className="p-2 bg-gray-100 rounded hover:bg-gray-200"
+                      title="Clear"
+                      onClick={() => {
+                        setText("");
+                        setWordCount(0);
+                      }}
+                    >
+                      <img
+                        src="/src/assets/icon_trash.png"
+                        alt="Trash Icon"
+                        className="w-5 h-5"
+                      />
+                    </button>
 
-    <button
-      className="p-2 bg-gray-100 rounded hover:bg-gray-200"
-      title="Copy"
-      onClick={() => {
-        navigator.clipboard.writeText(text);
-      }}
-    >
-      <img
-        src="/src/assets/icon_copy.png"
-        alt="Copy Icon"
-        className="w-5 h-5"
-      />
-    </button>
-  </div>
+                    <button
+                      className="p-2 bg-gray-100 rounded hover:bg-gray-200"
+                      title="Copy"
+                      onClick={() => {
+                        navigator.clipboard.writeText(text);
+                      }}
+                    >
+                      <img
+                        src="/src/assets/icon_copy.png"
+                        alt="Copy Icon"
+                        className="w-5 h-5"
+                      />
+                    </button>
+                  </div>
 
-  {/* Replace this button: */}
-  <AnalyzeButton onClick={handleAnalyze} disabled={!text.trim()} />
-</div>
+                  <AnalyzeButton onClick={handleAnalyze} disabled={!text.trim()} />
+                </div>
               </div>
             </div>
 
@@ -108,13 +110,12 @@ const Analyzer = () => {
                 {results.map((res, idx) => (
                   <div key={idx} className="bg-white rounded p-4 shadow-sm">
                     <p>
-                      Result:{" "}
-                      <span className={`${res.labelColor} px-2 rounded font-bold`}>
-                        {res.label}
-                      </span>
+                      Text: <span className="font-bold text-black">{res.text}</span>
                     </p>
-                    <p className="text-sm mb-3">{res.suggestion}</p>
-                    <p className="text-xs text-gray-600">{res.date}</p>
+                    <p>
+                      Sentiment:{" "}
+                      <span className="font-bold text-black">{res.sentiment}</span>
+                    </p>
                   </div>
                 ))}
               </div>
