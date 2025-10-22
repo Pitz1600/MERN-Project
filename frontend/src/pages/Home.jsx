@@ -1,66 +1,128 @@
-import React from "react";
+import React, { useContext, useState } from 'react';
 import Navbar from "../components/Navbar.jsx";
-import Header from "../components/Header.jsx";
+import { useNavigate } from 'react-router-dom';
+import { AppContext } from '../context/AppContext.jsx';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import '../styles/Home.css';
+import StartAnalyzingButton from '../components/StartAnalyzingButton.jsx';
+import PieChartElement from '../components/PieChartElement.jsx';
+
 const Home = () => {
+  const navigate = useNavigate();
+  const { userData, backendUrl } = useContext(AppContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasData, setHasData] = useState(false);
+
+  const sendVerificationOtp = async () => {
+    try {
+      setIsLoading(true);
+      axios.defaults.withCredentials = true;
+      const { data } = await axios.post(`${backendUrl}/api/auth/send-verify-otp`, {
+        userId: userData.id,
+      });
+
+      if (data.success) {
+        navigate('/email-verify');
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div className="relative min-h-screen flex flex-col bg-[#023E8A] text-white">
-      {/* Navbar */}
+    <div className="home-container">
       <Navbar />
 
-      {/* Header */}
-      <Header />
+      {/* ✅ Data Toggle Buttons */}
+      <div className="data-toggle">
+        <button
+          className={`toggle-btn ${!hasData ? 'active' : ''}`}
+          onClick={() => setHasData(false)}
+        >
+          Empty
+        </button>
+        <button
+          className={`toggle-btn ${hasData ? 'active' : ''}`}
+          onClick={() => setHasData(true)}
+        >
+          With Data
+        </button>
+      </div>
 
-      {/* Main Content */}
-      <main className="flex-grow flex flex-col items-center justify-center p-8">
-        <div className="bg-white text-black w-full max-w-6xl rounded-3xl p-8 shadow-lg">
-          <h2 className="text-center text-xl font-semibold mb-8">
-            Welcome back,{" "}
-            <span className="text-[#023E8A]">&lt;Full Name&gt;</span>!
-          </h2>
+      {/* ✅ If not verified */}
+      {!userData.isAccountVerified ? (
+        <div className="verify-email-section">
+          <img alt="App Logo" />
+          <h1>Hey {userData ? userData.name : 'User'}!</h1>
+          <p>Please verify your email to continue.</p>
+          <button onClick={sendVerificationOtp} disabled={isLoading}>
+            {isLoading ? 'Loading...' : 'Verify Email'}
+          </button>
+        </div>
+      ) : (
+        <main className="dashboard-main">
+          <div className="dashboard-wrapper">
+            <h2>
+              Welcome back, <span>{userData ? userData.name : 'User'}</span>!
+            </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Recent Activity */}
-            <div className="bg-[#CAF0F8] border border-gray-300 rounded-2xl shadow-md p-6 flex flex-col justify-between">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                  Recent Activity
-                </h3>
-                <p className="text-gray-600 mb-6">No analyzed text yet?</p>
+            <div className="dashboard-grid">
+              <div className="dashboard-card recent-activity">
+                <h3>Recent Activity</h3>
+                {hasData ? (
+                  <>
+                    <p>Sample prompt 1...</p>
+                    <p>Sample prompt 2...</p>
+                    <p>Sample prompt 3...</p>
+                  </>
+                ) : (
+                  <p>No analyzed text yet?</p>
+                )}
+                {/* ✅ Start Analyzing button opens popup */}
+                {!hasData && (
+                  <StartAnalyzingButton onClick={() => navigate("/analyzer")} />
+                )}
               </div>
-              <button className="bg-[#023E8A] hover:bg-[#0077B6] text-white font-semibold py-2 rounded-full transition-all">
-                Start Analyzing
-              </button>
-            </div>
 
-            {/* Usage Statistics */}
-            <div className="bg-[#CAF0F8] border border-gray-300 rounded-2xl shadow-md p-6 text-center flex flex-col items-center justify-center">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                Usage Statistics
-              </h3>
-              <div className="w-40 h-40 bg-[#90E0EF] rounded-full mb-4"></div>
-              <p className="text-gray-600">No statistics yet.</p>
-              <p className="text-gray-500 mt-4 text-sm">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              </p>
-            </div>
+              <div className="dashboard-card usage-stats">
+                <h3>Usage Statistics</h3>
+                {hasData ? (
+                  <>
+                    <div className="circle"></div>
+                    <p>50% Biased</p>
+                    <p>30% Neutral</p>
+                    <p>20% Unclear</p>
+                  </>
+                ) : (
+                  <>
+                    <div className="circle"></div>
+                    <p>No statistics yet.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                  </>
+                )}
+              </div>
 
-            {/* Additional Tips */}
-            <div className="bg-[#CAF0F8] border border-gray-300 rounded-2xl shadow-md p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                Additional Tips
-              </h3>
-              <p className="text-gray-600 mb-2">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </p>
-              <p className="text-gray-600">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </p>
+              <div className="dashboard-card tips-card">
+                <h3>Additional Tips</h3>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+                  eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                </p>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+                  eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      </main>
+        </main>
+      )}
     </div>
   );
 };

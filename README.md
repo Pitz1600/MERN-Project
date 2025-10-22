@@ -12,3 +12,7 @@ npm run dev
 # Another Terminal
 cd frontend <br>
 npm run dev
+
+# Another Terminal for LLMs
+cd model <br>
+python sentiment.py
