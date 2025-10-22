@@ -12,20 +12,6 @@ const Navbar = () => {
   const { userData, backendUrl, setUserData, setIsLoggedIn } = useContext(AppContext);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const logout = async () => {
-    try {
-      axios.defaults.withCredentials = true;
-      const { data } = await axios.post(backendUrl + "/api/auth/logout");
-      if (data.success) {
-        setIsLoggedIn(false);
-        setUserData(false);
-        navigate("/");
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-
   const navItems = [
     { name: "Home", path: "/" },
     { name: "Analyzer", path: "/analyzer" },

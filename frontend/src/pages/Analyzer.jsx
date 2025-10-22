@@ -8,6 +8,7 @@ import "../styles/Analyzer.css";
 const Analyzer = () => {
   const [text, setText] = useState("");
   const [wordCount, setWordCount] = useState(0);
+  const [charCount, setCharCount] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
   const [results, setResults] = useState([]); // State to store analysis results
 
@@ -15,6 +16,7 @@ const Analyzer = () => {
     const value = e.target.value;
     setText(value);
     setWordCount(value.trim().split(/\s+/).filter(Boolean).length);
+    setCharCount(value.length);
   };
 
   const handleAnalyze = async () => {
@@ -78,71 +80,69 @@ const Analyzer = () => {
       </div>
 
       <Container>
-        <div className="analyzer-box">
-          <div className="analyzer-content">
-            {/* Left Section */}
-            <div className="analyzer-input-box">
-              <textarea
-                className="analyzer-textarea"
-                placeholder="Enter text here..."
-                value={text}
-                onChange={handleChange}
-              ></textarea>
+        <div className="analyzer-content">
+          {/* Left Section */}
+          <div className="analyzer-input-box">
+            <textarea
+              className="analyzer-textarea"
+              placeholder="Enter text here..."
+              value={text}
+              onChange={handleChange}
+            ></textarea>
 
-              <div className="analyzer-footer">
-                <span className="word-count">{wordCount} words</span>
-                <div className="divider"></div>
+            <div className="analyzer-footer">
+              <span className="word-count">{wordCount} word(s), {charCount} character(s)</span>
+              <div className="divider"></div>
 
-                <div className="analyzer-actions">
-                  <div className="icon-buttons">
-                    <button
-                      className="icon-btn"
-                      title="Clear"
-                      onClick={() => {
-                        setText("");
-                        setWordCount(0);
-                      }}
-                    >
-                      <img
-                        src="/src/assets/icon_trash.png"
-                        alt="Trash Icon"
-                        className="icon"
-                      />
-                    </button>
+              <div className="analyzer-actions">
+                <div className="icon-buttons">
+                  <button
+                    className="icon-btn"
+                    title="Clear"
+                    onClick={() => {
+                      setText("");
+                      setWordCount(0);
+                    }}
+                  >
+                    <img
+                      src="/src/assets/icon_trash.png"
+                      alt="Trash Icon"
+                      className="icon"
+                    />
+                  </button>
 
-                    <button
-                      className="icon-btn"
-                      title="Copy"
-                      onClick={() => navigator.clipboard.writeText(text)}
-                    >
-                      <img
-                        src="/src/assets/icon_copy.png"
-                        alt="Copy Icon"
-                        className="icon"
-                      />
-                    </button>
-                  </div>
-
-                  <AnalyzeButton onClick={handleAnalyze} disabled={!text.trim()} />
+                  <button
+                    className="icon-btn"
+                    title="Copy"
+                    onClick={() => navigator.clipboard.writeText(text)}
+                  >
+                    <img
+                      src="/src/assets/icon_copy.png"
+                      alt="Copy Icon"
+                      className="icon"
+                    />
+                  </button>
                 </div>
+
+                <AnalyzeButton onClick={handleAnalyze} disabled={!text.trim()} />
               </div>
             </div>
+          </div>
 
-            {/* Right Section */}
-            <div className="analyzer-results">
-              <h3 className="results-title">Results</h3>
-              <div className="results-list">
-                {results.map((res, idx) => (
-                  <div key={idx} className="result-card">
-                    <p>
-                      Result:{" "}
-                      <span className={`label ${res.labelColor}`}>{res.sentiment}</span>
-                    </p>
-                    <p className="suggestion">{res.text}</p>
-                    <p className="date">{res.date}</p>
-                  </div>
-                ))}
-              </div>
+          {/* Right Section */}
+          <div className="analyzer-results">
+            <h3 className="results-title">Results</h3>
+            <div className="results-list">
+              {results.map((res, idx) => (
+                <div key={idx} className="result-card">
+                  <p>
+                    Result:{" "}
+                    <span className={`label ${res.labelColor}`}>{res.sentiment}</span>
+                  </p>
+                  <p className="suggestion">{res.text}</p>
+                  <p className="date">{res.date}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>

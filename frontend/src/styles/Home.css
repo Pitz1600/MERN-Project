@@ -4,7 +4,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #012a54; 
+  background-color: transparent; 
   color: white;
   font-family: Arial, sans-serif;
   align-items: center;
@@ -86,16 +86,6 @@
   padding: 2rem;
 }
 
-.dashboard-wrapper {
-  background-color: #00bcd4; 
-  color: black;
-  width: 100%;
-  max-width: 96rem;
-  border-radius: 1.5rem;
-  padding: 2rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-}
-
 .dashboard-wrapper h2 {
   text-align: center;
   font-size: 1.25rem;
@@ -130,6 +120,7 @@
   justify-content: space-between;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   text-align: center;
+  min-height: 70vh;
 }
 
 /* Card headings */

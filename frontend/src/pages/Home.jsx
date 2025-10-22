@@ -8,6 +8,7 @@ import '../styles/Home.css';
 import '../index.css';
 import StartAnalyzingButton from '../components/StartAnalyzingButton.jsx';
 import PieChartElement from '../components/PieChartElement.jsx';
+import Container from '../components/Container.jsx';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -69,7 +70,7 @@ const Home = () => {
           </div>
         </div>
       ) : (
-        <main className="dashboard-main">
+        <Container>
           <div className="dashboard-wrapper">
             <h2>
               Welcome back, <span>{userData ? userData.name : 'User'}</span>!
@@ -84,13 +85,13 @@ const Home = () => {
                     <p>Sample prompt 2...</p>
                     <p>Sample prompt 3...</p>
                   </>
-                ) : (
-                  <p>No analyzed text yet?</p>
-                )}
-                {/* ✅ Start Analyzing button opens popup */}
-                {!hasData && (
+                ) : (<>
+                  <p >No analyzed text yet?<br/>
+                  {!hasData && (
                   <StartAnalyzingButton onClick={() => navigate("/analyzer")} />
-                )}
+                )}</p>
+                </>
+                )}                
               </div>
 
               <div className="dashboard-card usage-stats">
@@ -124,7 +125,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-        </main>
+        </Container>
       )}
     </div>
   );
