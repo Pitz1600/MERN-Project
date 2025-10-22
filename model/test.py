@@ -1,27 +1,43 @@
-# Load model directly
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-import torch
+import ollama
 
-model_name = "tabularisai/multilingual-sentiment-analysis"
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForSequenceClassification.from_pretrained(model_name)
+model = 'deepseek-r1:8b'
 
-def predict_sentiment(texts):
-    inputs = tokenizer(texts, return_tensors="pt", truncation=True, padding=True, max_length=512)
-    with torch.no_grad():
-        outputs = model(**inputs)
-    probabilities = torch.nn.functional.softmax(outputs.logits, dim=-1)
-    sentiment_map = {0: "Very Negative", 1: "Negative", 2: "Neutral", 3: "Positive", 4: "Very Positive"}
-    return [sentiment_map[p] for p in torch.argmax(probabilities, dim=-1).tolist()]
+model_instructions = """
+You are a text assistant.
+You are tasked to check the spelling and the grammar of the text, if the text have grammatical and spelling errors you will fix the text. 
+You will tell me what is the sentiment of the text if its (Neutral, Positive, Negative, Unclear) and what are the biased words on the text. You will tell me the confidence level
+of your assessment of the sentiment of the text.
+If the sentiment of the text is either Positive or Negative you will generate a neutral text based on the text you receive. If you can't tell if the text is either of the three you will give the text unclear sentiment
 
-run_model = True
-while(run_model):
-    get_text = input("Enter Text(type 'quit' to quit): ")
-    if get_text == "quit":
+This will be the flow of your work:
+You will check what's the sentiment of the text and give confidence level of your assessment. After checking the sentiment of the text you will then give neutral text suggestions. If the sentiment
+is already neutral you will check if the grammar and spelling is correct. Correct them based on the text.
+
+This is the format of our conversation.
+I will send you the text like this:
+text: sample text
+
+You will only response in this format:
+sentiment: (Negative, Positive, Neutral, Unclear)
+biased words: biased words on the text
+confidence level: 0% - 100%
+suggested text: sample text
+"""
+ 
+while True:
+    text_input = input("Prompt: ")
+    if text_input.lower() in ["exit", "quit"]:
         print("Quiting...")
-        run_model = False
-    convert_text_list = get_text.split(".")
-    for text, sentiment in zip(convert_text_list, predict_sentiment(convert_text_list)):
-        print(f"Text: {text}\nSentiment: {sentiment}\n")
+        break
 
+    messages = [{'role':'system', 'content': model_instructions}]
+    messages.append({'role':'user', 'content':f"text: {text_input}"})
+    print("", end='', flush=True)
+    response_text = ""
 
+    for chunk in ollama.chat(model=model, messages=messages, stream=True):
+        content = chunk['message']['content']
+        print(content, end='', flush=True)
+        response_text += content
+
+    print("\n")
