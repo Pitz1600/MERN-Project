@@ -20,10 +20,14 @@ def checker(text):
     if response and response.get("message") and response["message"].get("content"):
         content = response["message"]["content"]
         original_text = {
+            'is_text_corrected': True,
             'original_sentence': text,
         }
 
         dict_convert_content = json.loads(content)
+        if dict_convert_content['corrected_text'] == text:
+            original_text["is_text_corrected"] = False
+
         merged_content = dict_convert_content | original_text
 
         merged_json = json.dumps(merged_content, indent=4)
