@@ -44,6 +44,7 @@ const Navbar = () => {
           <img src={logo} alt="Logo" className="logo-img" />
         </div>
 
+      {!userData.isAccountVerified ? (<></>) : (
           <div className="nav-links">
             {navItems.map((item, index) => {
               const isActive = location.pathname === item.path;
@@ -58,6 +59,7 @@ const Navbar = () => {
               );
             })}
           </div>
+          )}
         </div>
 
         <div className="nav-right">

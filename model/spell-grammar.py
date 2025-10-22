@@ -13,11 +13,11 @@ For every sentence:
 
 You will only response in this format:
 Sentence 1: "NO MISTAKE SENTENCE"
-Explanation: No mistakes found.
+Explanation 1: No mistakes found.
 Sentence 2: "CORRECTED SENTENCE"
-Explanation: [Explain the grammar and spelling mistakes in detail.]
+Explanation 2: [Explain the grammar and spelling mistakes in detail.]
 Sentence 3: "CORRECTED SENTENCE"
-Explanation: [Explanation for sentence 3, if applicable.]
+Explanation 3: [Explanation for sentence 3, if applicable.]
 ... and so on.
 """
  

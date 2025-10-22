@@ -80,7 +80,7 @@ const EmailVerify = () => {
             ))}
           </div>
           <button type="submit" className="verify-btn">Verify OTP</button>
-          <button type="button" className="back-btn" onClick={handleBack}>Back to Login</button>
+          <button type="button" className="back-btn" onClick={handleBack}>Back</button>
         </form>
       </div>
     </div>

@@ -5,6 +5,7 @@ import { AppContext } from '../context/AppContext.jsx';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import '../styles/Home.css';
+import '../index.css';
 import StartAnalyzingButton from '../components/StartAnalyzingButton.jsx';
 import PieChartElement from '../components/PieChartElement.jsx';
 
@@ -57,13 +58,15 @@ const Home = () => {
 
       {/* ✅ If not verified */}
       {!userData.isAccountVerified ? (
-        <div className="verify-email-section">
-          <img alt="App Logo" />
-          <h1>Hey {userData ? userData.name : 'User'}!</h1>
-          <p>Please verify your email to continue.</p>
-          <button onClick={sendVerificationOtp} disabled={isLoading}>
-            {isLoading ? 'Loading...' : 'Verify Email'}
-          </button>
+        <div>
+          <div className="verify-email-section">
+            <img src='/src/assets/logo_transparent.png' alt="App Logo" />
+            <h1>Hey {userData ? userData.name : 'User'}!</h1>
+            <p>Please verify your email to continue.</p>
+            <button onClick={sendVerificationOtp} disabled={isLoading}>
+              {isLoading ? 'Loading...' : 'Verify Email'}
+            </button>
+          </div>
         </div>
       ) : (
         <main className="dashboard-main">

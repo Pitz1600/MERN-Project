@@ -23,7 +23,7 @@ def predict_sentiment(texts):
 def home():
     return "Sentiment Analysis API is running."
 
-@app.route('/predict', methods=['POST'])
+@app.route('/analyze', methods=['POST'])
 def analyze_text():
     data = request.json
     text = data.get('text', '')
