@@ -13,23 +13,26 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
 }
 
-/* Unified container */
+/* ✅ Container */
 .login-container {
   width: 750px;
+  max-width: 95%;
   height: 520px;
   display: flex;
+  flex-direction: row;
   position: relative;
   background: var(--panel-bg);
   border-radius: 20px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
   color: var(--text-light);
   overflow: hidden;
+  transition: all 0.3s ease;
 }
 
-/* ✅ Vertical divider line */
+/* ✅ Vertical divider */
 .login-container::before {
   content: "";
   position: absolute;
@@ -49,6 +52,7 @@ body {
   justify-content: center;
   align-items: center;
   color: #000;
+  text-align: center;
 }
 
 .logo-circle {
@@ -115,19 +119,20 @@ body {
   outline: none;
   font-size: 0.95rem;
   background-color: #f9f9f9;
-  color: #000; /* <-- explicit text color */
+  color: #000;
   transition: box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 .form-group input:placeholder-shown {
   background-color: #fff;
-  color: #999; /* optional: placeholder text color */
+  color: #999;
 }
 
 .form-group input:focus {
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
-  color: #000; /* ensure text stays visible when focused */
+  color: #000;
 }
+
 .forgot-row {
   text-align: right;
   margin-bottom: 1.5rem;
@@ -144,15 +149,15 @@ body {
   text-decoration: underline;
 }
 
-/* Buttons */
+/* ✅ Buttons */
 .button-group {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
-.btn-login {
-  background: var(--btn-green);
+.btn-login,
+.btn-register {
   border: none;
   border-radius: 10px;
   padding: 0.6rem;
@@ -160,9 +165,13 @@ body {
   color: #000;
   cursor: pointer;
   transition: background 0.3s ease;
-   width: 90%; 
   font-size: 1rem;
-  align-self: center; 
+  align-self: center;
+}
+
+.btn-login {
+  background: var(--btn-green);
+  width: 90%;
 }
 
 .btn-login:hover {
@@ -171,35 +180,85 @@ body {
 
 .btn-register {
   background: #69d84f;
-  border: none;
-  border-radius: 10px;
-  padding: 0.6rem;
-  font-weight: 600;
-  color: #000;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  width: 60%; 
-  font-size: 1rem;
-  align-self: center;
+  width: 60%;
+}
 
 .btn-register:hover {
   background: #a7f432;
 }
 
-/* Responsiveness */
-@media (max-width: 768px) {
+/* ✅ Responsive Design */
+
+/* Tablets */
+@media (max-width: 992px) {
   .login-container {
-    flex-direction: column;
     width: 90%;
     height: auto;
+    flex-direction: column;
+    align-items: center;
   }
-
 
   .login-container::before {
     display: none;
   }
 
+  .login-left,
   .login-right {
+    width: 100%;
     padding: 1.5rem;
   }
-}}
+
+  .login-left {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .app-name {
+    font-size: 1.5rem;
+  }
+
+  .app-desc {
+    font-size: 0.85rem;
+  }
+
+  .form-group label {
+    font-size: 0.9rem;
+  }
+
+  .form-group input {
+    font-size: 0.9rem;
+    height: 36px;
+  }
+
+  .btn-login,
+  .btn-register {
+    width: 100%;
+  }
+}
+
+/* Extra Small Phones (≤400px) */
+@media (max-width: 400px) {
+  .login-container {
+    border-radius: 10px;
+    padding: 1rem;
+  }
+
+  .logo-circle {
+    width: 50px;
+    height: 50px;
+  }
+
+  .app-name {
+    font-size: 1.3rem;
+  }
+
+  .app-desc {
+    font-size: 0.8rem;
+  }
+
+  .form-group input {
+    height: 34px;
+  }
+}

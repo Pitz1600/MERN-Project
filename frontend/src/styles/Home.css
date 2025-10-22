@@ -16,24 +16,25 @@
   gap: 1rem;                 
   width: 100%;                
   box-sizing: border-box;     
+    margin-top: 1rem; 
+      padding-right: 0.9rem; 
 }
+
 .data-toggle button {
+  
   width: 120px;              
   height: 36px;         
   font-size: 14px;
 }
-/* Navbar adjustments already in Navbar.css */
-.navbar {
-  background-color: #00bcd4; 
-  color: black;
-}s
+
+
 
 /* Email verification section */
 .verify-email-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 6rem;
+    margin-top: 1.5rem;
   padding: 0 1rem;
   text-align: center;
   color: white;
@@ -78,9 +79,11 @@
 /* Main dashboard section */
 .dashboard-main {
   display: flex;
+    padding-top: 1rem;
   justify-content: center;
   flex-grow: 1;
   padding: 2rem;
+   padding: 1rem 2rem 2rem 2rem;
 }
 
 .dashboard-wrapper {

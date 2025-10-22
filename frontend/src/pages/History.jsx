@@ -26,7 +26,9 @@ const History = () => {
   };
   const handleSearchByChange = (e) => setSearchBy(e.target.value);
   const handleStartAnalyzing = () => setShowPopup(true);
+
   const handleEmptyClick = () => setHistoryData([]);
+
   const handleWithDataClick = () => {
     setCurrentPage(1);
     setHistoryData([
@@ -51,18 +53,18 @@ const History = () => {
     <div className="history-container">
       <Navbar />
 
-      <div className="history-content">
-        {/* Top Buttons */}
-        <div className="history-buttons-row">
-          <button className="history-top-buttons" onClick={handleEmptyClick}>
-            Empty
-          </button>
-          <button className="history-top-buttons" onClick={handleWithDataClick}>
-            With data
-          </button>
-        </div>
+      {/* ✅ Buttons now directly below Navbar */}
+      <div className="history-buttons-row">
+        <button className="history-top-buttons" onClick={handleEmptyClick}>
+          Empty
+        </button>
+        <button className="history-top-buttons" onClick={handleWithDataClick}>
+          With data
+        </button>
+      </div>
 
-        {/* Main Content */}
+      {/* ✅ Main content below buttons */}
+      <div className="history-content">
         <div className="history-main">
           {/* Search Bar */}
           <div className="history-search-section">
@@ -75,7 +77,7 @@ const History = () => {
             />
           </div>
 
-          {/* Table or Empty */}
+          {/* Table or Empty State */}
           <div className="history-table-container">
             {historyData.length === 0 ? (
               <div className="history-empty">

@@ -1,0 +1,145 @@
+/* ==== GENERAL CONTAINER ==== */
+.dashboard-container {
+  min-width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #012a54; /* ✅ same background as home-container */
+  color: white;
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+/* ==== EMPTY STATE ==== */
+.empty-page {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+
+/* ==== EMPTY CONTAINER (NEW) ==== */
+.empty-container {
+  width: 95%;
+  max-width: 1200px;
+   background-color: #00bcd4; 
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+    height: 500px;
+    
+}
+/* ==== CARD WRAPPER ==== */
+.empty-wrapper {
+  width: 95%;
+  max-width: 1100px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ==== CARD CONTAINER ==== */
+.empty-card {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+/* ==== LEFT SIDE ==== */
+.empty-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  border-right: 1px solid #ccc;
+  text-align: center;
+  min-height: 380px;
+}
+
+.usage-text {
+  color: #555;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.start-btn {
+  background-color: #69d84f;
+  color: #000;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 18px 36px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.start-btn:hover {
+  background-color: #a7f432;
+  transform: scale(1.05);
+}
+
+/* ==== RIGHT SIDE ==== */
+.empty-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  gap: 16px;
+  text-align: center;
+  min-height: 380px;
+}
+
+.circle {
+  width: 190px;
+  height: 190px;
+  background-color: #9bd6f0;
+  border-radius: 50%;
+}
+
+.no-stats {
+  color: #555;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.description {
+  color: #777;
+  font-size: 14px;
+  max-width: 260px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* ==== RESPONSIVE ==== */
+@media (max-width: 900px) {
+  .empty-card {
+    grid-template-columns: 1fr;
+  }
+
+  .empty-left {
+    border-right: none;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .empty-left,
+  .empty-right {
+    padding: 36px 20px;
+  }
+
+  .circle {
+    width: 150px;
+    height: 150px;
+  }
+}
