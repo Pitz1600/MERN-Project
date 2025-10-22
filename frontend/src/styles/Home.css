@@ -17,25 +17,24 @@
   gap: 1rem;                 
   width: 100%;                
   box-sizing: border-box;     
+    margin-top: 1rem; 
+      padding-right: 0.9rem; 
 }
+
 .data-toggle button {
+  
   width: 120px;              
   height: 36px;         
   font-size: 14px;
 }
-/* Navbar adjustments already in Navbar.css */
-.navbar {
-  background-color: #00bcd4; 
-  color: black;
-}s
+
+
 
 /* Email verification section */
 .verify-email-section {
   display: flex;
   align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  margin-top: 6rem;
+    margin-top: 1.5rem;
   padding: 0 1rem;
   color: white;
   overflow: hidden;
@@ -81,6 +80,7 @@
 /* Main dashboard section */
 .dashboard-main {
   display: flex;
+    padding-top: 1rem;
   justify-content: center;
   flex-grow: 1;
   padding: 2rem;

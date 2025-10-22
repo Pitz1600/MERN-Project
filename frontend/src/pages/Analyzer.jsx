@@ -46,27 +46,6 @@ const Analyzer = () => {
     } finally {
       setShowPopup(false); // Hide the popup after processing
     }
-
-    const results = [
-      {
-        label: "BIASED",
-        suggestion: "This is 51% accurate",
-        date: "Oct 1, 2025 | 12:55am",
-        labelColor: "biased",
-      },
-      {
-        label: "NEUTRAL",
-        suggestion: "Good response...",
-        date: "Oct 1, 2025 | 01:23am",
-        labelColor: "neutral",
-      },
-      {
-        label: "UNCLEAR",
-        suggestion: "Please clarify...",
-        date: "Oct 1, 2025 | 02:06pm",
-        labelColor: "unclear",
-      },
-    ];
   };
 
   return (

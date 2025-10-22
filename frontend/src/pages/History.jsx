@@ -6,6 +6,7 @@ import StartAnalyzingButton from "../components/StartAnalyzingButton";
 import SearchBar from "../components/SearchBar";
 import deleteIcon from "../assets/icon_delete.png";
 import "../styles/History.css";
+import Container from "../components/Container";
 
 const History = () => {
   const navigate = useNavigate();
@@ -31,7 +32,9 @@ const History = () => {
     console.log("Searching for:", searchValue, "by", searchBy);
   };
   const handleSearchByChange = (e) => setSearchBy(e.target.value);
+
   const handleEmptyClick = () => setHistoryData([]);
+
   const handleWithDataClick = () => {
     setCurrentPage(1);
     setHistoryData([
@@ -56,19 +59,19 @@ const History = () => {
     <div className="history-container">
       <Navbar />
 
-      <div className="history-content">
-        {/* Top Buttons */}
-        <div className="history-buttons-row">
-          <button className="history-top-buttons" onClick={handleEmptyClick}>
-            Empty
-          </button>
-          <button className="history-top-buttons" onClick={handleWithDataClick}>
-            With data
-          </button>
-        </div>
+      {/* ✅ Buttons now directly below Navbar */}
+      <div className="history-buttons-row">
+        <button className="history-top-buttons" onClick={handleEmptyClick}>
+          Empty
+        </button>
+        <button className="history-top-buttons" onClick={handleWithDataClick}>
+          With data
+        </button>
+      </div>
 
-        {/* Main Content */}
-        <div className="history-main">
+      {/* ✅ Main content below buttons */}
+      <div className="history-content">
+        <Container>
           {/* Search Bar */}
           <div className="history-search-section">
             <SearchBar
@@ -80,7 +83,7 @@ const History = () => {
             />
           </div>
 
-          {/* Table or Empty */}
+          {/* Table or Empty State */}
           <div className="history-table-container">
             {historyData.length === 0 ? (
               <div className="history-empty">
@@ -152,7 +155,7 @@ const History = () => {
               </>
             )}
           </div>
-        </div>
+        </Container>
       </div>
 
       {/* Popup Modal */}

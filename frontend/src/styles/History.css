@@ -1,43 +1,35 @@
-/* Root container */
+
 .history-container {
   min-width: 100vw;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #012a54; /* deep blue like home */
+  background-color: #012a54;
   color: white;
   font-family: Arial, sans-serif;
 }
+/* Buttons row (positioned on the right below navbar) */
 
-/* Navbar is already styled globally */
-
-/* Main content wrapper */
-.history-content {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem 1rem;
-}
-
-/* Top buttons (Empty / With Data) */
+/* Buttons row (same alignment as home data-toggle) */
 .history-buttons-row {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   width: 100%;
-  max-width: 96rem;
-  margin-bottom: 1.5rem;
+  box-sizing: border-box;
+  margin-top: 1rem;
+  padding-right: 0.9rem;
   gap: 1rem;
 }
 
+/* Buttons styling */
 .history-top-buttons {
   width: 120px;
   height: 36px;
   font-size: 14px;
   border: none;
   border-radius: 0.75rem;
-  background-color: #69d84f; /* green like Start Analyzing */
+  background-color: #69d84f;
   color: black;
   font-weight: bold;
   cursor: pointer;
@@ -48,18 +40,12 @@
   background-color: #5cc13b;
 }
 
-/* Main wrapper box */
-.history-main {
-  background-color: #00bcd4; /* cyan card background */
-  color: black;
-  width: 100%;
-  max-width: 96rem;
-  border-radius: 1.5rem;
-  padding: 2rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+/* Main content wrapper — same as .dashboard-main */
+.history-content {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  justify-content: center;
+  flex-grow: 1;
+  padding: 1rem 2rem 2rem 2rem;
 }
 
 /* Search section */
@@ -79,7 +65,7 @@
 .history-empty {
   border-radius: 1rem;
   background-color: white;
-  height: 300px;
+  height: 400px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -87,6 +73,7 @@
   color: black;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+   flex-shrink: 0; 
 }
 
 .history-empty p {
@@ -181,26 +168,7 @@
   cursor: not-allowed;
 }
 
-/* Popup modal */
-.popup-content {
-  text-align: center;
-  color: black;
-  padding: 1.5rem;
-}
-
-.popup-content h2 {
-  font-size: 1.25rem;
-  font-weight: bold;
-  margin-bottom: 0.75rem;
-  color: #023e8a;
-}
-
-.popup-content p {
-  font-size: 1rem;
-  color: #333;
-}
-
-/* Responsive tweaks */
+/* Responsive tweaks — same proportions as Home */
 @media (max-width: 768px) {
   .history-main {
     padding: 1rem;
@@ -219,6 +187,8 @@
   }
 
   .history-buttons-row {
-    justify-content: center;
+    justify-content: flex-end;   /* ✅ stay right on mobile too */
+    padding-right: 1rem;
+    margin-top: 70px;
   }
 }
