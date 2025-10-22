@@ -5,7 +5,7 @@ from src.model.sentiment_model import Sentiment
 
 def analyze(text):
     prompt = """
-    You are a sentiment and bias analyst. You will analyse a sentence and You will Respond ONLY with a JSON object matching the provided schema.
+    You are a sentiment and bias analyst. You will analyse the sentiment and bias of a paragraph and You will Respond ONLY with a JSON object matching the provided schema.
     """
     response = ollama.chat(
         messages=[
