@@ -1,0 +1,224 @@
+/* Root container */
+.history-container {
+  min-width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #012a54; /* deep blue like home */
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+/* Navbar is already styled globally */
+
+/* Main content wrapper */
+.history-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+
+/* Top buttons (Empty / With Data) */
+.history-buttons-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  max-width: 96rem;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.history-top-buttons {
+  width: 120px;
+  height: 36px;
+  font-size: 14px;
+  border: none;
+  border-radius: 0.75rem;
+  background-color: #69d84f; /* green like Start Analyzing */
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.history-top-buttons:hover {
+  background-color: #5cc13b;
+}
+
+/* Main wrapper box */
+.history-main {
+  background-color: #00bcd4; /* cyan card background */
+  color: black;
+  width: 100%;
+  max-width: 96rem;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Search section */
+.history-search-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Table container */
+.history-table-container {
+  width: 100%;
+}
+
+/* Empty state */
+.history-empty {
+  border-radius: 1rem;
+  background-color: white;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: black;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.history-empty p {
+  color: #333;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Table styling */
+.history-table-wrapper {
+  overflow-x: auto;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.history-table th,
+.history-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: center;
+  font-size: 0.95rem;
+  color: black;
+}
+
+.history-table th {
+  background-color: #d0f0f9;
+  font-weight: bold;
+  color: #023e8a;
+}
+
+.history-table tbody tr:hover {
+  background-color: #f3f4f6;
+}
+
+/* Delete button */
+.delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.delete-btn img {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.2s ease;
+}
+
+.delete-btn img:hover {
+  transform: scale(1.2);
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  gap: 0.5rem;
+}
+
+.pagination button {
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: bold;
+}
+
+.pagination button.active {
+  background-color: #023e8a;
+  color: white;
+}
+
+.pagination button:hover:not(:disabled):not(.active) {
+  background-color: #00bcd4;
+  color: white;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Popup modal */
+.popup-content {
+  text-align: center;
+  color: black;
+  padding: 1.5rem;
+}
+
+.popup-content h2 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+  color: #023e8a;
+}
+
+.popup-content p {
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .history-main {
+    padding: 1rem;
+  }
+
+  .history-top-buttons {
+    width: 100px;
+    height: 34px;
+    font-size: 13px;
+  }
+
+  .history-table th,
+  .history-table td {
+    padding: 0.6rem;
+    font-size: 0.85rem;
+  }
+
+  .history-buttons-row {
+    justify-content: center;
+  }
+}

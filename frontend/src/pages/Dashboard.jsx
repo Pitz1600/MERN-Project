@@ -27,8 +27,8 @@ const Dashboard = () => {
             </div>
 
             <div className="bg-green-100 rounded-2xl p-6 shadow-md hover:scale-105 transition-transform duration-200">
-              <h3 className="text-lg font-semibold text-green-700 mb-2">Active Sessions</h3>
-              <p className="text-2xl font-bold text-gray-800">45</p>
+              <h3 className="text-lg font-semibold text-green-700 mb-2">Statistics</h3>
+              <p className="text-2xl font-bold text-gray-800"></p>
               <PieChartElement />
             </div>
 

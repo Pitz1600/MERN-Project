@@ -1,89 +1,91 @@
-import React, { useContext, useState } from 'react';
-import '../index.css';
-import { useNavigate } from 'react-router-dom';
-import { AppContext } from '../context/AppContext.jsx';
-import axios from 'axios';
-import { toast } from 'react-toastify';
+import React, { useContext, useState } from "react";
+import "../styles/Login.css";
+import { useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext.jsx";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const Login = () => {
-
   const navigate = useNavigate();
+  const { backendUrl, setIsLoggedIn, getUserData } = useContext(AppContext);
 
-  const {backendUrl, setIsLoggedIn, getUserData} = useContext(AppContext);
-
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const onSubmitLogin = async (e) => {
+    e.preventDefault();
     try {
-        e.preventDefault();
-        axios.defaults.withCredentials = true;
-        const {data} = await axios.post(backendUrl + '/api/auth/login', { email, password });
-        if (data.success) {
-            setIsLoggedIn(true);
-            getUserData();
-            navigate('/');   
-        } else {
-            toast.error(data.message);
-        }
+      axios.defaults.withCredentials = true;
+      const { data } = await axios.post(`${backendUrl}/api/auth/login`, {
+        email,
+        password,
+      });
+      if (data.success) {
+        setIsLoggedIn(true);
+        getUserData();
+        navigate("/");
+      } else {
+        toast.error(data.message);
+      }
     } catch (error) {
-        toast.error(error.message);
+      toast.error(error.message);
     }
   };
 
   return (
-    <div className="relative min-h-screen flex justify-center items-center bg-gradient-to-b from-[#023E8A] to-black">
-      
-<div className="card w-[400px] text-white rounded-2xl shadow-lg p-8 text-center" style={{ backgroundColor: '#00B4D8' }}>
-        <img className="logo mx-auto mb-4" alt="💧" />
-        <h2 className="title text-2xl font-bold mb-1 text-black">PureText</h2>
-        <h4 className="subtitle text-black mb-6">Login</h4>
-
-        <form onSubmit={onSubmitLogin}>
-          <div className="inputGroup mb-4 text-left">
-            <label className="label block text-sm font-medium text-gray-700">Email address:</label>
-           <input
-    type="email"
-    value={email}
-    onChange={(e) => setEmail(e.target.value)}
-    className="input mt-1 block w-full bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:outline-none"
-    placeholder=""
-  />
+    <div className="login-wrapper">
+      <div className="login-container">
+        {/* Left panel */}
+        <div className="login-left">
+          <div className="logo-circle">
+            <img src="/src/assets/logo_transparent.png" alt="Logo" className="logo-icon" />
           </div>
+          <h2 className="app-name">PureText</h2>
+          <p className="app-desc">App for Identifying Biased Language</p>
+          <p className="login-note">Login to Continue</p>
+        </div>
 
-          <div className="inputGroup mb-4 text-left">
-            <label className="label block text-sm font-medium text-gray-700">Password:</label>
-           <input
-    type="password"
-    value={password}
-    onChange={(e) => setPassword(e.target.value)}
-    className="input mt-1 block w-full bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:outline-none"
-    placeholder=""
-  />
-          </div>
+        {/* Right panel */}
+        <div className="login-right">
+          <form onSubmit={onSubmitLogin}>
+            <div className="form-group">
+              <label>Email address:</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
 
-<div className="w-full text-right mb-4">
-  <a
-    href="/reset-password"
-    className="authLink text-blue-700 font-bold hover:underline text-sm"
-  >
-    Forgot Password?
-  </a>
-</div>
+            <div className="form-group">
+              <label>Password:</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
 
-          <div className="buttonContainer flex flex-col gap-3 mt-4">
-            <button type="submit" className="bg-green-600 hover:bg-green-500 text-black font-medium py-2 rounded-lg">
-              Login
-            </button>
-            <button
-              onClick={() => navigate('/register')}
-              type="button"
-              className="bg-green-500 hover:bg-green-400 text-black font-medium py-2 rounded-lg"
-            >
-              Create New Account
-            </button>
-          </div>
-        </form>
+            <div className="forgot-row">
+              <a href="/reset-password">Forgot Password?</a>
+            </div>
+
+            <div className="button-group">
+              <button type="submit" className="btn-login">
+                Login
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate("/register")}
+                className="btn-register"
+              >
+                Create New Account
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
