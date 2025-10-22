@@ -3,8 +3,7 @@ from enum import Enum
 
 class SentimentCategory(Enum):
     neutral = "Neutral"
-    biased = "Biased"
-    reviewable = "Reviewable"
+    bias = "Bias"
 
 class Sentiment(BaseModel):
     sentiment: SentimentCategory

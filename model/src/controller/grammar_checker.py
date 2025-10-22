@@ -9,7 +9,7 @@ def checker(text):
         messages=[
             {
                 "role":"user",
-                "content": f'Correct all the grammar and spelling errors in the following sentence. If no mistakes are found, display the sentence as is. You will accept UK and US based english. Respond ONLY with a JSON object matching the provided schema. Sentence: "{text}"',
+                "content": f'Correct all the grammar and spelling errors in the following paragraph. If no mistakes are found, display the sentence as is. You will accept UK and US based english. Respond ONLY with a JSON object matching the provided schema. Sentence: "{text}"',
             },
         ],
         model="deepseek-r1:8b",
