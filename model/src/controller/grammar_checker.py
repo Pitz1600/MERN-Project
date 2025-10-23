@@ -3,33 +3,44 @@ from pydantic import BaseModel
 import json
 from src.model.grammar_model import Grammar
 
-def checker(text):
+def grammar_correction(text):
     
+    prompt = """
+    You are a grammar and spelling correction assistant.
+
+    Your task:
+    - Fix only grammar, spelling, and punctuation mistakes.
+    - Do not change the meaning, tone, or structure of the text.
+    - Keep the original flow and word choice as much as possible.
+    - When explaining, use simple, clear English so anyone can understand.
+
+    Output must strictly follow this format:
+    original_text: "write here the original text"
+    correction: "writes here the complete correction"
+    reason_of_correction: "writes here the reason of correction"
+
+    Example:
+    Input: I has go to the market yesturday and buyed some apple.
+    Output:
+    original_text: "I has go to the market yesturday and buyed some apple."
+    correction: "I went to the market yesterday and bought some apples."
+    reason_of_correction: "I fixed the verb forms ('has go' → 'went', 'buyed' → 'bought'), corrected the spelling of 'yesterday', and made 'apple' plural to match the sentence."
+
+    """
+
     response = ollama.chat(
         messages=[
             {
+                "role":"system",
+                "content":prompt
+            },
+            {
                 "role":"user",
-                "content": f'Correct all the grammar and spelling errors in the following paragraph. Respond ONLY in string. Respond ONLY with a JSON object matching the provided schema. text: "{text}"',
+                "content": f'text: "{text}"',
             },
         ],
         model="gpt-oss:120b-cloud",
-        format=Grammar.model_json_schema(),
         options={"temperature": 0},
     )
 
-    if response and response.get("message") and response["message"].get("content"):
-        content = response["message"]["content"]
-        original_text = {
-            'is_text_corrected': True,
-            'original_sentence': text,
-        }
-
-        dict_convert_content = json.loads(content)
-        if dict_convert_content['text'] == text:
-            original_text["is_text_corrected"] = False
-
-        merged_content = dict_convert_content | original_text
-
-        merged_json = json.dumps(merged_content, indent=4)
-
-        return merged_json
+    return response["message"]["content"]
