@@ -4,6 +4,7 @@ from src.controller.sentiment_checker import sentiment_correction
 from src.controller.need_grammar_correction import need_grammar_correction
 from src.controller.need_tone_correction import need_tone_correction
 from src.controller.need_sentiment_correction import need_sentiment_correction
+from src.controller.json_extract import extract
 import json
 
 def main():
@@ -16,19 +17,29 @@ def main_function(text):
     check_grammar_correction = need_grammar_correction(text)
     if check_grammar_correction.lower() == "yes":
         grammar_correct = grammar_correction(text)
-        print(grammar_correct)
+        return extract(grammar_correct, "grammar", "Reviewable")
     else:
         check_tone_correction = need_tone_correction(text)
         if check_tone_correction.lower() == "yes":
             tone_correct = tone_correction(text)
-            print(tone_correct)
+            return extract(tone_correct, "tone", "Reviewable")
         else:
             check_sentiment_correction = need_sentiment_correction(text)
             if check_sentiment_correction in ["positive", "negative"]:
                 sentiment_correct = sentiment_correction(text)
-                print(sentiment_correct)
+                return extract(sentiment_correct, "sentiment", "Biased")
             else:
-                print(text)
+                data = {
+                    "type":"correct",
+                    "category":"Neutral",
+                    "original_text":text,
+                    "correction": None,
+                    "reason_of_correction": "No correction needed."
+                }
+                complete_data = {"type": type} | data
+                json_output = json.dumps(complete_data, indent=2, ensure_ascii=False)
+                print(json_output)
+                return json_output
 
 def tester(text):
     test_correction = need_grammar_correction(text)
