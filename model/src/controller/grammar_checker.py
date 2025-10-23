@@ -9,10 +9,10 @@ def checker(text):
         messages=[
             {
                 "role":"user",
-                "content": f'Correct all the grammar and spelling errors in the following paragraph. If no mistakes are found, display the sentence as is. You will accept UK and US based english. Respond ONLY with a JSON object matching the provided schema. Sentence: "{text}"',
+                "content": f'Correct all the grammar and spelling errors in the following paragraph. Respond ONLY in string. Respond ONLY with a JSON object matching the provided schema. text: "{text}"',
             },
         ],
-        model="deepseek-r1:8b",
+        model="gpt-oss:120b-cloud",
         format=Grammar.model_json_schema(),
         options={"temperature": 0},
     )
@@ -25,7 +25,7 @@ def checker(text):
         }
 
         dict_convert_content = json.loads(content)
-        if dict_convert_content['corrected_text'] == text:
+        if dict_convert_content['text'] == text:
             original_text["is_text_corrected"] = False
 
         merged_content = dict_convert_content | original_text
