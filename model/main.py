@@ -20,14 +20,14 @@ def main_function(text):
         return extract(grammar_correct, "grammar", "Reviewable")
     else:
         check_sentiment_correction = need_sentiment_correction(text)
-        if check_sentiment_correction in ["positive", "negative"]:
+        if check_sentiment_correction.lower() == "yes":
             sentiment_correct = sentiment_correction(text)
             return extract(sentiment_correct, "sentiment", "Biased")
         else:
             data = {
-                "type":"correct",
-                "category":"Neutral",
-                "original_text":text,
+                "type": "sentiment",
+                "category": "Neutral",
+                "original_text": text,
                 "correction": None,
                 "reason_of_correction": "No correction needed."
             }

@@ -9,7 +9,7 @@ def need_sentiment_correction(text):
         messages=[
             {
                 "role":"user",
-                "content": f'Accept UK and US based english. What is the sentiment of the text? Respond only with positive, negative, or neutral. text: "{text}"',
+                "content": f'Accept UK and US based english. Does this text need editing in order for it to be neutral? Respond only with yes or no. text: "{text}"',
             },
         ],
         model="gpt-oss:120b-cloud",

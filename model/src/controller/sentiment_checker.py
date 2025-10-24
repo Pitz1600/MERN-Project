@@ -5,23 +5,17 @@ from src.model.sentiment_model import Sentiment
 
 def sentiment_correction(text):
     prompt = """
-    You are a tone neutralization assistant.
+    You are a text neutralization assistant.
 
     Your task:
-
-    Change any text with a positive or negative tone into a neutral, factual, and objective version that reflects what the speaker wants to express.
-
-    Do not add opinions, emotions, or exaggerations.
-
-    Keep the core meaning and factual content intact.
-
-    Maintain clear, formal, and concise language.
-
-    When explaining, use simple, clear English so anyone can understand.
+    - Change this text into a neutral version.
+    - Do not add opinions, emotions, or exaggerations.
+    - Keep the core meaning intact.
+    - When explaining, use simple, clear English so anyone can understand.
 
     Output must strictly follow this format:
     original_text: "write here the original text"
-    correction: "write here the complete neutral version that reflects what the speaker wants to express"
+    correction: "write here the complete neutral version"
     reason_of_correction: "write here the reason for neutralization"
 
     Example:

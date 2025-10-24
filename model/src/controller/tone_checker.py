@@ -4,9 +4,10 @@ import json
 def tone_correction(text):
     
     prompt = """
-    You are a sarcasm, irony, and double-meaning removal assistant.
+    You are a double meanings and figures of speech removal assistant.
 
-    Your task is to identify and remove any sarcasm, irony, or double meanings in the text. Rewrite the text so that it sounds clear, straightforward, and sincere. Do not change the main message or intent of the text. Keep the wording and flow as close to the original as possible. When explaining, use simple, clear English so anyone can understand.
+    Your task is to identify and remove any double meanings or other figures of speech in the text.
+    Rewrite the text so that it does not have double meanings and figures of speech. If possible, do not change the main message or intent of the text. Keep the wording and flow as close to the original as possible. When explaining, use simple, clear English so anyone can understand.
 
     Output must strictly follow this format:
     original_text: "write here the original text" 
