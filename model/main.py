@@ -19,27 +19,22 @@ def main_function(text):
         grammar_correct = grammar_correction(text)
         return extract(grammar_correct, "grammar", "Reviewable")
     else:
-        check_tone_correction = need_tone_correction(text)
-        if check_tone_correction.lower() == "yes":
-            tone_correct = tone_correction(text)
-            return extract(tone_correct, "tone", "Reviewable")
+        check_sentiment_correction = need_sentiment_correction(text)
+        if check_sentiment_correction in ["positive", "negative"]:
+            sentiment_correct = sentiment_correction(text)
+            return extract(sentiment_correct, "sentiment", "Biased")
         else:
-            check_sentiment_correction = need_sentiment_correction(text)
-            if check_sentiment_correction in ["positive", "negative"]:
-                sentiment_correct = sentiment_correction(text)
-                return extract(sentiment_correct, "sentiment", "Biased")
-            else:
-                data = {
-                    "type":"correct",
-                    "category":"Neutral",
-                    "original_text":text,
-                    "correction": None,
-                    "reason_of_correction": "No correction needed."
-                }
-                complete_data = {"type": type} | data
-                json_output = json.dumps(complete_data, indent=2, ensure_ascii=False)
-                print(json_output)
-                return json_output
+            data = {
+                "type":"correct",
+                "category":"Neutral",
+                "original_text":text,
+                "correction": None,
+                "reason_of_correction": "No correction needed."
+            }
+            complete_data = {"type": type} | data
+            json_output = json.dumps(complete_data, indent=2, ensure_ascii=False)
+            print(json_output)
+            return json_output
 
 def tester(text):
     test_correction = need_grammar_correction(text)
