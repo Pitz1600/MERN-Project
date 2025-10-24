@@ -27,9 +27,9 @@ def main_function(text):
             data = {
                 "type": "sentiment",
                 "category": "Neutral",
-                "original_text": text,
-                "correction": None,
-                "reason_of_correction": "No correction needed."
+                "Original_text": text,
+                "Words_detected": None,
+                "Reason_for_correction": "No correction needed."
             }
             complete_data = {"type": type} | data
             json_output = json.dumps(complete_data, indent=2, ensure_ascii=False)

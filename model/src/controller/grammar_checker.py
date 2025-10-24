@@ -15,17 +15,18 @@ def grammar_correction(text):
     - When explaining, use simple, clear English so anyone can understand.
 
     Output must strictly follow this format:
-    original_text: "write here the original text"
-    correction: "writes here the complete correction"
-    reason_of_correction: "writes here the reason of correction"
+    Original_Text: "write here the original text"
+    Words_detected: "write here the incorrect words"
+    Suggested_text: "writes here the complete correction"
+    Reason_for_correction: "writes here the reason of correction"
 
     Example:
     Input: I has go to the market yesturday and buyed some apple.
     Output:
-    original_text: "I has go to the market yesturday and buyed some apple."
-    correction: "I went to the market yesterday and bought some apples."
-    reason_of_correction: "I fixed the verb forms ('has go' → 'went', 'buyed' → 'bought'), corrected the spelling of 'yesterday', and made 'apple' plural to match the sentence."
-
+    Original_Text: "I has go to the market yesturday and buyed some apple."
+    Words_detected: "buyed", "has go", "yesturday", "apple"
+    Suggested_text: "I went to the market yesterday and bought some apples."
+    Reason_for_correction: "I fixed the verb forms ('has go' → 'went', 'buyed' → 'bought'), corrected the spelling of 'yesterday', and made 'apple' plural to match the sentence."
     """
 
     response = ollama.chat(
