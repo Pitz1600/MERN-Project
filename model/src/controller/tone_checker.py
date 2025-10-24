@@ -18,7 +18,7 @@ def tone_correction(text):
     Output:
     original_text: "Oh great, another meeting. Just what I needed to make my day perfect."
     correction: "Another meeting has been scheduled today."
-    reason_of_correction: "I removed the sarcasm and irony to make the sentence direct and factual while keeping the same main idea."
+    reason_of_correction: "The sentence contained sarcasm and exaggeration. Removing these elements makes it clear, straightforward, and factual while preserving the main idea."
     """
 
     response = ollama.chat(

@@ -6,7 +6,7 @@ def need_tone_correction(text):
         messages=[
             {
                 "role":"user",
-                "content": f'Accept UK and US based english. Does this text needs correction for double meaning, sarcasm, irony? Respond only with a yes or no. text: "{text}"',
+                "content": f'Accept UK and US based English. Does this text have double meanings or other figures of speech? Respond only with a yes or no. text: "{text}"',
             },
         ],
         model="gpt-oss:120b-cloud",
