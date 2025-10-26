@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import PopupModal from "../components/Popupmodal";
-import Container from "../components/Container"; 
+import Container from "../components/Container";
 import AnalyzeButton from "../components/AnalyzeButton";
-import "../styles/Analyzer.css"; 
+import "../styles/Analyzer.css";
 
 const Analyzer = () => {
   const [text, setText] = useState("");
@@ -38,7 +38,7 @@ const Analyzer = () => {
       }
 
       const data = await response.json(); // Parse the JSON response
-      setResults(data); // Update the results state with the backend 
+      setResults([data]);
       console.log("Response status:", response.status);
       console.log("Response data:", data);
     } catch (error) {
@@ -46,6 +46,15 @@ const Analyzer = () => {
     } finally {
       setShowPopup(false); // Hide the popup after processing
     }
+  };
+
+  const labelClass = (category) => {
+    if (!category) return "neutral";
+    const cat = category.toLowerCase();
+    if (cat.includes("neutral")) return "neutral";
+    if (cat.includes("biased")) return "biased";
+    if (cat.includes("review")) return "reviewable";
+    return "neutral";
   };
 
   return (
@@ -115,11 +124,20 @@ const Analyzer = () => {
               {results.map((res, idx) => (
                 <div key={idx} className="result-card">
                   <p>
-                    Result:{" "}
-                    <span className={`label ${res.labelColor}`}>{res.sentiment}</span>
+                    Type: <strong>{res.type || res.category || "Error"}</strong>
                   </p>
-                  <p className="suggestion">{res.text}</p>
-                  <p className="date">{res.date}</p>
+                  <p>
+                    Category:{" "}
+                    <span className={`label ${labelClass(res.category)}`}>
+                      {res.category || "N/A"}
+                    </span>
+                  </p>
+                  <p className="suggestion">
+                    Original: {res.original_text || res.text || "—"}
+                  </p>
+                  {res.correction && <p className="suggestion">Correction: {res.correction}</p>}
+                  <p className="suggestion">Reason: {res.reason_of_correction || res.reason || "—"}</p>
+                  {res.date && <p className="date">{res.date}</p>}
                 </div>
               ))}
             </div>
