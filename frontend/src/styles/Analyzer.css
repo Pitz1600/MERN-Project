@@ -1,14 +1,14 @@
 /* ---------------- ROOT CONTAINER ---------------- */
 .analyzer-page {
   min-width: 100vw;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: #012a54;
   color: white;
   font-family: Arial, sans-serif;
   overflow-x: hidden;
-  padding: 0; 
+  padding: 0;
   box-sizing: border-box;
   position: relative;
   align-items: center;
@@ -18,8 +18,10 @@
 
 /* If your Navbar is fixed, add top padding to content */
 .analyzer-content-wrapper {
-  padding: 0 1rem 2rem 1rem; /* side + bottom padding */
-  margin-top: 70px; /* only enough space for fixed navbar */
+  padding: 0 1rem 2rem 1rem;
+  /* side + bottom padding */
+  margin-top: 70px;
+  /* only enough space for fixed navbar */
   box-sizing: border-box;
 }
 
@@ -31,7 +33,8 @@
   gap: 1rem;
   width: 100%;
   box-sizing: border-box;
-  flex-wrap: wrap; /* ✅ wrap buttons on small screens */
+  flex-wrap: wrap;
+  /* ✅ wrap buttons on small screens */
   padding: 0 1rem;
   margin-top: 0.5rem;
 }
@@ -55,7 +58,7 @@
 
 /* ---------------- MAIN BOX ---------------- */
 .analyzer-box {
-margin: 0rem auto 0 auto;
+  margin: 0rem auto 0 auto;
   background-color: #00b4d8;
   border-radius: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
@@ -252,6 +255,7 @@ margin: 0rem auto 0 auto;
   .analyzer-box {
     padding: 1.5rem;
   }
+
   .analyzer-input-box,
   .analyzer-results {
     min-height: auto;

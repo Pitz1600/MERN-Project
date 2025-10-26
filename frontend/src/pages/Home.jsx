@@ -59,16 +59,18 @@ const Home = () => {
 
       {/* ✅ If not verified */}
       {!userData.isAccountVerified ? (
-        <div>
-          <div className="verify-email-section">
-            <img src='/src/assets/logo_transparent.png' alt="App Logo" />
-            <h1>Hey {userData ? userData.name : 'User'}!</h1>
-            <p>Please verify your email to continue.</p>
-            <button onClick={sendVerificationOtp} disabled={isLoading}>
-              {isLoading ? 'Loading...' : 'Verify Email'}
-            </button>
+        <Container>
+          <div>
+            <div className="verify-email-section">
+              <img src='/src/assets/logo_transparent.png' alt="App Logo" />
+              <h1>Hey {userData ? userData.name : 'User'}!</h1>
+              <p>Please verify your email to continue.</p>
+              <button onClick={sendVerificationOtp} disabled={isLoading}>
+                {isLoading ? 'Loading...' : 'Verify Email'}
+              </button>
+            </div>
           </div>
-        </div>
+        </Container>
       ) : (
         <Container>
           <div className="dashboard-wrapper">
@@ -86,12 +88,12 @@ const Home = () => {
                     <p>Sample prompt 3...</p>
                   </>
                 ) : (<>
-                  <p >No analyzed text yet?<br/>
-                  {!hasData && (
-                  <StartAnalyzingButton onClick={() => navigate("/analyzer")} />
-                )}</p>
+                  <p >No analyzed text yet?<br />
+                    {!hasData && (
+                      <StartAnalyzingButton onClick={() => navigate("/analyzer")} />
+                    )}</p>
                 </>
-                )}                
+                )}
               </div>
 
               <div className="dashboard-card usage-stats">
