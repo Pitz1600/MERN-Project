@@ -1,3 +1,4 @@
+/* ---------------- ROOT CONTAINER ---------------- */
 .home-container {
   min-width: 100vw;
   min-height: 100vh;
@@ -7,32 +8,38 @@
   background-color: #012a54;
   font-family: Arial, sans-serif;
   align-items: center;
-  
- 
+  justify-content: flex-start;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
+
 
 .home-container .navbar {
-  margin-bottom: 50px; 
+  margin-bottom: 1rem;
 }
 
-
-
+/* ---------------- VERIFY EMAIL SECTION ---------------- */
 .verify-email-section {
   display: flex;
+  flex-direction: column;
   align-items: center;
-    margin-top: 1.5rem;
-  padding: 0 1rem;
-  color: white;
-  overflow: hidden;
+  margin-top: 1.5rem;
+  padding: 1.5rem;
   background-color: #ffffff;
-  
+  color: black;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 600px;
+  width: 90%;
+  text-align: center;
 }
 
 .verify-email-section img {
   width: 9rem;
   height: 9rem;
-  border-radius: 9999px;
+  border-radius: 50%;
   margin-bottom: 1.5rem;
+  object-fit: cover;
 }
 
 .verify-email-section h1 {
@@ -42,6 +49,7 @@
 
 .verify-email-section p {
   margin-bottom: 1rem;
+  font-size: 1rem;
 }
 
 .verify-email-section button {
@@ -49,7 +57,7 @@
   border-radius: 0.75rem;
   padding: 0.75rem 2rem;
   cursor: pointer;
-  background-color: #69d84f; 
+  background-color: #69d84f;
   color: black;
   font-weight: bold;
   transition: all 0.2s ease;
@@ -64,54 +72,59 @@
   cursor: not-allowed;
 }
 
-
+/* ---------------- DASHBOARD SECTION ---------------- */
 .dashboard-main {
   display: flex;
-    padding-top: 1rem;
   justify-content: center;
   flex-grow: 1;
-  padding: 2rem;
-  
+  padding: 2rem 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dashboard-wrapper {
+  width: 100%;
+  max-width: 1400px;
 }
 
 .dashboard-wrapper h2 {
   text-align: center;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 2rem;
 }
 
 .dashboard-wrapper h2 span {
-  color: #ffffff; 
+  color: #ffffff;
 }
 
-/* Grid layout */
+/* ---------------- GRID LAYOUT ---------------- */
 .dashboard-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
 }
 
-@media(min-width: 768px) {
+@media (min-width: 768px) {
   .dashboard-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
-/* Card styling */
+/* ---------------- CARD STYLING ---------------- */
 .dashboard-card {
   background-color: white;
-  border-radius: 2rem;
+  border-radius: 1.5rem;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   text-align: center;
-  min-height: 70vh;
+  min-height: 60vh;
+  color: black;
 }
 
-/* Card headings */
 .dashboard-card h3 {
   font-size: 1.125rem;
   font-weight: 600;
@@ -119,13 +132,12 @@
   color: #023e8a;
 }
 
-/* Card paragraphs */
 .dashboard-card p {
   color: #333;
   margin-bottom: 1rem;
 }
 
-/* Recent Activity button */
+/* ---------------- BUTTONS ---------------- */
 .recent-activity button {
   background-color: #69d84f;
   color: black;
@@ -134,13 +146,14 @@
   border-radius: 0.75rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  border: none;
 }
 
 .recent-activity button:hover {
   background-color: #5cc13b;
 }
 
-
+/* ---------------- STATS & TIPS ---------------- */
 .usage-stats .circle {
   width: 10rem;
   height: 10rem;
@@ -149,20 +162,29 @@
   margin: 0 auto 1rem auto;
 }
 
-/* Additional tips text */
 .tips-card p {
   font-size: 0.875rem;
   line-height: 1.4;
 }
 
+/* ---------------- RESPONSIVENESS ---------------- */
+@media (max-width: 1024px) {
+  .dashboard-card {
+    min-height: auto;
+  }
+}
 
-
-/* Small responsive tweaks */
-@media(max-width: 767px) {
+@media (max-width: 767px) {
   .dashboard-wrapper {
     padding: 1rem;
   }
+
   .dashboard-card {
+    padding: 1rem;
+  }
+
+  .verify-email-section {
+    width: 95%;
     padding: 1rem;
   }
 }

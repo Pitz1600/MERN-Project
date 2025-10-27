@@ -7,7 +7,7 @@ import EmailVerify from "./pages/EmailVerify.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import Register from "./pages/Register.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
-import Analyzer from "./pages/Analyzer.jsx";   // ✅ Added
+import Analyzer from "./pages/Analyzer.jsx";  
 import History from "./pages/History.jsx";
 import ProfileSettings from "./pages/ProfileSetting.jsx"; 
 

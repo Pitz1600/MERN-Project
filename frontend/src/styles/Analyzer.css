@@ -13,7 +13,23 @@
     align-items: center;
   }
 
-  
+
+
+  .count.all-count {
+  background-color: black !important;
+  color: white !important;
+}
+
+.count.biased-count {
+  background-color: #ff9800 !important;
+  color: white !important;
+}
+
+.count.reviewable-count {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
 
 
 .results-tabs {
@@ -38,35 +54,11 @@
   color: black;
 }
   /* ---- RIGHT SECTION HEADER ---- */
-.results-header {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-  background-color: #b9effc;
-  border-radius: 8px;
-  padding: 6px 12px;
-  margin-bottom: 10px;
-}
 
-.results-arrow {
-  background-color: #e0faff;
-  border-radius: 6px;
-  padding: 4px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
 
-.results-arrow:hover {
-  background-color: #c0f2ff;
-}
 
-.results-tabs {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  
-}
+
+
 
 .tab {
   font-weight: 600;
@@ -121,12 +113,11 @@
   color: #555;
   margin-top: 6px;
 }
-  .analyzer-content-wrapper {
-    padding: 0 1rem 2rem 1rem; 
-    margin-top: 70px; 
-    box-sizing: border-box;
-  }
-
+.analyzer-content-wrapper {
+  padding: 0 1rem 2rem 1rem;
+  margin-top: 20px; /* reduced spacing for better alignment */
+  box-sizing: border-box;
+}
   .version-buttons {
     display: flex;
     justify-content: flex-end;
