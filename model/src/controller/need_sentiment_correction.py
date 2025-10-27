@@ -9,7 +9,7 @@ def need_sentiment_correction(text):
         messages=[
             {
                 "role":"user",
-                "content": f'Accept UK and US based english. Does this text need editing in order for it to be neutral? Respond only with yes or no. text: "{text}"',
+                "content": f'Accept both UK and US English. Evaluate only the neutrality of the provided text. Do not analyse grammar, spelling, or tone except where they introduce bias. Determine whether the text contains any subjective, emotional, judgemental, derogatory, or persuasive language. If the text is not fully neutral, respond: "Yes". If the text is fully neutral, respond: "No". Respond only with Yes or No — no explanation. text: "{text}"',
             },
         ],
         model="gpt-oss:120b-cloud",
