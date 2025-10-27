@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from main import main_function  # Import the main_function from main.py
+import traceback
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "http://localhost:5174"]}})
@@ -18,6 +19,8 @@ def analyze_text():
         result = main_function(text)
         return jsonify(result)  # Ensure the result is returned as JSON
     except Exception as e:
+        # Print full traceback to the server console for debugging
+        print("Exception during /analyze:\n", traceback.format_exc())
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":

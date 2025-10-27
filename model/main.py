@@ -1,6 +1,7 @@
 from src.controller.grammar_checker import grammar_correction
 from src.controller.tone_checker import tone_correction
 from src.controller.sentiment_checker import sentiment_correction
+from src.controller.neutral_checker import neutral_correction
 from src.controller.need_grammar_correction import need_grammar_correction
 from src.controller.need_tone_correction import need_tone_correction
 from src.controller.need_sentiment_correction import need_sentiment_correction
@@ -24,14 +25,8 @@ def main_function(text):
             sentiment_correct = sentiment_correction(text)
             return extract(sentiment_correct, "sentiment", "Biased")
         else:
-            data = {
-                "type": "sentiment",
-                "category": "Neutral",
-                "original_text": text,
-                "correction": None,
-                "reason_of_correction": "No correction needed."
-            }
-            return data  # Return the dictionary directly, let Flask handle JSON conversion
+            neutral_correct = neutral_correction(text)
+            return extract(neutral_correct, "sentiment", "Neutral")
 
 def tester(text):
     test_correction = need_grammar_correction(text)

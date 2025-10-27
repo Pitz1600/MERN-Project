@@ -57,6 +57,13 @@ const Analyzer = () => {
     return "neutral";
   };
 
+  const useCorrection = (correction) => {
+    setText(correction);
+    const trimmed = (correction || "").trim();
+    setWordCount(trimmed ? trimmed.split(/\s+/).filter(Boolean).length : 0);
+    setCharCount(correction ? correction.length : 0);
+  }
+
   return (
     <div className="analyzer-page">
       <Navbar />
@@ -130,11 +137,41 @@ const Analyzer = () => {
                     </span>
                   </p>
                   <p className="suggestion">
+                  {res.words_detected && <p className="suggestion">
+                    Word(s) Detected: {res.words_detected}</p>}
+                  </p>
+                  <p className="suggestion">
                     Original: {res.original_text || res.text || "—"}
                   </p>
-                  {res.correction && <p className="suggestion">Correction: {res.correction}</p>}
+                  {res.correction && <p className="suggestion" value={res.correction}>
+                    Correction: {res.correction}</p>}
+                  {res.sentiment_score && <p className="suggestion">
+                    Sentiment Score: {res.sentiment_score}</p>}
                   <p className="suggestion">Reason: {res.reason_of_correction || res.reason || "—"}</p>
                   {res.date && <p className="date">{res.date}</p>}
+                  {res.correction && res.correction !== "None" && res.correction !== null && (
+                    <div className="result-actions">
+                      <button
+                        className="icon-btn"
+                        title="Copy"
+                        onClick={() => navigator.clipboard.writeText(res.correction)}
+                      >
+                        <img
+                          src="/src/assets/icon_copy.png"
+                          alt="Copy Icon"
+                          className="icon"
+                        />
+                      </button>
+
+                      <button
+                        className="use-correction-btn"
+                        title="Use Correction"
+                        onClick={() => {useCorrection(res.correction);}}
+                      >
+                        Use Correction
+                      </button>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

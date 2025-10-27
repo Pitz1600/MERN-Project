@@ -16,14 +16,18 @@ def grammar_correction(text):
 
     Output must strictly follow this format:
     original_text: "write here the original text"
+    words_detected: "writes here the words with mistakes"
     correction: "writes here the complete correction"
+    sentiment_score: None
     reason_of_correction: "writes here the reason of correction"
 
     Example:
     Input: I has go to the market yesturday and buyed some apple.
     Output:
     original_text: "I has go to the market yesturday and buyed some apple."
+    words_detected: "has go, yesturday, buyed, apple"
     correction: "I went to the market yesterday and bought some apples."
+    sentiment_score: None
     reason_of_correction: "I fixed the verb forms ('has go' → 'went', 'buyed' → 'bought'), corrected the spelling of 'yesterday', and made 'apple' plural to match the sentence."
 
     """
