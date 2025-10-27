@@ -48,7 +48,7 @@ const Home = () => {
             <img src='/src/assets/logo_transparent.png' alt="App Logo" style={{ width: 120, marginBottom: 24 }} />
             <h1>Welcome to Bias & Sentiment Analyzer!</h1>
             <p>
-              Instantly analyze your text for bias, sentiment, and tone. Get actionable feedback and improve your writing with AI-powered insights.
+              Instantly analyze your text for bias and sentiment. Get actionable feedback and improve your writing with AI-powered insights.
             </p>
             <ul style={{ textAlign: 'left', margin: '24px auto', maxWidth: 400 }}>
               <li>• Detect bias and neutrality in your text</li>

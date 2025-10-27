@@ -10,7 +10,7 @@ const Analyzer = () => {
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
-  const [results, setResults] = useState([]); // State to store analysis results
+  const [results, setResults] = useState([]);
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -22,7 +22,7 @@ const Analyzer = () => {
   const handleAnalyze = async () => {
     if (!text.trim()) return;
 
-    setShowPopup(true); // Show the popup while processing
+    setShowPopup(true);
 
     try {
       const response = await fetch("http://localhost:5000/analyze", {
@@ -30,7 +30,7 @@ const Analyzer = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text }), // Send the input text to the backend
+        body: JSON.stringify({ text }),
       });
 
       if (!response.ok) {
@@ -62,7 +62,7 @@ const Analyzer = () => {
     } catch (error) {
       console.error("Error analyzing text:", error);
     } finally {
-      setShowPopup(false); // Hide the popup after processing
+      setShowPopup(false);
     }
   };
 
@@ -97,7 +97,9 @@ const Analyzer = () => {
             ></textarea>
 
             <div className="analyzer-footer">
-              <span className="word-count">{wordCount} word(s), {charCount} character(s)</span>
+              <span className="word-count">
+                {wordCount} word(s), {charCount} character(s)
+              </span>
               <div className="divider"></div>
 
               <div className="analyzer-actions">
@@ -108,6 +110,7 @@ const Analyzer = () => {
                     onClick={() => {
                       setText("");
                       setWordCount(0);
+                      setCharCount(0);
                     }}
                   >
                     <img
@@ -137,9 +140,31 @@ const Analyzer = () => {
 
           {/* Right Section */}
           <div className="analyzer-results">
-            <h3 className="results-title">Results</h3>
+            {/* Header with Tabs */}
+            <div className="results-header">
+              <div className="results-tabs">
+                <span className="tab all">
+                  All <span className="count">0</span>
+                </span>
+                <span className="tab biased">
+                  Biased <span className="count">0</span>
+                </span>
+                <span className="tab reviewable">
+                  Reviewable <span className="count">0</span>
+                </span>
+              </div>
+            </div>
+
             <div className="results-list">
-              {results.map((res, idx) => (
+              {results.length === 0 ? (
+                <div className="no-results-box">
+                  <p>Nothing to analyze yet!</p>
+                  <p className="subtext">
+                    Get started by adding text to the editor
+                  </p>
+                </div>
+              ) : (
+                results.map((res, idx) => (
                 <div key={idx} className="result-card">
                   <p>
                     Category:{" "}
@@ -183,7 +208,7 @@ const Analyzer = () => {
                     </div>
                   )}
                 </div>
-              ))}
+              )))}
             </div>
           </div>
         </div>

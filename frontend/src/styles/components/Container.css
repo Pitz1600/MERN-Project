@@ -1,5 +1,5 @@
 .container-wrapper {
-  position: absolute;
+/* position: absolute; */
   top: 10%;
   background-color: #00bcd4;
   color: black;
@@ -7,7 +7,7 @@
   border-radius: 1.5rem;
   padding: 2rem;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-  margin-top: 2vh;
+
 }
 
 /* Medium screens (sm:px-6 → 1.5rem) */
@@ -19,7 +19,7 @@
   }
 }
 
-/* Large screens (lg:px-8 → 2rem) */
+
 @media (min-width: 1024px) {
   .container-wrapper {
     padding-left: 2rem;
