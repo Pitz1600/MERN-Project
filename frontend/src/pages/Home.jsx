@@ -1,31 +1,36 @@
 import React, { useContext, useState } from 'react';
-import Navbar from "../components/Navbar.jsx";
 import { useNavigate } from 'react-router-dom';
-import { AppContext } from '../context/AppContext.jsx';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+
+import Navbar from '../components/Navbar.jsx';
+import Container from '../components/Container.jsx';
+import { AppContext } from '../context/AppContext.jsx';
+
 import '../styles/Home.css';
-import PopupModal from '../components/Popupmodal.jsx';
-import StartAnalyzingButton from '../components/StartAnalyzingButton.jsx'; // ✅ make sure this is imported
+import '../styles/components/PieChartElement.css';
+import '../index.css';
 
 const Home = () => {
   const navigate = useNavigate();
   const { userData, backendUrl } = useContext(AppContext);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasData, setHasData] = useState(false);
-  const [popupModal, setPopupModal] = useState(false); // ✅ for modal visibility
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasData] = useState(true); // replace later with real data state
+
+  // ✅ Send email verification OTP
   const sendVerificationOtp = async () => {
     try {
       setIsLoading(true);
       axios.defaults.withCredentials = true;
+
       const { data } = await axios.post(`${backendUrl}/api/auth/send-verify-otp`, {
         userId: userData.id,
       });
 
       if (data.success) {
-        navigate('/email-verify');
         toast.success(data.message);
+        navigate('/email-verify');
       } else {
         toast.error(data.message);
       }
@@ -36,97 +41,70 @@ const Home = () => {
     }
   };
 
+  // ✅ Render content
   return (
     <div className="home-container">
       <Navbar />
 
-      {/* ✅ Data Toggle Buttons */}
-      <div className="data-toggle">
-        <button
-          className={`toggle-btn ${!hasData ? 'active' : ''}`}
-          onClick={() => setHasData(false)}
-        >
-          Empty
-        </button>
-        <button
-          className={`toggle-btn ${hasData ? 'active' : ''}`}
-          onClick={() => setHasData(true)}
-        >
-          With Data
-        </button>
-      </div>
-
-      {/* ✅ If not verified */}
       {!userData.isAccountVerified ? (
+        // ✅ Email Verification Section
         <div className="verify-email-section">
-          <img alt="App Logo" />
-          <h1>Hey {userData ? userData.name : 'User'}!</h1>
-          <p>Please verify your email to continue.</p>
-          <button onClick={sendVerificationOtp} disabled={isLoading}>
-            {isLoading ? 'Loading...' : 'Verify Email'}
-          </button>
+          <img src="/src/assets/logo_transparent.png" alt="App Logo" className="verify-logo" />
+          <div className="verify-content">
+            <h1>Hey {userData?.name || 'User'}!</h1>
+            <p>Please verify your email to continue.</p>
+            <button onClick={sendVerificationOtp} disabled={isLoading}>
+              {isLoading ? 'Loading...' : 'Verify Email'}
+            </button>
+          </div>
         </div>
       ) : (
-        <main className="dashboard-main">
+        // ✅ Dashboard Section
+        <Container>
           <div className="dashboard-wrapper">
             <h2>
-              Welcome back, <span>{userData ? userData.name : 'User'}</span>!
+              Welcome back, <span>{userData?.name || 'User'}</span>!
             </h2>
 
             <div className="dashboard-grid">
-              <div className="dashboard-card recent-activity">
-                <h3>Recent Activity</h3>
-                {hasData ? (
-                  <>
-                    <p>Sample prompt 1...</p>
-                    <p>Sample prompt 2...</p>
-                    <p>Sample prompt 3...</p>
-                  </>
-                ) : (
-                  <p>No analyzed text yet?</p>
-                )}
-                {/* ✅ Start Analyzing button opens popup */}
-                {!hasData && (
-                  <StartAnalyzingButton onClick={() => setPopupModal(true)} />
-                )}
-              </div>
+              {/* ✅ Recent Activity */}
+              {hasData && (
+                <div className="dashboard-card recent-activity">
+                  <h3>Recent Activity</h3>
+                  <p>Analyzed text: "The new policy may have unintended effects."</p>
+                  <p>Bias detected: 45%</p>
+                  <p>Date: Oct 26, 2025</p>
+                </div>
+              )}
 
-              <div className="dashboard-card usage-stats">
-                <h3>Usage Statistics</h3>
-                {hasData ? (
-                  <>
-                    <div className="circle"></div>
-                    <p>50% Biased</p>
-                    <p>30% Neutral</p>
-                    <p>20% Unclear</p>
-                  </>
-                ) : (
-                  <>
-                    <div className="circle"></div>
-                    <p>No statistics yet.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                  </>
-                )}
-              </div>
+              {/* ✅ Usage Statistics */}
+              {hasData && (
+                <div className="dashboard-card usage-stats">
+                  <h3>Usage Statistics</h3>
+                  <div className="usage-pie">
+                    <div className="pie-chart"></div>
+                    <div className="pie-labels">
+                      <div><span className="color biased"></span> Biased</div>
+                      <div><span className="color neutral"></span> Neutral</div>
+                      <div><span className="color unclear"></span> Unclear</div>
+                    </div>
+                  </div>
+                  <p>50% Biased</p>
+                  <p>30% Neutral</p>
+                  <p>20% Unclear</p>
+                </div>
+              )}
 
+              {/* ✅ Tips Card */}
               <div className="dashboard-card tips-card">
                 <h3>Additional Tips</h3>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                  eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                  eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
+                <p>Review your text results carefully — aim for neutral and balanced writing.</p>
+                <p>Try analyzing multiple samples to improve bias detection accuracy.</p>
               </div>
             </div>
           </div>
-        </main>
+        </Container>
       )}
-
-      {/* ✅ Popup Modal */}
-      {popupModal && <PopupModal show={popupModal} onClose={() => setPopupModal(false)} />}
     </div>
   );
 };

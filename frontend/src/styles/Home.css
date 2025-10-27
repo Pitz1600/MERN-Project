@@ -1,43 +1,31 @@
-/* Root container */
 .home-container {
   min-width: 100vw;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #012a54; 
   color: white;
+  background-color: #012a54;
   font-family: Arial, sans-serif;
-}
-
-.data-toggle {
-  display: flex;
-  justify-content: flex-end;  
   align-items: center;
-  gap: 1rem;                 
-  width: 100%;                
-  box-sizing: border-box;     
-    margin-top: 1rem; 
-      padding-right: 0.9rem; 
-}
-
-.data-toggle button {
   
-  width: 120px;              
-  height: 36px;         
-  font-size: 14px;
+ 
+}
+
+.home-container .navbar {
+  margin-bottom: 50px; 
 }
 
 
 
-/* Email verification section */
 .verify-email-section {
   display: flex;
-  flex-direction: column;
   align-items: center;
     margin-top: 1.5rem;
   padding: 0 1rem;
-  text-align: center;
   color: white;
+  overflow: hidden;
+  background-color: #ffffff;
+  
 }
 
 .verify-email-section img {
@@ -61,7 +49,7 @@
   border-radius: 0.75rem;
   padding: 0.75rem 2rem;
   cursor: pointer;
-  background-color: #69d84f; /* green like Start Analyzing */
+  background-color: #69d84f; 
   color: black;
   font-weight: bold;
   transition: all 0.2s ease;
@@ -76,24 +64,14 @@
   cursor: not-allowed;
 }
 
-/* Main dashboard section */
+
 .dashboard-main {
   display: flex;
     padding-top: 1rem;
   justify-content: center;
   flex-grow: 1;
   padding: 2rem;
-   padding: 1rem 2rem 2rem 2rem;
-}
-
-.dashboard-wrapper {
-  background-color: #00bcd4; 
-  color: black;
-  width: 100%;
-  max-width: 96rem;
-  border-radius: 1.5rem;
-  padding: 2rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  
 }
 
 .dashboard-wrapper h2 {
@@ -104,7 +82,7 @@
 }
 
 .dashboard-wrapper h2 span {
-  color: #ffffff; /* make name white */
+  color: #ffffff; 
 }
 
 /* Grid layout */
@@ -123,13 +101,14 @@
 /* Card styling */
 .dashboard-card {
   background-color: white;
-  border-radius: 1rem;
+  border-radius: 2rem;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   text-align: center;
+  min-height: 70vh;
 }
 
 /* Card headings */

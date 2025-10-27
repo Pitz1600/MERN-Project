@@ -45,7 +45,7 @@ const App = () => {
           path="/history"
           element={isLoggedIn ? <History /> : <Navigate to="/" />}
         />
-  <Route
+        <Route
           path="/profile-settings"
           element={isLoggedIn ? <ProfileSettings /> : <Navigate to="/" />} // ✅ Protected route
         />

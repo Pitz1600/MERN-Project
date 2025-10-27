@@ -10,6 +10,7 @@
   line-height: 1.5; /* leading-tight */
   cursor: pointer;
   transition: background-color 0.2s ease;
+  width: 50%;
 }
 
 .start-analyzing-btn:hover {

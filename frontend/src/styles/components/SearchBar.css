@@ -7,9 +7,9 @@
 }
 
 .searchbar-button:hover {
-  background-color: #ffffff; /* keep white background */
-  border-color: #d1d5db;     /* maintain border color */
-  cursor: default;           /* optional: normal cursor */
+  background-color: #ffffff; 
+  border-color: #d1d5db;  
+  cursor: default;         
 }
 
 .searchbar-icon:hover {
@@ -29,8 +29,8 @@
   display: flex;
   width: 100%;
   background-color: #ffffff;
-  border: 1px solid #000000;
-  border-radius: 0; /* ❌ Remove rounded corners */
+
+  border-radius: 0; 
   overflow: hidden;
 }
 
@@ -56,7 +56,7 @@
   border: 1px solid #d1d5db;
   border-left: none;
   padding: 1rem 1.2rem;
-  border-radius: 0; /* ❌ Remove roundness */
+ 
   cursor: default;
 }
 
@@ -70,24 +70,28 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.875rem;
-   position: relative; /* ✅ add this */
-  left: -100px;          /* move it slightly left */
+   position: relative; 
+  left: -200px;         
 }
 
 .searchbar-label {
-  color: #1f2937; /* gray-800 */
+  color: #1f2937; 
   font-weight: 500;
    font-size: 1.25rem; 
 }
 
 .searchbar-select {
-  width: 200px;                /* keep your width */
-  padding: 1rem 1.2rem;        /* same vertical & horizontal padding as input */
-  font-size: 0.875rem;         /* match input font size */
+  width: 200px;                
+  padding: 1rem 1.2rem;        
+  font-size: 1rem;       
   background-color: #ffffff;
   color: #000000;
   border: 1px solid #d1d5db;
-  border-radius: 0;             /* remove rounded edges */
-  box-sizing: border-box;       /* ensures padding counts inside width & height */
-  height: auto;                 /* let padding define height */
+  border-radius: 0;           
+  box-sizing: border-box;      
+  height: auto;               
+}
+
+.searchbar-container {
+  margin-left: 32px; /* adjust this value to move more or less */
 }

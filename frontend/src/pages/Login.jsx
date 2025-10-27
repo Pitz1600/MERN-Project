@@ -38,7 +38,7 @@ const Login = () => {
         {/* Left panel */}
         <div className="login-left">
           <div className="logo-circle">
-            <img src="/src/assets/logo.png" alt="Logo" className="logo-icon" />
+            <img src="/src/assets/logo_transparent.png" alt="Logo" className="logo-icon" />
           </div>
           <h2 className="app-name">PureText</h2>
           <p className="app-desc">App for Identifying Biased Language</p>

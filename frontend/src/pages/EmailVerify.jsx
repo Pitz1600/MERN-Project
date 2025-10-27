@@ -65,7 +65,7 @@ const EmailVerify = () => {
     <div className="email-verify-container">
       <div className="email-verify-card">
        <div className="logo">
-  <img src="src/assets/logo.png" alt="PureText Logo" />
+  <img src="src/assets/logo_transparent.png" alt="PureText Logo" />
 </div>
         <h2 className="title">PureText</h2>
         <h4 className="subtitle">Reset Password OTP<br/>Enter the 6-digit pin code:</h4>
@@ -80,7 +80,7 @@ const EmailVerify = () => {
             ))}
           </div>
           <button type="submit" className="verify-btn">Verify OTP</button>
-          <button type="button" className="back-btn" onClick={handleBack}>Back to Login</button>
+          <button type="button" className="back-btn" onClick={handleBack}>Back</button>
         </form>
       </div>
     </div>

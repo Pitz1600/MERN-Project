@@ -1,12 +1,16 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import PopupModal from "../components/Popupmodal";
 import StartAnalyzingButton from "../components/StartAnalyzingButton";
 import SearchBar from "../components/SearchBar";
 import deleteIcon from "../assets/icon_delete.png";
 import "../styles/History.css";
+import Container from "../components/Container";
+
 
 const History = () => {
+  const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchBy, setSearchBy] = useState("text");
@@ -20,12 +24,15 @@ const History = () => {
     currentPage * itemsPerPage
   );
 
+  const handleStartAnalyzing = () => {
+    navigate("/analyzer");
+  };
+
   const handleSearchChange = (e) => setSearchValue(e.target.value);
   const handleSearchClick = () => {
     console.log("Searching for:", searchValue, "by", searchBy);
   };
   const handleSearchByChange = (e) => setSearchBy(e.target.value);
-  const handleStartAnalyzing = () => setShowPopup(true);
 
   const handleEmptyClick = () => setHistoryData([]);
 
@@ -65,7 +72,7 @@ const History = () => {
 
       {/* ✅ Main content below buttons */}
       <div className="history-content">
-        <div className="history-main">
+        <Container>
           {/* Search Bar */}
           <div className="history-search-section">
             <SearchBar
@@ -149,7 +156,7 @@ const History = () => {
               </>
             )}
           </div>
-        </div>
+        </Container>
       </div>
 
       {/* Popup Modal */}

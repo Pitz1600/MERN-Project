@@ -1,16 +1,15 @@
-/* ==== GENERAL CONTAINER ==== */
 .dashboard-container {
   min-width: 100vw;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #012a54; /* ✅ same background as home-container */
+  background-color: #012a54; 
   color: white;
   font-family: Arial, sans-serif;
-  overflow-x: hidden;
+    align-items: center;
+  
 }
 
-/* ==== EMPTY STATE ==== */
 .empty-page {
   flex: 1;
   width: 100%;
@@ -18,40 +17,31 @@
   justify-content: center;
   align-items: center;
   padding: 2rem;
+  position: relative;
 }
 
-
-/* ==== EMPTY CONTAINER (NEW) ==== */
-.empty-container {
-  width: 95%;
-  max-width: 1200px;
-   background-color: #00bcd4; 
-  border-radius: 20px;
-  padding: 40px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+/* ==== CARD WRAPPER ==== */
+.empty-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-    height: 500px;
-    
-}
-/* ==== CARD WRAPPER ==== */
-.empty-wrapper {
-  width: 95%;
-  max-width: 1100px;
-  display: flex;
-  justify-content: center;
+  width: 100%;          
+  height: 100%;         
+ 
 }
 
-/* ==== CARD CONTAINER ==== */
+
 .empty-card {
+  box-sizing: border-box;
+  position: relative;
   width: 100%;
+  max-width: 2000px;
+  height: 600px;
+  background: #ffffff;
+  border-radius: 20px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  background-color: #fff;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
+  transition: all 0.3s ease; /* smooth resizing */
 }
 
 /* ==== LEFT SIDE ==== */
