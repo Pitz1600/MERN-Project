@@ -187,6 +187,23 @@ body {
   background: #a7f432;
 }
 
+/* Back button */
+.icon-back-btn {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+  padding: 0;
+  transition: transform 0.15s;
+}
+
+.icon-back-btn:hover {
+  transform: translateX(-4px) scale(1.08);
+}
+
 /* ✅ Responsive Design */
 
 /* Tablets */

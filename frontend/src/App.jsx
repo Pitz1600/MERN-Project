@@ -20,10 +20,11 @@ const App = () => {
     <div>
       <ToastContainer />
       <Routes>
-        {/* Default route: if logged in, go to home; otherwise, login */}
-        <Route path="/" element={isLoggedIn ? <Home /> : <Login />} />
+        {/* Default route: always go to home */}
+        <Route path="/" element={<Home />} />
 
         {/* Auth-related routes */}
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/email-verify" element={<EmailVerify />} />
         <Route path="/reset-password" element={<ResetPassword />} />
@@ -47,7 +48,7 @@ const App = () => {
         />
         <Route
           path="/profile-settings"
-          element={isLoggedIn ? <ProfileSettings /> : <Navigate to="/" />} // ✅ Protected route
+          element={isLoggedIn ? <ProfileSettings /> : <Navigate to="/" />}
         />
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" />} />

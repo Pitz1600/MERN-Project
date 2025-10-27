@@ -10,7 +10,7 @@ const Analyzer = () => {
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
-  const [results, setResults] = useState([]); // State to store analysis results
+  const [results, setResults] = useState([]);
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -22,7 +22,7 @@ const Analyzer = () => {
   const handleAnalyze = async () => {
     if (!text.trim()) return;
 
-    setShowPopup(true); // Show the popup while processing
+    setShowPopup(true);
 
     try {
       const response = await fetch("http://localhost:5000/analyze", {
@@ -30,7 +30,7 @@ const Analyzer = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text }), // Send the input text to the backend
+        body: JSON.stringify({ text }),
       });
 
       if (!response.ok) {
@@ -38,35 +38,53 @@ const Analyzer = () => {
       }
 
       const data = await response.json(); // Parse the JSON response
-      setResults([data]);
+      setResults(data ? [data] : []); // Wrap the data in an array if it exists, otherwise empty array
+      // Try to save the analysis result to the app backend (optional; requires authenticated user cookie)
+      (async () => {
+        try {
+          const saveResp = await fetch("http://localhost:3001/api/user/analysis", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(data),
+          });
+
+          if (!saveResp.ok) {
+            // log response but don't block showing the result
+            console.warn('Save analysis responded with status', saveResp.status);
+          }
+        } catch (saveErr) {
+          console.warn('Failed to save analysis:', saveErr);
+        }
+      })();
       console.log("Response status:", response.status);
       console.log("Response data:", data);
     } catch (error) {
       console.error("Error analyzing text:", error);
     } finally {
-      setShowPopup(false); // Hide the popup after processing
+      setShowPopup(false);
     }
   };
 
   const labelClass = (category) => {
     if (!category) return "neutral";
     const cat = category.toLowerCase();
-    if (cat.includes("neutral")) return "neutral";
-    if (cat.includes("biased")) return "biased";
-    if (cat.includes("review")) return "reviewable";
+    if (cat.includes("neutral")) return "Neutral";
+    if (cat.includes("biased")) return "Biased";
+    if (cat.includes("review")) return "Reviewable";
     return "neutral";
   };
+
+  const useCorrection = (correction) => {
+    setText(correction);
+    const trimmed = (correction || "").trim();
+    setWordCount(trimmed ? trimmed.split(/\s+/).filter(Boolean).length : 0);
+    setCharCount(correction ? correction.length : 0);
+  }
 
   return (
     <div className="analyzer-page">
       <Navbar />
-
-      {/* Version Buttons Section */}
-      <div className="version-buttons">
-        <button className="version-btn">Version 1</button>
-        <button className="version-btn">Version 2</button>
-      </div>
-
       <Container>
         <div className="analyzer-content">
           {/* Left Section */}
@@ -79,7 +97,9 @@ const Analyzer = () => {
             ></textarea>
 
             <div className="analyzer-footer">
-              <span className="word-count">{wordCount} word(s), {charCount} character(s)</span>
+              <span className="word-count">
+                {wordCount} word(s), {charCount} character(s)
+              </span>
               <div className="divider"></div>
 
               <div className="analyzer-actions">
@@ -90,6 +110,7 @@ const Analyzer = () => {
                     onClick={() => {
                       setText("");
                       setWordCount(0);
+                      setCharCount(0);
                     }}
                   >
                     <img
@@ -119,27 +140,75 @@ const Analyzer = () => {
 
           {/* Right Section */}
           <div className="analyzer-results">
-            <h3 className="results-title">Results</h3>
+            {/* Header with Tabs */}
+            <div className="results-header">
+              <div className="results-tabs">
+                <span className="tab all">
+                  All <span className="count">0</span>
+                </span>
+                <span className="tab biased">
+                  Biased <span className="count">0</span>
+                </span>
+                <span className="tab reviewable">
+                  Reviewable <span className="count">0</span>
+                </span>
+              </div>
+            </div>
+
             <div className="results-list">
-              {results.map((res, idx) => (
-                <div key={idx} className="result-card">
-                  <p>
-                    Type: <strong>{res.type || res.category || "Error"}</strong>
+              {results.length === 0 ? (
+                <div className="no-results-box">
+                  <p>Nothing to analyze yet!</p>
+                  <p className="subtext">
+                    Get started by adding text to the editor
                   </p>
+                </div>
+              ) : (
+                results.map((res, idx) => (
+                <div key={idx} className="result-card">
                   <p>
                     Category:{" "}
                     <span className={`label ${labelClass(res.category)}`}>
                       {res.category || "N/A"}
                     </span>
                   </p>
+                  {res.words_detected && res.words_detected !== "None" && res.words_detected !== null && (
+                  <p className="suggestion">Word(s) Detected: {res.words_detected}</p>)}
                   <p className="suggestion">
                     Original: {res.original_text || res.text || "—"}
                   </p>
-                  {res.correction && <p className="suggestion">Correction: {res.correction}</p>}
+                  {res.correction && res.correction !== "None" && res.correction !== null && (                  
+                  <p className="suggestion" value={res.correction}>
+                    Correction: {res.correction}</p>)}
+                  {res.sentiment_score && <p className="suggestion">
+                    Sentiment Score: {res.sentiment_score}</p>}
                   <p className="suggestion">Reason: {res.reason_of_correction || res.reason || "—"}</p>
                   {res.date && <p className="date">{res.date}</p>}
+                  {res.correction && res.correction !== "None" && res.correction !== null && (
+                    <div className="result-actions">
+                      <button
+                        className="icon-btn"
+                        title="Copy"
+                        onClick={() => navigator.clipboard.writeText(res.correction)}
+                      >
+                        <img
+                          src="/src/assets/icon_copy.png"
+                          alt="Copy Icon"
+                          className="icon"
+                        />
+                      </button>
+
+                      <button
+                        className="use-correction-btn"
+                        title="Use Correction"
+                        onClick={() => {useCorrection(res.correction);}}
+                      >
+                        Use Correction
+                      </button>
+                    </div>
+                  )}
                 </div>
-              ))}
+              )))}
             </div>
           </div>
         </div>

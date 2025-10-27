@@ -3,7 +3,7 @@ from pydantic import BaseModel
 import json
 from src.model.sentiment_model import Sentiment
 
-def sentiment_correction(text):
+def neutral_correction(text):
     prompt = """
     You are a text neutralization assistant.
 
@@ -12,24 +12,23 @@ def sentiment_correction(text):
     - Do not add opinions, emotions, or exaggerations.
     - Keep the core meaning intact.
     - When explaining, use simple, clear English so anyone can understand.
-    - A higher sentiment score (closer to 1) indicates more positive bias.
-    - A lower sentiment score (closer to -1) indicates more negative bias.
+    - A lower sentiment score (closer to 0) indicates more neutrality.
 
     Output must strictly follow this format:
     original_text: "write here the original text"
-    words_detected: "writes here the words with mistakes"
-    correction: "write here the complete neutral version"
+    words_detected: None
+    correction: None
     sentiment_score: "write here the sentiment score"
-    reason_of_correction: "write here the reason for neutralization"
+    reason_of_correction: "No correction needed."
 
     Example:
-    Input: The service at this restaurant was absolutely amazing, and the food was incredible!
+    Input: The sky is blue.
     Output:
-    original_text: "The service at this restaurant was absolutely amazing, and the food was incredible!"
-    words_detected: "absolutely amazing, incredible"
-    correction: "The restaurant provided good service, and the food met expectations."
-    sentiment_score: "0.8"
-    reason_of_correction: "Emotional words like 'absolutely amazing' and 'incredible' were replaced with neutral language to express the speaker’s satisfaction in a factual way."
+    original_text: "The sky is blue."
+    words_detected: None
+    correction: None
+    sentiment_score: "0.0" 
+    reason_of_correction: "No correction needed."
     """
     response = ollama.chat(
         messages=[

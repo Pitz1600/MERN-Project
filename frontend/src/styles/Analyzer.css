@@ -1,290 +1,395 @@
-/* ---------------- ROOT CONTAINER ---------------- */
 .analyzer-page {
-  min-width: 100vw;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: #012a54;
-  color: white;
-  font-family: Arial, sans-serif;
-  overflow-x: hidden;
-  padding: 0; 
-  box-sizing: border-box;
-  position: relative;
-  align-items: center;
-}
-
-
-
-/* If your Navbar is fixed, add top padding to content */
-.analyzer-content-wrapper {
-  padding: 0 1rem 2rem 1rem; /* side + bottom padding */
-  margin-top: 70px; /* only enough space for fixed navbar */
-  box-sizing: border-box;
-}
-
-/* ---------------- VERSION BUTTONS ---------------- */
-.version-buttons {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 1rem;
-  width: 100%;
-  box-sizing: border-box;
-  flex-wrap: wrap; /* ✅ wrap buttons on small screens */
-  padding: 0 1rem;
-  margin-top: 0.5rem;
-}
-
-.version-btn {
-  width: 120px;
-  height: 36px;
-  font-size: 14px;
-  background: #5cc13b;
-  color: black;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.version-btn:hover {
-  background-color: #a7f432;
-  color: white;
-}
-
-/* ---------------- MAIN BOX ---------------- */
-.analyzer-box {
-margin: 0rem auto 0 auto;
-  background-color: #00b4d8;
-  border-radius: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  padding: 2rem;
-  width: 100%;
-  max-width: 1400px;
-  box-sizing: border-box;
-}
-
-/* ---------------- FLEX CONTENT ---------------- */
-.analyzer-content {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  height: 78vh;
-}
-
-@media (min-width: 992px) {
-  .analyzer-content {
-    flex-direction: row;
-    gap: 32px;
-  }
-}
-
-/* ---------------- LEFT INPUT BOX ---------------- */
-.analyzer-input-box {
-  background: white;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex-grow: 3;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-  box-sizing: border-box;
-}
-
-.analyzer-textarea {
-  resize: none;
-  border-radius: 8px;
-  width: 100%;
-  height: 65vh;
-  padding: 1rem;
-  color: black;
-  border: 1px solid #ccc;
-  outline: none;
-  font-size: 1rem;
-  line-height: 1.4;
-}
-
-.analyzer-textarea:focus {
-  border-color: #00b4d8;
-}
-
-/* ---------------- FOOTER (below textarea) ---------------- */
-.analyzer-footer {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.word-count {
-  color: black;
-  font-size: 14px;
-  text-align: right;
-}
-
-.divider {
-  width: 100%;
-  border-top: 1px solid #000;
-}
-
-/* ---------------- ACTION BUTTONS ---------------- */
-.analyzer-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-@media (min-width: 640px) {
-  .analyzer-actions {
-    flex-direction: row;
-    justify-content: space-between;
+    min-width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #012a54;
+    color: white;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+    padding: 0; 
+    box-sizing: border-box;
+    position: relative;
     align-items: center;
   }
-}
 
-.icon-buttons {
+  
+
+
+.results-tabs {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
-.icon-btn {
-  padding: 10px;
-  background-color: #f5f5f5;
+
+
+
+
+
+.tab.biased {
+  background-color: #f3f3f3;
+  color: black;
+}
+
+.tab.reviewable {
+  background-color: #f3f3f3;
+  color: black;
+}
+  /* ---- RIGHT SECTION HEADER ---- */
+.results-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  background-color: #b9effc;
+  border-radius: 8px;
+  padding: 6px 12px;
+  margin-bottom: 10px;
+}
+
+.results-arrow {
+  background-color: #e0faff;
   border-radius: 6px;
-  border: none;
+  padding: 4px;
   cursor: pointer;
   transition: background 0.2s ease;
 }
 
-.icon-btn:hover {
-  background-color: #e5e5e5;
+.results-arrow:hover {
+  background-color: #c0f2ff;
 }
 
-.icon {
-  width: 20px;
-  height: 20px;
-}
-
-/* ---------------- RIGHT RESULTS BOX ---------------- */
-.analyzer-results {
-  background-color: #67e8f9;
-  border-radius: 12px;
-  padding: 1.5rem;
-  flex-shrink: 0;
-  flex-grow: 2;
-  color: black;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-.results-title {
-  font-weight: bold;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #22d3ee;
-  font-size: 1.1rem;
-  text-align: center;
-}
-
-.results-list {
+.results-tabs {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  overflow-y: auto;
-  max-height: 500px;
+  align-items: center;
+  gap: 10px;
+  
 }
 
-.result-card {
-  background: white;
-  border-radius: 8px;
-  padding: 1rem;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+.tab {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #001f3f;
+  background-color: #ffffff;
+  border-radius: 6px;
+  padding: 4px 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.suggestion {
-  font-size: 14px;
-  margin-bottom: 6px;
+.count.all-count {
+  background-color: black !important;
+  color: white !important;
 }
 
-.date {
-  font-size: 12px;
-  color: #555;
+.count.biased-count {
+  background-color: #ff9800 !important;
+  color: white !important;
 }
 
-/* ---------------- LABEL COLORS ---------------- */
-.label {
-  padding: 2px 6px;
-  border-radius: 4px;
+.count.reviewable-count {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+.tab .count {
+  background-color: #4a6d74;
+  color: rgb(19, 0, 0);
   font-weight: bold;
+  border-radius: 10px;
+  padding: 1px 6px;
+  margin-left: 5px;
+  font-size: 0.8rem;
 }
 
-.biased {
-  color: #854d0e;
-}
-
-.neutral {
-  color: #14532d;
-}
-
-.unclear {
-  color: #1f2937;
-}
-
-/* ---------------- POPUP TEXT ---------------- */
-.popup-title {
-  font-size: 1.25rem;
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-
-.popup-message {
+/* ---- EMPTY STATE BOX ---- */
+.no-results-box {
+  background-color: white;
+  border-radius: 10px;
+  padding: 40px 20px;
+  text-align: center;
+  color: #333;
   font-size: 1rem;
+  font-weight: 500;
+  margin-top: 50px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* ---------------- RESPONSIVENESS ---------------- */
-
-/* Medium devices (tablets) */
-@media (max-width: 991px) {
-  .analyzer-box {
-    padding: 1.5rem;
-  }
-  .analyzer-input-box,
-  .analyzer-results {
-    min-height: auto;
-  }
+.no-results-box .subtext {
+  font-size: 0.9rem;
+  color: #555;
+  margin-top: 6px;
 }
+  .analyzer-content-wrapper {
+    padding: 0 1rem 2rem 1rem; 
+    margin-top: 70px; 
+    box-sizing: border-box;
+  }
 
-/* Small devices (phones) */
-@media (max-width: 640px) {
   .version-buttons {
-    justify-content: center;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    padding: 0 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.4rem;
   }
 
+  .version-btn {
+    width: 120px;
+    height: 36px;
+    font-size: 14px;
+    background: #5cc13b;
+    color: black;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .version-btn:hover {
+    background-color: #a7f432;
+    
+  }
+
+  /* ---------------- MAIN BOX ---------------- */
   .analyzer-box {
-    padding: 1rem;
+  margin: 0rem auto 0 auto;
+    background-color: #00b4d8;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    padding: 2rem;
+    width: 100%;
+    max-width: 1400px;
+    box-sizing: border-box;
   }
 
+  /* ---------------- FLEX CONTENT ---------------- */
   .analyzer-content {
-    gap: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 78vh;
   }
 
+  @media (min-width: 992px) {
+    .analyzer-content {
+      flex-direction: row;
+      gap: 32px;
+    }
+  }
+
+  /* ---------------- LEFT INPUT BOX ---------------- */
   .analyzer-input-box {
-    padding: 1rem;
+    background: white;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 3;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
   }
 
-  .analyzer-results {
+  .analyzer-textarea {
+    resize: none;
+    border-radius: 8px;
+    width: 100%;
+    height: 65vh;
     padding: 1rem;
+    color: black;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 1rem;
+    line-height: 1.4;
   }
 
-  .results-list {
-    max-height: none;
+  .analyzer-textarea:focus {
+    border-color: #00b4d8;
+  }
+
+  /* ---------------- FOOTER (below textarea) ---------------- */
+  .analyzer-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
   }
 
   .word-count {
-    text-align: left;
+    color: black;
+    font-size: 14px;
+    text-align: right;
   }
-}
+
+  .divider {
+    width: 100%;
+    border-top: 1px solid #000;
+  }
+
+  /* ---------------- ACTION BUTTONS ---------------- */
+  .analyzer-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  @media (min-width: 640px) {
+    .analyzer-actions {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  .icon-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .icon-btn {
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .icon-btn:hover {
+    background-color: #e5e5e5;
+  }
+
+  .icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* ---------------- RIGHT RESULTS BOX ---------------- */
+  .analyzer-results {
+    background-color: #67e8f9;
+    border-radius: 12px;
+    padding: 1.5rem;
+    flex-shrink: 0;
+    flex-grow: 2;
+    color: black;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .results-title {
+    font-weight: bold;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #22d3ee;
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  .results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+    max-height: 500px;
+  }
+
+  .result-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+  }
+
+  .suggestion {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .date {
+    font-size: 12px;
+    color: #555;
+  }
+
+  /* ---------------- LABEL COLORS ---------------- */
+  .label {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+
+  .biased {
+    color: #854d0e;
+  }
+
+  .neutral {
+    color: #14532d;
+  }
+
+  .unclear {
+    color: #1f2937;
+  }
+
+  /* ---------------- POPUP TEXT ---------------- */
+  .popup-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .popup-message {
+    font-size: 1rem;
+    
+  }
+
+  /* ---------------- RESPONSIVENESS ---------------- */
+
+  /* Medium devices (tablets) */
+  @media (max-width: 991px) {
+    .analyzer-box {
+      padding: 1.5rem;
+    }
+    .analyzer-input-box,
+    .analyzer-results {
+      min-height: auto;
+    }
+  }
+
+  /* Small devices (phones) */
+  @media (max-width: 640px) {
+    .version-buttons {
+      justify-content: center;
+    }
+
+    .analyzer-box {
+      padding: 1rem;
+    }
+
+    .analyzer-content {
+      gap: 16px;
+    }
+
+    .analyzer-input-box {
+      padding: 1rem;
+    }
+
+    .analyzer-results {
+      padding: 1rem;
+    }
+
+    .results-list {
+      max-height: none;
+    }
+
+    .word-count {
+      text-align: left;
+    }
+  }
