@@ -137,14 +137,15 @@ const Analyzer = () => {
                     </span>
                   </p>
                   <p className="suggestion">
-                  {res.words_detected && <p className="suggestion">
-                    Word(s) Detected: {res.words_detected}</p>}
+                  {res.words_detected && res.words_detected !== "None" && res.words_detected !== null && (
+                  <p className="suggestion">Word(s) Detected: {res.words_detected}</p>)}
                   </p>
                   <p className="suggestion">
                     Original: {res.original_text || res.text || "—"}
                   </p>
-                  {res.correction && <p className="suggestion" value={res.correction}>
-                    Correction: {res.correction}</p>}
+                  {res.correction && res.correction !== "None" && res.correction !== null && (                  
+                  <p className="suggestion" value={res.correction}>
+                    Correction: {res.correction}</p>)}
                   {res.sentiment_score && <p className="suggestion">
                     Sentiment Score: {res.sentiment_score}</p>}
                   <p className="suggestion">Reason: {res.reason_of_correction || res.reason || "—"}</p>
