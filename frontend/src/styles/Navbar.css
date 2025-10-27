@@ -5,6 +5,42 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
     
 }
+/* Profile initial badge */
+.nav-profile-initial {
+  margin-left: auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: white;
+  color: #012a54;
+  font-weight: bold;
+  font-size: 16px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-profile-initial:hover {
+  background-color: #a7c7e7;
+  color: #000;
+}
+
+.nav-profile-initial.active {
+  background-color: #69d84f;
+  color: white;
+}
+
+/* For mobile dropdown */
+.mobile-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: bold;
+}
+
 
 /* Inner wrapper */
 .navbar-inner {

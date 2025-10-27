@@ -6,7 +6,16 @@
   --text-dark: #000;
   --text-light: #fff;
 }
+.verify-greeting {
+  font-size: 1.4rem;
+  margin-top: 0.5rem;
+  color: #fff;
+}
 
+.verify-username {
+  color: #ffeb3b;
+  font-weight: bold;
+}
 
 .email-verify-card .verify-btn:disabled {
   background-color: var(--btn-green); /* keep green */

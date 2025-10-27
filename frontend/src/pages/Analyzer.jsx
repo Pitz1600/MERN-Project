@@ -143,15 +143,15 @@ const Analyzer = () => {
             {/* Header with Tabs */}
             <div className="results-header">
               <div className="results-tabs">
-                <span className="tab all">
-                  All <span className="count">0</span>
-                </span>
-                <span className="tab biased">
-                  Biased <span className="count">0</span>
-                </span>
-                <span className="tab reviewable">
-                  Reviewable <span className="count">0</span>
-                </span>
+              <span className="tab all">
+      All <span className="count all-count">0</span>
+</span>
+<span className="tab biased">
+  Biased <span className="count biased-count">0</span>
+</span>
+<span className="tab reviewable">
+  Reviewable <span className="count reviewable-count">0</span>
+</span>
               </div>
             </div>
 
