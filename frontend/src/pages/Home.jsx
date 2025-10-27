@@ -9,38 +9,13 @@ import '../index.css';
 import StartAnalyzingButton from '../components/StartAnalyzingButton.jsx';
 import PieChartElement from '../components/PieChartElement.jsx';
 import Container from '../components/Container.jsx';
-import tips from '../context/tips';
+import TipsContent from '../components/TipsContent.jsx';
 
 const Home = () => {
   const navigate = useNavigate();
   const { userData, backendUrl, isLoggedIn } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
   const [hasData, setHasData] = useState(false);
-  const [currentTipIndex, setCurrentTipIndex] = useState(0);
-  const autoAdvanceRef = React.useRef(null);
-
-  const startAutoAdvance = React.useCallback(() => {
-    if (!tips || tips.length === 0) return;
-    // clear any existing interval
-    if (autoAdvanceRef.current) clearInterval(autoAdvanceRef.current);
-    autoAdvanceRef.current = setInterval(() => {
-      setCurrentTipIndex((idx) => (idx + 1) % tips.length);
-    }, 30000);
-  }, []);
-
-  const resetAutoAdvance = React.useCallback(() => {
-    // restart the timer so user gets full interval after manual interaction
-    if (autoAdvanceRef.current) clearInterval(autoAdvanceRef.current);
-    startAutoAdvance();
-  }, [startAutoAdvance]);
-
-  // Start auto-advance on mount and when tips length changes
-  React.useEffect(() => {
-    startAutoAdvance();
-    return () => {
-      if (autoAdvanceRef.current) clearInterval(autoAdvanceRef.current);
-    };
-  }, [startAutoAdvance, tips.length]);
 
   const sendVerificationOtp = async () => {
     try {
@@ -71,7 +46,7 @@ const Home = () => {
       {!isLoggedIn ? (
         <Container>
           <div className="intro-section">
-            <img src='/src/assets/logo_transparent.png' alt="App Logo" style={{ width: 120, marginBottom: 24 }} />
+            <img src='/src/assets/Logo_transparent.png' alt="App Logo" style={{ width: 120, marginBottom: 24 }} />
             <h1>PureText</h1>
             <h1>Bias Text Detector</h1>
             <h2>App for Identifying Biased Language</h2>
@@ -138,51 +113,7 @@ const Home = () => {
                 </div>
 
                 <div className="dashboard-card tips-card">
-                  <h3>Additional Tips</h3>
-                  <div className="tip-content">
-                    <p>{tips && tips.length ? tips[currentTipIndex] : 'No tips available.'}</p>
-                  </div>
-
-                  <div className="tips-pagination">
-                    <button
-                      className="tip-nav left"
-                      onClick={() => {
-                        setCurrentTipIndex((idx) => {
-                          const next = (idx - 1 + tips.length) % tips.length;
-                          return next;
-                        });
-                        resetAutoAdvance();
-                      }}
-                      aria-label="Previous tip"
-                    >
-                      ‹
-                    </button>
-
-                    <div className="tip-dots">
-                      {tips.map((_, idx) => (
-                        <button
-                          key={idx}
-                          className={`tip-dot ${currentTipIndex === idx ? 'active' : ''}`}
-                          onClick={() => { setCurrentTipIndex(idx); resetAutoAdvance(); }}
-                          aria-label={`Go to tip ${idx + 1}`}
-                        />
-                      ))}
-                    </div>
-
-                    <button
-                      className="tip-nav right"
-                      onClick={() => {
-                        setCurrentTipIndex((idx) => {
-                          const next = (idx + 1) % tips.length;
-                          return next;
-                        });
-                        resetAutoAdvance();
-                      }}
-                      aria-label="Next tip"
-                    >
-                      ›
-                    </button>
-                  </div>
+                  <TipsContent />
                 </div>
               </div>
             </div>
