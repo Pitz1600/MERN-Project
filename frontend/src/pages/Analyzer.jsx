@@ -85,13 +85,6 @@ const Analyzer = () => {
   return (
     <div className="analyzer-page">
       <Navbar />
-
-      {/* Version Buttons Section */}
-      <div className="version-buttons">
-        <button className="version-btn">Version 1</button>
-        <button className="version-btn">Version 2</button>
-      </div>
-
       <Container>
         <div className="analyzer-content">
           {/* Left Section */}

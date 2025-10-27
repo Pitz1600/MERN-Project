@@ -1,14 +1,16 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Pencil, Moon, Trash2, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { AppContext } from "../context/AppContext";
+import LogoutModal from "../components/LogoutModal";
 import axios from "axios";
 import { toast } from "react-toastify";
 
 const ProfileSettings = () => {
   const navigate = useNavigate();
   const { userData, backendUrl, setUserData, setIsLoggedIn } = useContext(AppContext);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -72,7 +74,7 @@ return (
                 Delete Account <Trash2 size={18} />
               </button>
                 <button
-                onClick={handleLogout}
+                onClick={() => setShowLogoutModal(true)}
                 className="bg-[#FF4D4D] text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-[#FF2E2E] transition"
               >
                 Logout <LogOut size={18} />
@@ -81,6 +83,13 @@ return (
           </div>
         </div>
       </div>
+      
+      {/* Logout Modal */}
+      <LogoutModal 
+        show={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onLogout={handleLogout}
+      />
     </div>
   );
 };

@@ -50,11 +50,11 @@ const Navbar = () => {
 
         <div className="nav-right">
           {userData ? (
-            <div className="profile-circle">
-              <span onClick={() => { navigate("/profile-settings"); setMenuOpen(false); }}>
-                {userData.name[0].toUpperCase()}
-              </span>
-            </div>
+            <span onClick={() => { navigate("/profile-settings"); setMenuOpen(false); }}>
+              <div className="profile-circle">              
+                  {userData.name[0].toUpperCase()}            
+              </div>
+            </span>
           ) : (
             <button
               onClick={() => { navigate("/"); setMenuOpen(false); }}
