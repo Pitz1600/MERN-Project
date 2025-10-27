@@ -5,6 +5,7 @@ from src.controller.need_grammar_correction import need_grammar_correction
 from src.controller.need_tone_correction import need_tone_correction
 from src.controller.need_sentiment_correction import need_sentiment_correction
 from src.controller.json_extract import extract
+from ollama import _types
 import json
 
 def main():
@@ -14,27 +15,32 @@ def main():
         main_function(get_input)
 
 def main_function(text):
-    check_grammar_correction = need_grammar_correction(text)
-    if check_grammar_correction.lower() == "yes":
-        grammar_correct = grammar_correction(text)
-        return extract(grammar_correct, "grammar", "Reviewable")
-    else:
-        check_sentiment_correction = need_sentiment_correction(text)
-        if check_sentiment_correction.lower() == "yes":
-            sentiment_correct = sentiment_correction(text)
-            return extract(sentiment_correct, "sentiment", "Biased")
+    try:
+        check_grammar_correction = need_grammar_correction(text)
+        if check_grammar_correction.lower() == "yes":
+            grammar_correct = grammar_correction(text)
+            return extract(grammar_correct, "grammar", "Reviewable")
         else:
-            data = {
-                "type": "sentiment",
-                "category": "Neutral",
-                "Original_text": text,
-                "Words_detected": None,
-                "Reason_for_correction": "No correction needed."
-            }
-            complete_data = {"type": type} | data
-            json_output = json.dumps(complete_data, indent=2, ensure_ascii=False)
-            print(json_output)
-            return json_output
+            check_sentiment_correction = need_sentiment_correction(text)
+            if check_sentiment_correction.lower() == "yes":
+                sentiment_correct = sentiment_correction(text)
+                return extract(sentiment_correct, "sentiment", "Biased")
+            else:
+                data = {
+                    "type": "sentiment",
+                    "category": "Neutral",
+                    "Original_text": text,
+                    "Words_detected": None,
+                    "Reason_for_correction": "No correction needed."
+                }
+                complete_data = {"type": type} | data
+                json_output = json.dumps(complete_data, indent=2, ensure_ascii=False)
+                print(json_output)
+                return json_output
+    except ConnectionError:
+        print("Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible.")
+    except _types.ResponseError:
+        print("Failed to connect to Ollama Server. Please check your internet connection.")
 
 def tester(text):
     test_correction = need_grammar_correction(text)
