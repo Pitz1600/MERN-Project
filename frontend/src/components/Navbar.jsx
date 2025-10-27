@@ -24,7 +24,7 @@ const Navbar = () => {
     { name: "Dashboard", path: "/dashboard" },
   ];
 
-  const isActive = (path) => location.pathname.startsWith(path);
+  const isActive = (path) => location.pathname === path;
 
   return (
     <nav className="navbar">
