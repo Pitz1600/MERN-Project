@@ -37,8 +37,22 @@ const Login = () => {
       <div className="login-container">
         {/* Left panel */}
         <div className="login-left">
+          <button
+            className="icon-back-btn"
+            onClick={() => navigate("/")}
+            aria-label="Back to Home"
+          >
+            <img
+              src="/src/assets/icon_back.png"
+              alt="Back"
+            />
+          </button>
           <div className="logo-circle">
-            <img src="/src/assets/logo_transparent.png" alt="Logo" className="logo-icon" />
+            <img
+              src="/src/assets/logo_transparent.png"
+              alt="Logo"
+              className="logo-icon"
+            />
           </div>
           <h2 className="app-name">PureText</h2>
           <p className="app-desc">App for Identifying Biased Language</p>

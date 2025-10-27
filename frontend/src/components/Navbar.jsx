@@ -9,7 +9,7 @@ import logo from "../assets/logo_transparent.png";
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userData, backendUrl, setUserData, setIsLoggedIn } = useContext(AppContext);
+  const { userData, backendUrl, setUserData, setIsLoggedIn, isLoggedIn } = useContext(AppContext);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const navItems = [
@@ -49,15 +49,17 @@ const Navbar = () => {
         </div>
 
         <div className="nav-right">
-          {userData ? (
-            <span onClick={() => { navigate("/profile-settings"); setMenuOpen(false); }}>
-              <div className="profile-circle">              
+          {isLoggedIn ? (
+            userData ? (
+              <span onClick={() => { navigate("/profile-settings"); setMenuOpen(false); }}>
+                <div className="profile-circle">              
                   {userData.name[0].toUpperCase()}            
-              </div>
-            </span>
+                </div>
+              </span>
+            ) : null
           ) : (
             <button
-              onClick={() => { navigate("/"); setMenuOpen(false); }}
+              onClick={() => { navigate("/login"); setMenuOpen(false); }}
               className="nav-login-btn"
             >
               Login
@@ -91,10 +93,12 @@ const Navbar = () => {
             );
           })}
 
-          {userData ? (
-            <div className="mobile-divider">
-              <button onClick={() => { navigate("/profile-settings"); setMenuOpen(false); }}>Profile Settings</button>
-            </div>
+          {isLoggedIn ? (
+            userData ? (
+              <div className="mobile-divider">
+                <button onClick={() => { navigate("/profile-settings"); setMenuOpen(false); }}>Profile Settings</button>
+              </div>
+            ) : null
           ) : (
             <button onClick={() => { navigate("/"); setMenuOpen(false); }}>Login</button>
           )}
