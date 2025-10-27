@@ -70,3 +70,32 @@ export const getAnalyses = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 }
+
+export const deleteAnalysis = async (req, res) => {
+    try {
+        const { userId } = req;
+        const { id } = req.params;
+
+        const user = await userModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        // Find the analysis index
+        const analysisIndex = user.analyses.findIndex(analysis => analysis._id.toString() === id);
+        
+        if (analysisIndex === -1) {
+            return res.status(404).json({ success: false, message: 'Analysis not found' });
+        }
+
+        // Remove the analysis from the array
+        user.analyses.splice(analysisIndex, 1);
+        
+        // Save the updated user document
+        await user.save();
+
+        res.json({ success: true, message: 'Analysis deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+}

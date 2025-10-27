@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import PopupModal from "../components/Popupmodal";
 import AnalysisModal from "../components/AnalysisModal";
+import DeleteModal from "../components/DeleteModal";
 import StartAnalyzingButton from "../components/StartAnalyzingButton";
 import SearchBar from "../components/SearchBar";
 import deleteIcon from "../assets/icon_delete.png";
@@ -20,6 +21,8 @@ const History = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [selectedAnalysis, setSelectedAnalysis] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [analysisToDelete, setAnalysisToDelete] = useState(null);
   const itemsPerPage = 5;
 
   const totalPages = Math.ceil(historyData.length / itemsPerPage);
@@ -94,11 +97,46 @@ const History = () => {
     fetchAnalyses();
   }, []);
 
-  const handleDelete = (id) => {
-    const updated = historyData.filter((item) => item.id !== id);
-    setHistoryData(updated);
-    if ((currentPage - 1) * itemsPerPage >= updated.length && currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+  const handleDeleteClick = (e, analysis) => {
+    e.stopPropagation();
+    setAnalysisToDelete(analysis);
+    setShowDeleteModal(true);
+  };
+
+  const handleDelete = async () => {
+    if (!analysisToDelete) return;
+
+    try {
+      const response = await fetch(`http://localhost:3001/api/user/analysis/${analysisToDelete.id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete analysis: ${response.status}`);
+      }
+
+      const json = await response.json();
+      if (!json.success) {
+        throw new Error(json.message || 'Failed to delete analysis');
+      }
+
+      // Update local state
+      const updated = historyData.filter((item) => item.id !== analysisToDelete.id);
+      setHistoryData(updated);
+      
+      // Update pagination if needed
+      if ((currentPage - 1) * itemsPerPage >= updated.length && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      }
+
+      // Reset delete modal state
+      setShowDeleteModal(false);
+      setAnalysisToDelete(null);
+    } catch (err) {
+      console.error('Error deleting analysis:', err);
+      // You might want to show an error message to the user here
+      setError(err.message || 'Error deleting analysis');
     }
   };
 
@@ -150,7 +188,7 @@ const History = () => {
                           <td>{item.category}</td>
                           <td>{item.score}</td>
                           <td>
-                            <button className="delete-btn" onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}>
+                            <button className="delete-btn" onClick={(e) => handleDeleteClick(e, item)}>
                               <img src={deleteIcon} alt="Delete" />
                             </button>
                           </td>
@@ -205,6 +243,16 @@ const History = () => {
           <p>Your input is being processed.</p>
         </div>
       </PopupModal>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteModal
+        show={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setAnalysisToDelete(null);
+        }}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 };
