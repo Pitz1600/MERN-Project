@@ -1,0 +1,55 @@
+.analysis-modal-overlay{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index: 2000;
+}
+.analysis-modal-container{
+  background:#fff;
+  border-radius:8px;
+  width:90%;
+  max-width:760px;
+  padding:16px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.2);
+}
+.analysis-modal-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:12px;
+}
+.analysis-modal-header h2{
+    margin:0;
+    font-size:1.1rem;
+    color: black;
+}
+.close-btn{
+  background:transparent;
+  border:none;
+  font-size:1.6rem;
+  cursor:pointer;
+  color: black;
+}
+.analysis-modal-body p{
+    margin:6px 0;
+    color:black
+}
+.analysis-raw{
+    margin-top:12px;
+    background:#f7f7f7;
+    color: black;
+    padding:8px;
+    border-radius:4px;
+    max-height:240px;
+    overflow:auto
+}
+.analysis-raw pre{
+    white-space:pre-wrap;
+    font-size:0.85rem
+}

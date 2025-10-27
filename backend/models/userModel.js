@@ -9,6 +9,21 @@ const UserSchema = new mongoose.Schema({
     isAccountVerified: { type: Boolean, default: false },
     resetOtp: { type: String, default: '' },
     resetOtpExpireAt: { type: Number, default: 0 },
+    analyses: {
+        type: [
+            {
+                type: { type: String },
+                category: { type: String },
+                original_text: { type: String },
+                correction: { type: String },
+                reason_of_correction: { type: String },
+                sentiment_score: { type: String },
+                words_detected: { type: String },
+                date: { type: Date, default: Date.now }
+            }
+        ],
+        default: []
+    },
 });
 
 const userModel = mongoose.models.user || mongoose.model('user', UserSchema);

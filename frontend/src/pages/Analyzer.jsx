@@ -39,6 +39,24 @@ const Analyzer = () => {
 
       const data = await response.json(); // Parse the JSON response
       setResults(data ? [data] : []); // Wrap the data in an array if it exists, otherwise empty array
+      // Try to save the analysis result to the app backend (optional; requires authenticated user cookie)
+      (async () => {
+        try {
+          const saveResp = await fetch("http://localhost:3001/api/user/analysis", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(data),
+          });
+
+          if (!saveResp.ok) {
+            // log response but don't block showing the result
+            console.warn('Save analysis responded with status', saveResp.status);
+          }
+        } catch (saveErr) {
+          console.warn('Failed to save analysis:', saveErr);
+        }
+      })();
       console.log("Response status:", response.status);
       console.log("Response data:", data);
     } catch (error) {
@@ -136,10 +154,8 @@ const Analyzer = () => {
                       {res.category || "N/A"}
                     </span>
                   </p>
-                  <p className="suggestion">
                   {res.words_detected && res.words_detected !== "None" && res.words_detected !== null && (
                   <p className="suggestion">Word(s) Detected: {res.words_detected}</p>)}
-                  </p>
                   <p className="suggestion">
                     Original: {res.original_text || res.text || "—"}
                   </p>

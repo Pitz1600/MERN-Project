@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import PopupModal from "../components/Popupmodal";
+import AnalysisModal from "../components/AnalysisModal";
 import StartAnalyzingButton from "../components/StartAnalyzingButton";
 import SearchBar from "../components/SearchBar";
 import deleteIcon from "../assets/icon_delete.png";
@@ -14,7 +15,11 @@ const History = () => {
   const [searchValue, setSearchValue] = useState("");
   const [searchBy, setSearchBy] = useState("text");
   const [historyData, setHistoryData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedAnalysis, setSelectedAnalysis] = useState(null);
   const itemsPerPage = 5;
 
   const totalPages = Math.ceil(historyData.length / itemsPerPage);
@@ -38,14 +43,56 @@ const History = () => {
   const handleWithDataClick = () => {
     setCurrentPage(1);
     setHistoryData([
-      { id: "123456", dateTime: "Oct 1, 2025 | 12:55am", text: "Sample prompt 1", result: "BIAS", accuracy: "51%" },
-      { id: "654321", dateTime: "Oct 1, 2025 | 01:23am", text: "Sample prompt 2", result: "NEUTRAL", accuracy: "87%" },
-      { id: "123333", dateTime: "Oct 1, 2025 | 02:06pm", text: "Sample prompt 3", result: "UNCLEAR", accuracy: "90%" },
-      { id: "999999", dateTime: "Oct 1, 2025 | 03:12pm", text: "Extra prompt 4", result: "BIAS", accuracy: "74%" },
-      { id: "888888", dateTime: "Oct 1, 2025 | 03:25pm", text: "Extra prompt 5", result: "NEUTRAL", accuracy: "82%" },
-      { id: "777777", dateTime: "Oct 1, 2025 | 04:01pm", text: "Extra prompt 6", result: "UNCLEAR", accuracy: "66%" },
+      { id: "123456", dateTime: "October 1, 2025 | 12:55am", text: "Sample prompt 1", category: "Biased", score: "-0.51" },
+      { id: "654321", dateTime: "October 1, 2025 | 01:23am", text: "Sample prompt 2", category: "Neutral", score: "0.87" },
+      { id: "123333", dateTime: "October 1, 2025 | 02:06pm", text: "Sample prompt 3", category: "Reviewable", score: "0.00" },
+      { id: "999999", dateTime: "October 1, 2025 | 03:12pm", text: "Extra prompt 4", category: "Biased", score: "0.74" },
+      { id: "888888", dateTime: "October 1, 2025 | 03:25pm", text: "Extra prompt 5", category: "Neutral", score: "0.82" },
+      { id: "777777", dateTime: "October 1, 2025 | 04:01pm", text: "Extra prompt 6", category: "Reviewable", score: "0.01" },
     ]);
   };
+
+  // Fetch analyses for authenticated user on mount
+  useEffect(() => {
+    const fetchAnalyses = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const resp = await fetch("http://localhost:3001/api/user/analysis", {
+          method: "GET",
+          credentials: "include",
+        });
+
+        if (!resp.ok) {
+          throw new Error(`Failed to fetch analyses: ${resp.status}`);
+        }
+
+        const json = await resp.json();
+        if (!json.success) {
+          throw new Error(json.message || 'Failed to fetch analyses');
+        }
+
+        // Map backend analyses to historyData items for the table
+        const mapped = (json.analyses || []).map((a) => ({
+          id: a._id || a.id || Math.random().toString(36).slice(2, 9),
+          dateTime: a.date ? new Date(a.date).toLocaleString() : (a.dateTime || ''),
+          text: a.original_text || a.text || '',
+          category: a.category || a.type || '',
+          score: a.sentiment_score || '',
+          raw: a // keep original analysis object for full detail
+        }));
+
+        setHistoryData(mapped);
+      } catch (err) {
+        console.error(err);
+        setError(err.message || 'Error fetching analyses');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnalyses();
+  }, []);
 
   const handleDelete = (id) => {
     const updated = historyData.filter((item) => item.id !== id);
@@ -58,16 +105,6 @@ const History = () => {
   return (
     <div className="history-container">
       <Navbar />
-
-      {/* ✅ Buttons now directly below Navbar */}
-      <div className="history-buttons-row">
-        <button className="history-top-buttons" onClick={handleEmptyClick}>
-          Empty
-        </button>
-        <button className="history-top-buttons" onClick={handleWithDataClick}>
-          With data
-        </button>
-      </div>
 
       {/* ✅ Main content below buttons */}
       <div className="history-content">
@@ -99,21 +136,21 @@ const History = () => {
                         <th>ID</th>
                         <th>Date / Time</th>
                         <th>Submitted Text</th>
-                        <th>Result</th>
-                        <th>Accuracy</th>
-                        <th>Delete</th>
+                        <th>Category</th>
+                        <th>Sentiment Score</th>
+                        <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {paginatedData.map((item) => (
-                        <tr key={item.id}>
+                        <tr key={item.id} onClick={() => { setSelectedAnalysis(item.raw); setShowModal(true); }} style={{ cursor: 'pointer' }}>
                           <td>{item.id}</td>
                           <td>{item.dateTime}</td>
                           <td>{item.text}</td>
-                          <td>{item.result}</td>
-                          <td>{item.accuracy}</td>
+                          <td>{item.category}</td>
+                          <td>{item.score}</td>
                           <td>
-                            <button className="delete-btn" onClick={() => handleDelete(item.id)}>
+                            <button className="delete-btn" onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}>
                               <img src={deleteIcon} alt="Delete" />
                             </button>
                           </td>
@@ -157,6 +194,9 @@ const History = () => {
           </div>
         </Container>
       </div>
+
+      {/* Analysis Detail Modal */}
+      <AnalysisModal show={showModal} onClose={() => { setShowModal(false); setSelectedAnalysis(null); }} analysis={selectedAnalysis} />
 
       {/* Popup Modal */}
       <PopupModal show={showPopup} onClose={() => setShowPopup(false)}>
