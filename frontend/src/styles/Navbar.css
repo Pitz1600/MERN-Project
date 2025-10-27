@@ -23,6 +23,10 @@
   transition: all 0.3s ease;
 }
 
+.nav-login-initial {
+  margin-left: auto;
+}
+
 .nav-profile-initial:hover {
   background-color: #a7c7e7;
   color: #000;

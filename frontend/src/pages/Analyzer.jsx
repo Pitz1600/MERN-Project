@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
-import PopupModal from "../components/Popupmodal";
+import PopupModal from "../components/LoadingModal";
 import Container from "../components/Container";
 import AnalyzeButton from "../components/AnalyzeButton";
 import "../styles/Analyzer.css";

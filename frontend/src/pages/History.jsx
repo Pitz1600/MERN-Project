@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import PopupModal from "../components/Popupmodal";
+import PopupModal from "../components/LoadingModal";
 import AnalysisModal from "../components/AnalysisModal";
 import DeleteModal from "../components/DeleteModal";
 import StartAnalyzingButton from "../components/StartAnalyzingButton";
