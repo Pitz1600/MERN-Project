@@ -38,7 +38,7 @@ const Analyzer = () => {
       }
 
       const data = await response.json(); // Parse the JSON response
-      setResults([data]);
+      setResults(data ? [data] : []); // Wrap the data in an array if it exists, otherwise empty array
       console.log("Response status:", response.status);
       console.log("Response data:", data);
     } catch (error) {
@@ -51,9 +51,9 @@ const Analyzer = () => {
   const labelClass = (category) => {
     if (!category) return "neutral";
     const cat = category.toLowerCase();
-    if (cat.includes("neutral")) return "neutral";
-    if (cat.includes("biased")) return "biased";
-    if (cat.includes("review")) return "reviewable";
+    if (cat.includes("neutral")) return "Neutral";
+    if (cat.includes("biased")) return "Biased";
+    if (cat.includes("review")) return "Reviewable";
     return "neutral";
   };
 
@@ -123,9 +123,6 @@ const Analyzer = () => {
             <div className="results-list">
               {results.map((res, idx) => (
                 <div key={idx} className="result-card">
-                  <p>
-                    Type: <strong>{res.type || res.category || "Error"}</strong>
-                  </p>
                   <p>
                     Category:{" "}
                     <span className={`label ${labelClass(res.category)}`}>

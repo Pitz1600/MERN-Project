@@ -31,10 +31,7 @@ def main_function(text):
                 "correction": None,
                 "reason_of_correction": "No correction needed."
             }
-            complete_data = {"type": type} | data
-            json_output = json.dumps(complete_data, indent=2, ensure_ascii=False)
-            print(json_output)
-            return json_output
+            return data  # Return the dictionary directly, let Flask handle JSON conversion
 
 def tester(text):
     test_correction = need_grammar_correction(text)
