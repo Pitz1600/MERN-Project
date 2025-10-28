@@ -40,6 +40,7 @@
   max-height: calc(90vh - 120px); /* Adjust the height to leave room for header and footer */
   overflow-y: auto; /* Enable scrolling */
   padding-right: 10px; /* Add padding for scroll */
+  color: #000;
 }
 .analysis-modal-body p{
     margin:6px 0;

@@ -88,6 +88,27 @@ export const getAnalyses = async (req, res) => {
     }
 }
 
+export const getAnalysisById = async (req, res) => {
+  try {
+    const { userId } = req;
+    const { id } = req.params;
+
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const analysis = user.analyses.id(id);
+    if (!analysis) {
+      return res.status(404).json({ success: false, message: 'Analysis not found' });
+    }
+
+    res.json({ success: true, analysis });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 export const deleteAnalysis = async (req, res) => {
     try {
         const { userId } = req;

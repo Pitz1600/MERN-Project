@@ -52,77 +52,65 @@ const History = () => {
 
   // Fetch analyses for authenticated user on mount
   useEffect(() => {
-  const fetchAnalyses = async () => {
-    setLoading(true);
-    setError(null);
+    const fetchAnalyses = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const resp = await fetch("http://localhost:3001/api/user/analysis", {
+          method: "GET",
+          credentials: "include",
+        });
+        if (!resp.ok) throw new Error(`Failed to fetch analyses: ${resp.status}`);
 
-    try {
-      const resp = await fetch("http://localhost:3001/api/user/analysis", {
-        method: "GET",
-        credentials: "include",
-      });
+        const json = await resp.json();
+        if (!json.success) throw new Error(json.message || "Failed to fetch analyses");
 
-      if (!resp.ok) {
-        throw new Error(`Failed to fetch analyses: ${resp.status}`);
+        const mapped = (json.analyses || []).map((a) => {
+          const resultsArray = Array.isArray(a.results) ? a.results : [a];
+
+          let category = "Neutral";
+          const allCategories = resultsArray.map((r) => (r.category || "").toLowerCase());
+          if (allCategories.includes("reviewable")) category = "Reviewable";
+          else if (allCategories.includes("biased")) category = "Biased";
+
+          const validScores = resultsArray
+            .map((r) => parseFloat(r.sentiment_score))
+            .filter((s) => !isNaN(s));
+          const avgSentiment =
+            validScores.length > 0
+              ? (validScores.reduce((sum, s) => sum + s, 0) / validScores.length).toFixed(2)
+              : "N/A";
+
+          return {
+            id: a._id || a.id || Math.random().toString(36).slice(2, 9),
+            dateTime: a.date
+              ? new Date(a.date).toLocaleString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "2-digit",
+                  hour12: true,
+                }).replace(",", "")
+              : "",
+            prompt: a.prompt || a.text || a.original_text || "",
+            category,
+            sentiment_score: avgSentiment,
+            raw: a,
+          };
+        });
+
+        setHistoryData(mapped);
+      } catch (err) {
+        console.error(err);
+        setError(err.message || "Error fetching analyses");
+      } finally {
+        setLoading(false);
       }
+    };
 
-      const json = await resp.json();
-      if (!json.success) {
-        throw new Error(json.message || "Failed to fetch analyses");
-      }
-
-      // ✅ Map backend analyses into historyData
-      const mapped = (json.analyses || []).map((a) => {
-        const resultsArray = Array.isArray(a.results) ? a.results : [a];
-
-        // ✅ Determine category based on hierarchy
-        let category = "Neutral";
-        const allCategories = resultsArray.map(r => (r.category || "").toLowerCase());
-        if (allCategories.includes("reviewable")) {
-          category = "Reviewable";
-        } else if (allCategories.includes("biased")) {
-          category = "Biased";
-        }
-
-        // ✅ Compute average sentiment score
-        const validScores = resultsArray
-          .map(r => parseFloat(r.sentiment_score))
-          .filter(s => !isNaN(s));
-        const avgSentiment =
-          validScores.length > 0
-            ? (validScores.reduce((sum, s) => sum + s, 0) / validScores.length).toFixed(2)
-            : "N/A";
-
-        return {
-          id: a._id || a.id || Math.random().toString(36).slice(2, 9),
-          dateTime: a.date
-            ? new Date(a.date).toLocaleString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "numeric",
-                minute: "2-digit",
-                hour12: true,
-              }).replace(",", "")
-            : "",
-          prompt: a.prompt || a.text || a.original_text || "",
-          category,
-          sentiment_score: avgSentiment,
-          raw: a,
-        };
-      });
-
-      setHistoryData(mapped);
-    } catch (err) {
-      console.error(err);
-      setError(err.message || "Error fetching analyses");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchAnalyses();
-}, []);
+    fetchAnalyses();
+  }, []);
 
 
   const handleDeleteSuccess = (deletedId) => {
@@ -169,7 +157,7 @@ const History = () => {
                     </thead>
                     <tbody>
                       {paginatedData.map((item) => (
-                        <tr key={item.id} onClick={() => { setSelectedAnalysis(item.id); setShowModal(true); }} style={{ cursor: 'pointer' }}>
+                        <tr key={item.id} onClick={() => { setSelectedAnalysis(item.raw); setShowModal(true); }} style={{ cursor: 'pointer' }}>
                           <td className="history-id-ellipsis" title={item.id}>{formatIdDisplay(item.id)}</td>
                           <td className="history-date-ellipsis" title={item.dateTime}>{item.dateTime}</td>
                           <td className="history-text-ellipsis" title={item.prompt}>{item.prompt}</td>
@@ -234,7 +222,7 @@ const History = () => {
       </div>
 
       {/* Analysis Detail Modal */}
-      <AnalysisModal
+      {showModal && <AnalysisModal
       show={showModal}
       onClose={() => {
         setShowModal(false);
@@ -242,6 +230,7 @@ const History = () => {
         }}
       analysis={selectedAnalysis}
       onDeleteSuccess={handleDeleteSuccess} />
+      }
     </div>
   );
 };
