@@ -10,14 +10,21 @@ const Navbar = () => {
   const { userData, backendUrl, setUserData, setIsLoggedIn, isLoggedIn } = useContext(AppContext);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Extract first letter of user's name or username
+  const firstLetter =
+    userData?.name?.[0]?.toUpperCase() ||
+    userData?.username?.[0]?.toUpperCase() ||
+    "?";
+
   const navItems = [
     { name: "Home", path: "/" },
     { name: "Analyzer", path: "/analyzer" },
     { name: "Dictionary", path: "/dictionary" },
     { name: "History", path: "/history" },
     { name: "Dashboard", path: "/dashboard" },
-    { name: "Profile", path: "/profile-settings" }, // ✅ Added as text link
   ];
+
+  const isActive = (path) => location.pathname === path;
 
   return (
     <nav className="navbar">
@@ -33,28 +40,49 @@ const Navbar = () => {
           <img src={logo} alt="Logo" className="logo-img" />
         </div>
 
-        {/* Desktop Navigation Links */}
+        {/* Desktop Links */}
         {userData?.isAccountVerified && (
           <div className="nav-links">
-            {navItems.map((item, index) => {
-              const isActive = location.pathname === item.path;
-              return (
-                <button
-                  key={index}
-                  onClick={() => {
-                    navigate(item.path);
-                    setMenuOpen(false);
-                  }}
-                  className={isActive ? "active" : ""}
-                >
-                  {item.name}
-                </button>
-              );
-            })}
+            {navItems.map((item, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  navigate(item.path);
+                  setMenuOpen(false);
+                }}
+                className={isActive(item.path) ? "active" : ""}
+              >
+                {item.name}
+              </button>
+            ))}
           </div>
         )}
 
-        {/* Mobile Menu Icon */}
+        {/* Profile Initial */}
+        {!isLoggedIn ? (
+          <button
+          className={`nav-login-initial ${isActive("/login") ? "active" : ""}`}
+          onClick={() => {
+            navigate("/login");
+            setMenuOpen(false);
+          }}
+          aria-label="Login"
+        >
+          Login
+        </button>
+        ) : (
+          <button
+          className={`nav-profile-initial ${isActive("/profile-settings") ? "active" : ""}`}
+          onClick={() => {
+            navigate("/profile-settings");
+            setMenuOpen(false);
+          }}
+          aria-label="Profile Settings"
+        >
+          {firstLetter}
+        </button>)}
+
+        {/* Hamburger (mobile) */}
         <button
           className="nav-hamburger"
           onClick={() => setMenuOpen(!menuOpen)}
@@ -80,24 +108,31 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Dropdown */}
+      {/* Mobile Menu */}
       {menuOpen && userData?.isAccountVerified && (
         <div className="mobile-menu">
-          {navItems.map((item, index) => {
-            const isActive = location.pathname === item.path;
-            return (
-              <button
-                key={index}
-                onClick={() => {
-                  navigate(item.path);
-                  setMenuOpen(false);
-                }}
-                className={isActive ? "active" : ""}
-              >
-                {item.name}
-              </button>
-            );
-          })}
+          {navItems.map((item, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                navigate(item.path);
+                setMenuOpen(false);
+              }}
+              className={isActive(item.path) ? "active" : ""}
+            >
+              {item.name}
+            </button>
+          ))}
+
+          <button
+            onClick={() => {
+              navigate("/profile-settings");
+              setMenuOpen(false);
+            }}
+            className={`mobile-profile ${isActive("/profile-settings") ? "active" : ""}`}
+          >
+            {firstLetter} Profile
+          </button>
         </div>
       )}
     </nav>

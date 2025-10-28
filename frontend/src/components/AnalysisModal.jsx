@@ -1,46 +1,197 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/components/AnalysisModal.css";
+import DeleteModal from "../components/DeleteModal";
+import deleteIcon from "../assets/icon_delete.png";
+import { toast } from "react-toastify";
 
-const AnalysisModal = ({ show, onClose, analysis }) => {
-  if (!show || !analysis) return null;
+const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
+  const [analysisData, setAnalysisData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const handleOutsideClick = (e) => {
-    e.stopPropagation();
+  // 🧩 Fetch the selected analysis details from backend
+  useEffect(() => {
+
+    if (!show || !analysis) return;
+    const fetchAnalysisDetails = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`http://localhost:3001/api/user/analysis/${analysis._id}`, {
+          method: "GET",
+          credentials: "include",
+        });
+
+        if (!res.ok) throw new Error(`Error fetching analysis: ${res.status}`);
+        const json = await res.json();
+
+        if (!json.success) throw new Error(json.message || "Failed to load analysis details");
+
+        setAnalysisData(json.analysis);
+      } catch (err) {
+        console.error("Error fetching analysis:", err);
+        setError(err.message || "Failed to load analysis details");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnalysisDetails();
+  }, [analysis]);
+
+  // 🧩 Delete selected analysis
+  const handleDelete = async () => {
+    try {
+      const res = await fetch(`http://localhost:3001/api/user/analysis/${analysis._id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (!res.ok) throw new Error(`Failed to delete: ${res.status}`);
+      const json = await res.json();
+      if (!json.success) throw new Error(json.message || "Delete failed");
+
+      toast.success("Analysis deleted successfully!");
+      onDeleteSuccess(analysis._id);
+      onClose();
+    } catch (err) {
+      console.error("Error deleting analysis:", err);
+      toast.error(err.message || "Error deleting analysis");
+    } finally {
+      setShowDeleteModal(false);
+    }
   };
 
+  const handleOutsideClick = (e) => e.stopPropagation();
+
+  if (loading) {
+    return (
+      <div className="analysis-modal-overlay">
+        <div className="analysis-modal-container">
+          <h2>Loading analysis details...</h2>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="analysis-modal-overlay">
+        <div className="analysis-modal-container">
+          <h2>Error</h2>
+          <p>{error}</p>
+          <button onClick={onClose}>Close</button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!analysisData) return null;
+
+  const { prompt, date, results } = analysisData;
+
   return (
-    <div className="analysis-modal-overlay" onClick={onClose}>
-      <div className="analysis-modal-container" onClick={handleOutsideClick}>
+    <div className="analysis-modal-overlay">
+      <div className="analysis-modal-container">
         <div className="analysis-modal-header">
           <h2>Analysis Details</h2>
-          <button className="close-btn" onClick={onClose} aria-label="Close">×</button>
+          <button className="close-btn" onClick={onClose} aria-label="Close">
+            ×
+          </button>
         </div>
 
         <div className="analysis-modal-body">
-          <p><strong>Category:</strong> {analysis.category || analysis.type || '—'}</p>
-          <p><strong>Original:</strong> {analysis.original_text || analysis.text || '—'}</p>
-          {analysis.correction && (
-            <p><strong>Correction:</strong> {analysis.correction}</p>
-          )}
-          {analysis.words_detected && (
-            <p><strong>Words Detected:</strong> {analysis.words_detected}</p>
-          )}
-          {analysis.sentiment_score && (
-            <p><strong>Sentiment Score:</strong> {analysis.sentiment_score}</p>
-          )}
-          <p><strong>Reason:</strong> {analysis.reason_of_correction || analysis.reason || '—'}</p>
-          {analysis.date && (
-            <p><strong>Date:</strong> {new Date(analysis.date).toLocaleString()}</p>
-          )}
+          <div className="modal-actions">
+            <button className="action-btn edit">Edit</button>
+            <button className="action-btn export">Export</button>
+            <button
+              className="action-btn delete-btn"
+              onClick={() => setShowDeleteModal(true)}
+            >
+              <img src={deleteIcon} alt="Delete" /> Delete
+            </button>
+          </div>
 
-          {/* Show full raw JSON for debugging */}
-          <div className="analysis-raw">
-            <h4>Raw JSON</h4>
-            <pre>{JSON.stringify(analysis, null, 2)}</pre>
+          <div className="analysis-field">
+            <label>Prompt:</label>
+            <div className="field-content">{prompt || "—"}</div>
+          </div>
+
+          <div className="analysis-field">
+            <label>Date/Time:</label>
+            <div className="field-content">
+              {new Date(date).toLocaleString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true,
+              })}
+            </div>
+          </div>
+
+          <h2 className="section-title">Detected Results</h2>
+          <div className="results-list">
+            {results && results.length > 0 ? (
+              results.map((r, index) => (
+                <div key={index} className="result-card">
+                  <div className="result-header">
+                    <strong>{r.category || "Unknown"}</strong>
+                  </div>
+
+                  <div className="result-field">
+                    <label>Original Text:</label>
+                    <div>{r.original_text || "—"}</div>
+                  </div>
+
+                  {r.correction && (
+                    <div className="result-field">
+                      <label>Correction:</label>
+                      <div>{r.correction || "—"}</div>
+                    </div>
+                  )}
+
+                  {r.sentiment_score && (
+                    <div className="result-field">
+                      <label>Sentiment Score:</label>
+                      <div>{r.sentiment_score || "—"}</div>
+                    </div>
+                  )}
+
+                  <div className="result-field">
+                    <label>Reason of Correction:</label>
+                    <div>{r.reason_of_correction || "—"}</div>
+                  </div>
+
+                  <div className="result-field">
+                    <label>Words Detected:</label>
+                    <div>{r.words_detected || "—"}</div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>No detailed results found.</p>
+            )}
+          </div>
+
+          <div className="analysis-field full-width">
+            <label>Raw JSON:</label>
+            <textarea
+              className="raw-json"
+              readOnly
+              value={JSON.stringify(analysisData, null, 2)}
+            />
           </div>
         </div>
-
       </div>
+
+      {/* Delete Confirmation */}
+      <DeleteModal
+        show={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 };

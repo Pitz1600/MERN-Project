@@ -13,20 +13,12 @@
     align-items: center;
   }
 
-  
-
-
 .results-tabs {
   display: flex;
   justify-content: center;
   gap: 1rem;
   margin-bottom: 1rem;
 }
-
-
-
-
-
 
 .tab.biased {
   background-color: #f3f3f3;
@@ -37,37 +29,8 @@
   background-color: #f3f3f3;
   color: black;
 }
+
   /* ---- RIGHT SECTION HEADER ---- */
-.results-header {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-  background-color: #b9effc;
-  border-radius: 8px;
-  padding: 6px 12px;
-  margin-bottom: 10px;
-}
-
-.results-arrow {
-  background-color: #e0faff;
-  border-radius: 6px;
-  padding: 4px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.results-arrow:hover {
-  background-color: #c0f2ff;
-}
-
-.results-tabs {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  
-}
-
 .tab {
   font-weight: 600;
   font-size: 0.9rem;
@@ -79,18 +42,18 @@
 }
 
 .count.all-count {
-  background-color: black !important;
-  color: white !important;
+  background-color: white !important;
+  color: black !important;
 }
 
 .count.biased-count {
-  background-color: #ff9800 !important;
-  color: white !important;
+  background-color: #FF7F7F !important;
+  color: black !important;
 }
 
 .count.reviewable-count {
-  background-color: #4caf50 !important;
-  color: white !important;
+  background-color: #FFFF00 !important;
+  color: black !important;
 }
 
 .tab .count {
@@ -121,12 +84,11 @@
   color: #555;
   margin-top: 6px;
 }
-  .analyzer-content-wrapper {
-    padding: 0 1rem 2rem 1rem; 
-    margin-top: 70px; 
-    box-sizing: border-box;
-  }
-
+.analyzer-content-wrapper {
+  padding: 0 1rem 2rem 1rem;
+  margin-top: 20px; /* reduced spacing for better alignment */
+  box-sizing: border-box;
+}
   .version-buttons {
     display: flex;
     justify-content: flex-end;
@@ -195,6 +157,7 @@
     border-radius: 10px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
     box-sizing: border-box;
+    max-width: 50%;
   }
 
   .analyzer-textarea {
@@ -281,7 +244,7 @@
     flex-grow: 2;
     color: black;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-    max-width: 100%;
+    max-width: 50%;
     box-sizing: border-box;
   }
 
@@ -327,15 +290,15 @@
   }
 
   .biased {
-    color: #854d0e;
+    color: #FF7F7F;
   }
 
   .neutral {
-    color: #14532d;
+    color: #69D84F;
   }
 
-  .unclear {
-    color: #1f2937;
+  .reviewable {
+    color: #FFFF00;
   }
 
   /* ---------------- POPUP TEXT ---------------- */
@@ -359,7 +322,8 @@
     }
     .analyzer-input-box,
     .analyzer-results {
-      min-height: auto;
+      max-width: 100%;
+      min-height: 10%;
     }
   }
 

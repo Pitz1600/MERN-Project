@@ -27,15 +27,8 @@ def main_function(text):
                 sentiment_correct = sentiment_correction(text)
                 return extract(sentiment_correct, "sentiment", "Biased")
             else:
-                data = {
-                    "type": "sentiment",
-                    "category": "Neutral",
-                    "original_text": text,
-                    "words_detected": None,
-                    "reason_for_correction": "No correction needed.",
-                    "reason":"No correction needed."
-                }
-                return data
+                neutral_correct = neutral_correction(text)
+                return extract(neutral_correct, "sentiment", "Neutral")
     except ConnectionError:
         print("Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible.")
     except _types.ResponseError:

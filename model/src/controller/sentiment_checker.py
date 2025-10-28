@@ -28,7 +28,7 @@ def sentiment_correction(text):
     original_text: "The service at this restaurant was absolutely amazing, and the food was incredible!"
     words_detected: "absolutely amazing, incredible"
     correction: "The restaurant provided good service, and the food met expectations."
-    sentiment_score: "0.8"
+    sentiment_score: "0.80"
     reason_of_correction: "Emotional words like 'absolutely amazing' and 'incredible' were replaced with neutral language to express the speaker’s satisfaction in a factual way."
     """
     response = ollama.chat(

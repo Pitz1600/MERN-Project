@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
-import PopupModal from "../components/Popupmodal";
+import PopupModal from "../components/LoadingModal";
 import Container from "../components/Container";
 import AnalyzeButton from "../components/AnalyzeButton";
 import "../styles/Analyzer.css";
@@ -56,21 +56,28 @@ const Analyzer = () => {
       // Try to save the analysis result to the app backend (optional; requires authenticated user cookie)
       (async () => {
         try {
+          const payload = {
+            prompt: text,         // ✅ the full textarea input
+            results: parsedResults // ✅ the analyzer output array
+          };
+
           const saveResp = await fetch("http://localhost:3001/api/user/analysis", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
-            body: JSON.stringify(data),
+            body: JSON.stringify(payload),
           });
 
           if (!saveResp.ok) {
-            // log response but don't block showing the result
-            console.warn('Save analysis responded with status', saveResp.status);
+            console.warn("Save analysis responded with status", saveResp.status);
+          } else {
+            console.log("Analysis saved successfully!");
           }
         } catch (saveErr) {
-          console.warn('Failed to save analysis:', saveErr);
+          console.warn("Failed to save analysis:", saveErr);
         }
       })();
+
       console.log("Response status:", response.status);
       console.log("Response data:", data);
     } catch (error) {
@@ -157,15 +164,15 @@ const Analyzer = () => {
             {/* Header with Tabs */}
             <div className="results-header">
               <div className="results-tabs">
-                <span className="tab all">
-                  All <span className="count">0</span>
-                </span>
-                <span className="tab biased">
-                  Biased <span className="count">0</span>
-                </span>
-                <span className="tab reviewable">
-                  Reviewable <span className="count">0</span>
-                </span>
+              <span className="tab all">
+                All <span className="count all-count">0</span>
+              </span>
+              <span className="tab biased">
+                Biased <span className="count biased-count">0</span>
+              </span>
+              <span className="tab reviewable">
+                Reviewable <span className="count reviewable-count">0</span>
+              </span>
               </div>
             </div>
 
@@ -229,7 +236,7 @@ const Analyzer = () => {
       </Container>
 
       {/* Popup Modal */}
-      <PopupModal show={showPopup} onClose={() => setShowPopup(false)}>
+      <PopupModal show={showPopup}>
         <h2 className="popup-title">Analyzing...</h2>
         <p className="popup-message">Your input is being processed.</p>
       </PopupModal>

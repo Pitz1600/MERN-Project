@@ -9,6 +9,7 @@ import '../index.css';
 import StartAnalyzingButton from '../components/StartAnalyzingButton.jsx';
 import PieChartElement from '../components/PieChartElement.jsx';
 import Container from '../components/Container.jsx';
+import TipsContent from '../components/TipsContent.jsx';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -45,17 +46,11 @@ const Home = () => {
       {!isLoggedIn ? (
         <Container>
           <div className="intro-section">
-            <img src='/src/assets/logo_transparent.png' alt="App Logo" style={{ width: 120, marginBottom: 24 }} />
-            <h1>Welcome to Bias & Sentiment Analyzer!</h1>
-            <p>
-              Instantly analyze your text for bias and sentiment. Get actionable feedback and improve your writing with AI-powered insights.
-            </p>
-            <ul style={{ textAlign: 'left', margin: '24px auto', maxWidth: 400 }}>
-              <li>• Detect bias and neutrality in your text</li>
-              <li>• Get sentiment scores and suggestions</li>
-              <li>• Review your analysis history</li>
-              <li>• Secure, private, and easy to use</li>
-            </ul>
+            <img src='/src/assets/Logo_transparent.png' alt="App Logo" style={{ width: 120, marginBottom: 24 }} />
+            <h1>PureText</h1>
+            <h1>Bias Text Detector</h1>
+            <h2>App for Identifying Biased Language</h2>
+            <br/>
             <button className="nav-login-btn" style={{ marginTop: 24 }} onClick={() => navigate("/login")}>Login to Get Started</button>
           </div>
         </Container>
@@ -78,7 +73,7 @@ const Home = () => {
           <Container>
             <div className="dashboard-wrapper">
               <h2>
-                Welcome back, <span>{userData ? userData.name : 'User'}</span>!
+                Welcome, <span>{userData ? userData.name : 'User'}</span>!
               </h2>
 
               <div className="dashboard-grid">
@@ -118,15 +113,7 @@ const Home = () => {
                 </div>
 
                 <div className="dashboard-card tips-card">
-                  <h3>Additional Tips</h3>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                    eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  </p>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                    eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  </p>
+                  <TipsContent />
                 </div>
               </div>
             </div>

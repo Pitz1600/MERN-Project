@@ -7,11 +7,11 @@ import EmailVerify from "./pages/EmailVerify.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import Register from "./pages/Register.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
-import Analyzer from "./pages/Analyzer.jsx";   // ✅ Added
+import Analyzer from "./pages/Analyzer.jsx";  
 import History from "./pages/History.jsx";
 import ProfileSettings from "./pages/ProfileSetting.jsx"; 
-
 import { AppContext } from "./context/AppContext.jsx";
+import Dictionary from "./pages/Dictionary.jsx";
 
 const App = () => {
   const { isLoggedIn } = useContext(AppContext);
@@ -41,6 +41,10 @@ const App = () => {
         <Route
           path="/analyzer"
           element={isLoggedIn ? <Analyzer /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/dictionary"
+          element={isLoggedIn ? <Dictionary /> : <Navigate to="/" />}
         />
         <Route
           path="/history"

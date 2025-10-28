@@ -27,7 +27,7 @@ def neutral_correction(text):
     original_text: "The sky is blue."
     words_detected: None
     correction: None
-    sentiment_score: "0.0" 
+    sentiment_score: "0.00" 
     reason_of_correction: "No correction needed."
     """
     response = ollama.chat(
