@@ -3,16 +3,13 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import PopupModal from "../components/LoadingModal";
 import AnalysisModal from "../components/AnalysisModal";
-import DeleteModal from "../components/DeleteModal";
 import StartAnalyzingButton from "../components/StartAnalyzingButton";
 import SearchBar from "../components/SearchBar";
-import deleteIcon from "../assets/icon_delete.png";
 import "../styles/History.css";
 import Container from "../components/Container";
 
 const History = () => {
   const navigate = useNavigate();
-  const [showPopup, setShowPopup] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchBy, setSearchBy] = useState("text");
   const [historyData, setHistoryData] = useState([]);
@@ -21,15 +18,19 @@ const History = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [selectedAnalysis, setSelectedAnalysis] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [analysisToDelete, setAnalysisToDelete] = useState(null);
-  const itemsPerPage = 5;
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const totalPages = Math.ceil(historyData.length / itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil(historyData.length / itemsPerPage));
   const paginatedData = historyData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  // Ensure currentPage is valid when itemsPerPage or data length changes
+  useEffect(() => {
+    const newTotal = Math.max(1, Math.ceil(historyData.length / itemsPerPage));
+    if (currentPage > newTotal) setCurrentPage(newTotal);
+  }, [itemsPerPage, historyData, currentPage]);
 
   const handleStartAnalyzing = () => {
     navigate("/analyzer");
@@ -41,18 +42,13 @@ const History = () => {
   };
   const handleSearchByChange = (e) => setSearchBy(e.target.value);
 
-  const handleEmptyClick = () => setHistoryData([]);
-
-  const handleWithDataClick = () => {
-    setCurrentPage(1);
-    setHistoryData([
-      { id: "123456", dateTime: "October 1, 2025 | 12:55am", text: "Sample prompt 1", category: "Biased", score: "-0.51" },
-      { id: "654321", dateTime: "October 1, 2025 | 01:23am", text: "Sample prompt 2", category: "Neutral", score: "0.87" },
-      { id: "123333", dateTime: "October 1, 2025 | 02:06pm", text: "Sample prompt 3", category: "Reviewable", score: "0.00" },
-      { id: "999999", dateTime: "October 1, 2025 | 03:12pm", text: "Extra prompt 4", category: "Biased", score: "0.74" },
-      { id: "888888", dateTime: "October 1, 2025 | 03:25pm", text: "Extra prompt 5", category: "Neutral", score: "0.82" },
-      { id: "777777", dateTime: "October 1, 2025 | 04:01pm", text: "Extra prompt 6", category: "Reviewable", score: "0.01" },
-    ]);
+  // Helper to format id so at least 4 characters are visible before ellipsis
+  const formatIdDisplay = (id) => {
+    if (!id) return '';
+    const str = String(id);
+    if (str.length <= 8) return str; // short ids show fully
+    // show first 4 chars and last 2 for context
+    return `${str.slice(0, 4)}...${str.slice(-2)}`;
   };
 
   // Fetch analyses for authenticated user on mount
@@ -78,7 +74,14 @@ const History = () => {
         // Map backend analyses to historyData items for the table
         const mapped = (json.analyses || []).map((a) => ({
           id: a._id || a.id || Math.random().toString(36).slice(2, 9),
-          dateTime: a.date ? new Date(a.date).toLocaleString() : (a.dateTime || ''),
+          dateTime: a.date ? new Date(a.date).toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          }).replace(',', '') : (a.dateTime || ''),
           text: a.original_text || a.text || '',
           category: a.category || a.type || '',
           score: a.sentiment_score || '',
@@ -97,47 +100,8 @@ const History = () => {
     fetchAnalyses();
   }, []);
 
-  const handleDeleteClick = (e, analysis) => {
-    e.stopPropagation();
-    setAnalysisToDelete(analysis);
-    setShowDeleteModal(true);
-  };
-
-  const handleDelete = async () => {
-    if (!analysisToDelete) return;
-
-    try {
-      const response = await fetch(`http://localhost:3001/api/user/analysis/${analysisToDelete.id}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to delete analysis: ${response.status}`);
-      }
-
-      const json = await response.json();
-      if (!json.success) {
-        throw new Error(json.message || 'Failed to delete analysis');
-      }
-
-      // Update local state
-      const updated = historyData.filter((item) => item.id !== analysisToDelete.id);
-      setHistoryData(updated);
-      
-      // Update pagination if needed
-      if ((currentPage - 1) * itemsPerPage >= updated.length && currentPage > 1) {
-        setCurrentPage(currentPage - 1);
-      }
-
-      // Reset delete modal state
-      setShowDeleteModal(false);
-      setAnalysisToDelete(null);
-    } catch (err) {
-      console.error('Error deleting analysis:', err);
-      // You might want to show an error message to the user here
-      setError(err.message || 'Error deleting analysis');
-    }
+  const handleDeleteSuccess = (deletedId) => {
+    setHistoryData((prevData) => prevData.filter(item => item.id !== deletedId));
   };
 
   return (
@@ -176,22 +140,16 @@ const History = () => {
                         <th>Submitted Text</th>
                         <th>Category</th>
                         <th>Sentiment Score</th>
-                        <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {paginatedData.map((item) => (
                         <tr key={item.id} onClick={() => { setSelectedAnalysis(item.raw); setShowModal(true); }} style={{ cursor: 'pointer' }}>
-                          <td>{item.id}</td>
-                          <td>{item.dateTime}</td>
-                          <td>{item.text}</td>
+                          <td className="history-id-ellipsis" title={item.id}>{formatIdDisplay(item.id)}</td>
+                          <td className="history-date-ellipsis" title={item.dateTime}>{item.dateTime}</td>
+                          <td className="history-text-ellipsis" title={item.text}>{item.text}</td>
                           <td>{item.category}</td>
                           <td>{item.score}</td>
-                          <td>
-                            <button className="delete-btn" onClick={(e) => handleDeleteClick(e, item)}>
-                              <img src={deleteIcon} alt="Delete" />
-                            </button>
-                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -200,6 +158,23 @@ const History = () => {
 
                 {/* Pagination */}
                 <div className="pagination">
+                  <div className="rows-per-page">
+                    <label htmlFor="rowsPerPage">Rows:</label>
+                    <select
+                      id="rowsPerPage"
+                      value={itemsPerPage}
+                      onChange={(e) => {
+                        const val = Number(e.target.value);
+                        setItemsPerPage(val);
+                        setCurrentPage(1); // reset to first page when page size changes
+                      }}
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={20}>20</option>
+                    </select>
+                  </div>
+
                   <button
                     onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                     disabled={currentPage === 1}
@@ -234,25 +209,14 @@ const History = () => {
       </div>
 
       {/* Analysis Detail Modal */}
-      <AnalysisModal show={showModal} onClose={() => { setShowModal(false); setSelectedAnalysis(null); }} analysis={selectedAnalysis} />
-
-      {/* Popup Modal */}
-      <PopupModal show={showPopup} onClose={() => setShowPopup(false)}>
-        <div className="popup-content">
-          <h2>Analyzing...</h2>
-          <p>Your input is being processed.</p>
-        </div>
-      </PopupModal>
-
-      {/* Delete Confirmation Modal */}
-      <DeleteModal
-        show={showDeleteModal}
-        onClose={() => {
-          setShowDeleteModal(false);
-          setAnalysisToDelete(null);
+      <AnalysisModal
+      show={showModal}
+      onClose={() => {
+        setShowModal(false);
+        setSelectedAnalysis(null);
         }}
-        onConfirm={handleDelete}
-      />
+      analysis={selectedAnalysis}
+      onDeleteSuccess={handleDeleteSuccess} />
     </div>
   );
 };
