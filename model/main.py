@@ -30,14 +30,12 @@ def main_function(text):
                 data = {
                     "type": "sentiment",
                     "category": "Neutral",
-                    "Original_text": text,
-                    "Words_detected": None,
-                    "Reason_for_correction": "No correction needed."
+                    "original_text": text,
+                    "words_detected": None,
+                    "reason_for_correction": "No correction needed.",
+                    "reason":"No correction needed."
                 }
-                complete_data = {"type": type} | data
-                json_output = json.dumps(complete_data, indent=2, ensure_ascii=False)
-                print(json_output)
-                return json_output
+                return data
     except ConnectionError:
         print("Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible.")
     except _types.ResponseError:
