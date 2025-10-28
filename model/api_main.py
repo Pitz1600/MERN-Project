@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from main import main_function  # Import the main_function from main.py
+from src.controller.sentence_extraction import split_sentence
 import traceback
 import time
 
@@ -17,7 +18,7 @@ def analyze_text():
 
     try:
         # Call the main_function from main.py
-        text_list = text.split(".")
+        text_list = split_sentence(text)
         results = []
         for sentence in text_list:
             result = main_function(sentence)
