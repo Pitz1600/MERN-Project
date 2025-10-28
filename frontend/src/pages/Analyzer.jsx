@@ -37,8 +37,22 @@ const Analyzer = () => {
         throw new Error("Failed to analyze text");
       }
 
-      const data = await response.json(); // Parse the JSON response
-      setResults(data ? [data] : []); // Wrap the data in an array if it exists, otherwise empty array
+      const data = await response.json();
+      const parsedResults = data.map((item) =>
+        typeof item === "string" ? JSON.parse(item) : item
+      );
+
+      setResults(parsedResults); 
+      // Parse the JSON response
+      // if (Array.isArray(data)) {
+      //   setResults(data);
+      // } else if (data) {
+      //   setResults([data]);
+      // } else {
+      //   setResults([]);
+      // }
+      // setResults(data ? [data] : []); 
+      // Wrap the data in an array if it exists, otherwise empty array
       // Try to save the analysis result to the app backend (optional; requires authenticated user cookie)
       (async () => {
         try {
@@ -215,7 +229,7 @@ const Analyzer = () => {
       </Container>
 
       {/* Popup Modal */}
-      <PopupModal show={showPopup} onClose={() => setShowPopup(false)}>
+      <PopupModal show={showPopup}>
         <h2 className="popup-title">Analyzing...</h2>
         <p className="popup-message">Your input is being processed.</p>
       </PopupModal>
