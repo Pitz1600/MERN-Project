@@ -39,6 +39,53 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
     fetchAnalysisDetails();
   }, [analysis]);
 
+  const handleExportCSV = () => {
+    if (!analysisData || !analysisData.results) {
+      alert("No analysis data to export.");
+      return;
+    }
+
+    const { prompt, date, results, _id } = analysisData;
+
+    // Define CSV headers
+    const headers = [
+      "category",
+      "type",
+      "original_text",
+      "correction",
+      "reason_of_correction",
+      "sentiment_score",
+      "words_detected",
+    ];
+
+    // Build CSV rows for each result
+    const csvRows = results.map((r) =>
+      headers
+        .map((header) => {
+          // Safely wrap text fields in quotes
+          const val = r[header] !== undefined ? String(r[header]) : "";
+          return `"${val.replace(/"/g, '""')}"`;
+        })
+        .join(",")
+    );
+
+    // Combine headers + rows + top metadata
+    const csvContent =
+      `Prompt,"${prompt.replace(/"/g, '""')}"\nDate,"${new Date(date).toISOString()}"\nID,"${_id}"\n\n` +
+      headers.join(",") +
+      "\n" +
+      csvRows.join("\n");
+
+    // Create blob and trigger download
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `analysis_${_id || "export"}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   // 🧩 Delete selected analysis
   const handleDelete = async () => {
     try {
@@ -103,7 +150,7 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
         <div className="analysis-modal-body">
           <div className="modal-actions">
             <button className="action-btn edit">Edit</button>
-            <button className="action-btn export">Export</button>
+            <button className="action-btn export" onClick={handleExportCSV}>Export</button>
             <button
               className="action-btn delete-btn"
               onClick={() => setShowDeleteModal(true)}
