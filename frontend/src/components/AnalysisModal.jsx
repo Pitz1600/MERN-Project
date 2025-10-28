@@ -1,165 +1,195 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/components/AnalysisModal.css";
 import DeleteModal from "../components/DeleteModal";
 import deleteIcon from "../assets/icon_delete.png";
 import { toast } from "react-toastify";
 
-const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => { 
-  const [historyData, setHistoryData] = useState([]); 
+const AnalysisModal = ({ show, onClose, analysisId, onDeleteSuccess }) => {
+  const [analysisData, setAnalysisData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);  
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [analysisToDelete, setAnalysisToDelete] = useState(null);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  if (!show || !analysis) return null;
+  if (!show || !analysisId) return null;
 
-  const handleOutsideClick = (e) => {
-    e.stopPropagation();
-  };
+  // 🧩 Fetch the selected analysis details from backend
+  useEffect(() => {
+    const fetchAnalysisDetails = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`http://localhost:3001/api/user/analysis/${analysisId}`, {
+          method: "GET",
+          credentials: "include",
+        });
 
-  const handleDeleteClick = (e, analysis) => {
-    e.stopPropagation();
-    console.log('Analysis to delete:', analysis._id);
-    setAnalysisToDelete(analysis);
-    setShowDeleteModal(true);
-  };
+        if (!res.ok) throw new Error(`Error fetching analysis: ${res.status}`);
+        const json = await res.json();
 
+        if (!json.success) throw new Error(json.message || "Failed to load analysis details");
+
+        setAnalysisData(json.analysis);
+      } catch (err) {
+        console.error("Error fetching analysis:", err);
+        setError(err.message || "Failed to load analysis details");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnalysisDetails();
+  }, [analysisId]);
+
+  // 🧩 Delete selected analysis
   const handleDelete = async () => {
-    if (!analysisToDelete._id || !analysisToDelete) {
-      toast.error('No valid analysis to delete');
-    return;
-  }
-
     try {
-      const response = await fetch(`http://localhost:3001/api/user/analysis/${analysisToDelete._id}`, {
-        method: 'DELETE',
-        credentials: 'include',
+      const res = await fetch(`http://localhost:3001/api/user/analysis/${analysisId}`, {
+        method: "DELETE",
+        credentials: "include",
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to delete analysis: ${response.status}`);
-      }
+      if (!res.ok) throw new Error(`Failed to delete: ${res.status}`);
+      const json = await res.json();
+      if (!json.success) throw new Error(json.message || "Delete failed");
 
-      const json = await response.json();
-      if (!json.success) {
-        throw new Error(json.message || 'Failed to delete analysis');
-      }
-
-      // Update local state
-      const updated = historyData.filter((item) => item.id !== analysisToDelete.id);
-      setHistoryData(updated);
-      
-      // Update pagination if needed
-      if ((currentPage - 1) * itemsPerPage >= updated.length && currentPage > 1) {
-        setCurrentPage(currentPage - 1);
-      }
-
-      onDeleteSuccess(analysisToDelete._id);
-
-      // Reset delete modal state
+      toast.success("Analysis deleted successfully!");
+      onDeleteSuccess(analysisId);
       onClose();
-      setShowDeleteModal(false);
-      setAnalysisToDelete(null);
-      toast.success('Analysis deleted successfully');
     } catch (err) {
-      console.error('Error deleting analysis:', err);
-      // You might want to show an error message to the user here
-      setError(err.message || 'Error deleting analysis');
-      toast.error(err.message || 'Error deleting analysis');
+      console.error("Error deleting analysis:", err);
+      toast.error(err.message || "Error deleting analysis");
+    } finally {
+      setShowDeleteModal(false);
     }
   };
 
+  const handleOutsideClick = (e) => e.stopPropagation();
+
+  if (loading) {
+    return (
+      <div className="analysis-modal-overlay">
+        <div className="analysis-modal-container">
+          <h2>Loading analysis details...</h2>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="analysis-modal-overlay">
+        <div className="analysis-modal-container">
+          <h2>Error</h2>
+          <p>{error}</p>
+          <button onClick={onClose}>Close</button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!analysisData) return null;
+
+  const { prompt, date, results } = analysisData;
+
   return (
-    <div className="analysis-modal-overlay">
-      <div className="analysis-modal-container" onClick={handleOutsideClick}>        
+    <div className="analysis-modal-overlay" onClick={onClose}>
+      <div className="analysis-modal-container" onClick={handleOutsideClick}>
         <div className="analysis-modal-header">
           <h2>Analysis Details</h2>
-          <button className="close-btn" onClick={onClose} aria-label="Close">×</button>
+          <button className="close-btn" onClick={onClose} aria-label="Close">
+            ×
+          </button>
         </div>
 
         <div className="analysis-modal-body">
           <div className="modal-actions">
-            <button className="action-btn edit">Edit</button>
             <button className="action-btn export">Export</button>
-            <button className="action-btn delete-btn" onClick={(e) => handleDeleteClick(e, analysis)}>
-              <img src={deleteIcon} alt="Delete" />Delete</button>
+            <button
+              className="action-btn delete-btn"
+              onClick={() => setShowDeleteModal(true)}
+            >
+              <img src={deleteIcon} alt="Delete" /> Delete
+            </button>
           </div>
 
-          <div className="analysis-fields-grid">
-            <div className="analysis-field">
-              <label>Category:</label>
-              <div className="field-content">{analysis.category || analysis.type || '—'}</div>
-            </div>
+          <div className="analysis-field">
+            <label>Submitted Text:</label>
+            <div className="field-content">{prompt || "—"}</div>
+          </div>
 
-            <div className="analysis-field">
-              <label>Original Text:</label>
-              <div className="field-content">{analysis.original_text || analysis.text || '—'}</div>
+          <div className="analysis-field">
+            <label>Date/Time:</label>
+            <div className="field-content">
+              {new Date(date).toLocaleString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true,
+              })}
             </div>
+          </div>
 
-            {analysis.correction && (
-              <div className="analysis-field">
-                <label>Correction Text:</label>
-                <div className="field-content">{analysis.correction}</div>
-              </div>
+          <h3 className="section-title">Detected Results</h3>
+          <div className="results-list">
+            {results && results.length > 0 ? (
+              results.map((r, index) => (
+                <div key={index} className="result-card">
+                  <div className="result-header">
+                    <strong>{r.category || "Unknown"}</strong>
+                    <span>({r.type || "N/A"})</span>
+                  </div>
+
+                  <div className="result-field">
+                    <label>Original Text:</label>
+                    <div>{r.original_text || "—"}</div>
+                  </div>
+
+                  {r.correction && (
+                    <div className="result-field">
+                      <label>Correction:</label>
+                      <div>{r.correction}</div>
+                    </div>
+                  )}
+
+                  {r.sentiment_score && (
+                    <div className="result-field">
+                      <label>Sentiment Score:</label>
+                      <div>{r.sentiment_score}</div>
+                    </div>
+                  )}
+
+                  <div className="result-field">
+                    <label>Reason of Correction:</label>
+                    <div>{r.reason_of_correction || "—"}</div>
+                  </div>
+
+                  <div className="result-field">
+                    <label>Words Detected:</label>
+                    <div>{r.words_detected || "—"}</div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>No detailed results found.</p>
             )}
-
-            {analysis.sentiment_score && (
-              <div className="analysis-field">
-                <label>Sentiment Score:</label>
-                <div className="field-content">{analysis.sentiment_score}</div>
-              </div>
-            )}
-
-            <div className="analysis-field">
-              <label>Reason for Correction:</label>
-              <div className="field-content">{analysis.reason_of_correction || '—'}</div>
-            </div>
-
-            <div className="analysis-field">
-              <label>Word(s) Detected:</label>
-              <div className="field-content">{analysis.words_detected || '—'}</div>
-            </div>
-
-            <div className="analysis-field">
-              <label>ID:</label>
-              <div className="field-content">{analysis._id || '—'}</div>
-            </div>
-
-            <div className="analysis-field">
-              <label>Date/Time:</label>
-              <div className="field-content">
-                {analysis.date ? new Date(analysis.date).toLocaleString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: 'numeric',
-                    minute: '2-digit',
-                    hour12: true
-                  }).replace(',', '') : (analysis.date || '')}
-              </div>
-            </div>
           </div>
 
           <div className="analysis-field full-width">
             <label>Raw JSON:</label>
-            <textarea 
-              className="raw-json" 
-              readOnly 
-              value={JSON.stringify(analysis, null, 2)}
+            <textarea
+              className="raw-json"
+              readOnly
+              value={JSON.stringify(analysisData, null, 2)}
             />
-          </div>          
+          </div>
         </div>
       </div>
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Confirmation */}
       <DeleteModal
         show={showDeleteModal}
-        onClose={() => {
-          setShowDeleteModal(false);
-          setAnalysisToDelete(null);
-        }}
+        onClose={() => setShowDeleteModal(false)}
         onConfirm={handleDelete}
       />
     </div>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import PopupModal from "../components/LoadingModal";
 import AnalysisModal from "../components/AnalysisModal";
 import StartAnalyzingButton from "../components/StartAnalyzingButton";
 import SearchBar from "../components/SearchBar";
@@ -53,52 +52,78 @@ const History = () => {
 
   // Fetch analyses for authenticated user on mount
   useEffect(() => {
-    const fetchAnalyses = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const resp = await fetch("http://localhost:3001/api/user/analysis", {
-          method: "GET",
-          credentials: "include",
-        });
+  const fetchAnalyses = async () => {
+    setLoading(true);
+    setError(null);
 
-        if (!resp.ok) {
-          throw new Error(`Failed to fetch analyses: ${resp.status}`);
-        }
+    try {
+      const resp = await fetch("http://localhost:3001/api/user/analysis", {
+        method: "GET",
+        credentials: "include",
+      });
 
-        const json = await resp.json();
-        if (!json.success) {
-          throw new Error(json.message || 'Failed to fetch analyses');
-        }
-
-        // Map backend analyses to historyData items for the table
-        const mapped = (json.analyses || []).map((a) => ({
-          id: a._id || a.id || Math.random().toString(36).slice(2, 9),
-          dateTime: a.date ? new Date(a.date).toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-          }).replace(',', '') : (a.dateTime || ''),
-          text: a.original_text || a.text || '',
-          category: a.category || a.type || '',
-          score: a.sentiment_score || '',
-          raw: a // keep original analysis object for full detail
-        }));
-
-        setHistoryData(mapped);
-      } catch (err) {
-        console.error(err);
-        setError(err.message || 'Error fetching analyses');
-      } finally {
-        setLoading(false);
+      if (!resp.ok) {
+        throw new Error(`Failed to fetch analyses: ${resp.status}`);
       }
-    };
 
-    fetchAnalyses();
-  }, []);
+      const json = await resp.json();
+      if (!json.success) {
+        throw new Error(json.message || "Failed to fetch analyses");
+      }
+
+      // ✅ Map backend analyses into historyData
+      const mapped = (json.analyses || []).map((a) => {
+        const resultsArray = Array.isArray(a.results) ? a.results : [a];
+
+        // ✅ Determine category based on hierarchy
+        let category = "Neutral";
+        const allCategories = resultsArray.map(r => (r.category || "").toLowerCase());
+        if (allCategories.includes("reviewable")) {
+          category = "Reviewable";
+        } else if (allCategories.includes("biased")) {
+          category = "Biased";
+        }
+
+        // ✅ Compute average sentiment score
+        const validScores = resultsArray
+          .map(r => parseFloat(r.sentiment_score))
+          .filter(s => !isNaN(s));
+        const avgSentiment =
+          validScores.length > 0
+            ? (validScores.reduce((sum, s) => sum + s, 0) / validScores.length).toFixed(2)
+            : "N/A";
+
+        return {
+          id: a._id || a.id || Math.random().toString(36).slice(2, 9),
+          dateTime: a.date
+            ? new Date(a.date).toLocaleString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true,
+              }).replace(",", "")
+            : "",
+          prompt: a.prompt || a.text || a.original_text || "",
+          category,
+          sentiment_score: avgSentiment,
+          raw: a,
+        };
+      });
+
+      setHistoryData(mapped);
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Error fetching analyses");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchAnalyses();
+}, []);
+
 
   const handleDeleteSuccess = (deletedId) => {
     setHistoryData((prevData) => prevData.filter(item => item.id !== deletedId));
@@ -137,19 +162,19 @@ const History = () => {
                       <tr>
                         <th>ID</th>
                         <th>Date / Time</th>
-                        <th>Submitted Text</th>
+                        <th>Prompt</th>
                         <th>Category</th>
                         <th>Sentiment Score</th>
                       </tr>
                     </thead>
                     <tbody>
                       {paginatedData.map((item) => (
-                        <tr key={item.id} onClick={() => { setSelectedAnalysis(item.raw); setShowModal(true); }} style={{ cursor: 'pointer' }}>
+                        <tr key={item.id} onClick={() => { setSelectedAnalysis(item.id); setShowModal(true); }} style={{ cursor: 'pointer' }}>
                           <td className="history-id-ellipsis" title={item.id}>{formatIdDisplay(item.id)}</td>
                           <td className="history-date-ellipsis" title={item.dateTime}>{item.dateTime}</td>
-                          <td className="history-text-ellipsis" title={item.text}>{item.text}</td>
+                          <td className="history-text-ellipsis" title={item.prompt}>{item.prompt}</td>
                           <td>{item.category}</td>
-                          <td>{item.score}</td>
+                          <td>{item.sentiment_score}</td>
                         </tr>
                       ))}
                     </tbody>
