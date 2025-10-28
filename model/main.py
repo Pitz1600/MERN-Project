@@ -43,6 +43,9 @@ def main_function(text):
     except _types.ResponseError:
         print("Failed to connect to Ollama Server. Please check your internet connection.")
 
+def convert_score(score):
+    return score / 5
+
 def tester(text):
     test_correction = need_grammar_correction(text)
     print(test_correction)

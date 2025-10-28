@@ -1,5 +1,5 @@
 from src.controller.grammar_checker import checker
-from src.controller.sentiment_analysis import analyze
+from model.src.controller.sentiment_checker import analyze
 import json
 
 def sentiment_analyzer(text):
