@@ -78,6 +78,7 @@
 .tab.reviewable { 
   color: black;
 }
+
   /* ---- RIGHT SECTION HEADER ---- */
 .tab {
   font-weight: 600;
@@ -88,18 +89,18 @@
 }
 
 .count.all-count {
-  background-color: black !important;
-  color: white !important;
+  background-color: white !important;
+  color: black !important;
 }
 
 .count.biased-count {
-  background-color: #ff9800 !important;
-  color: white !important;
+  background-color: #FF7F7F !important;
+  color: black !important;
 }
 
 .count.reviewable-count {
-  background-color: #4caf50 !important;
-  color: white !important;
+  background-color: #FFFF00 !important;
+  color: black !important;
 }
 
 .tab .count {
@@ -205,6 +206,7 @@
     border-radius: 10px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
     box-sizing: border-box;
+    max-width: 50%;
   }
 
   .analyzer-textarea {
@@ -291,7 +293,7 @@
     flex-grow: 2;
     color: black;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-    max-width: 100%;
+    max-width: 50%;
     box-sizing: border-box;
   }
 
@@ -337,15 +339,15 @@
   }
 
   .biased {
-    color: #854d0e;
+    color: #FF7F7F;
   }
 
   .neutral {
-    color: #14532d;
+    color: #69D84F;
   }
 
-  .unclear {
-    color: #1f2937;
+  .reviewable {
+    color: #FFFF00;
   }
 
   /* ---------------- POPUP TEXT ---------------- */
@@ -369,7 +371,8 @@
     }
     .analyzer-input-box,
     .analyzer-results {
-      min-height: auto;
+      max-width: 100%;
+      min-height: 10%;
     }
   }
 

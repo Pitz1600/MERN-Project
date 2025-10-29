@@ -2,8 +2,7 @@
 .navbar {
   width: 100%;
   background: linear-gradient(to right, #00b4d8, #0077b6);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-    
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);    
 }
 /* Profile initial badge */
 .nav-profile-initial {
@@ -21,6 +20,10 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
+}
+
+.nav-login-initial {
+  margin-left: auto;
 }
 
 .nav-profile-initial:hover {

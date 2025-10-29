@@ -7,7 +7,7 @@ import logo from "../assets/logo_transparent.png";
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userData } = useContext(AppContext);
+  const { userData, backendUrl, setUserData, setIsLoggedIn, isLoggedIn } = useContext(AppContext);
   const [menuOpen, setMenuOpen] = useState(false);
 
   // Extract first letter of user's name or username
@@ -59,7 +59,19 @@ const Navbar = () => {
         )}
 
         {/* Profile Initial */}
-        <button
+        {!isLoggedIn ? (
+          <button
+          className={`nav-login-initial ${isActive("/login") ? "active" : ""}`}
+          onClick={() => {
+            navigate("/login");
+            setMenuOpen(false);
+          }}
+          aria-label="Login"
+        >
+          Login
+        </button>
+        ) : (
+          <button
           className={`nav-profile-initial ${isActive("/profile-settings") ? "active" : ""}`}
           onClick={() => {
             navigate("/profile-settings");
@@ -68,7 +80,7 @@ const Navbar = () => {
           aria-label="Profile Settings"
         >
           {firstLetter}
-        </button>
+        </button>)}
 
         {/* Hamburger (mobile) */}
         <button

@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { AppContext } from "../context/AppContext";
+import LogoutModal from "../components/LogoutModal";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "../styles/ProfileSetting.css";

@@ -12,7 +12,6 @@ import History from "./pages/History.jsx";
 import ProfileSettings from "./pages/ProfileSetting.jsx"; 
 import AboutUs from "./pages/AboutUs.jsx"; 
 import Dictionary from "./pages/Dictionary.jsx"; 
-
 import { AppContext } from "./context/AppContext.jsx";
 
 const App = () => {
@@ -22,10 +21,11 @@ const App = () => {
     <div>
       <ToastContainer />
       <Routes>
-        {/* Default route: if logged in, go to home; otherwise, login */}
-        <Route path="/" element={isLoggedIn ? <Home /> : <Login />} />
+        {/* Default route: always go to home */}
+        <Route path="/" element={<Home />} />
 
         {/* Auth-related routes */}
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/email-verify" element={<EmailVerify />} />
         <Route path="/reset-password" element={<ResetPassword />} />
@@ -44,12 +44,16 @@ const App = () => {
           element={isLoggedIn ? <Analyzer /> : <Navigate to="/" />}
         />
         <Route
+          path="/dictionary"
+          element={isLoggedIn ? <Dictionary /> : <Navigate to="/" />}
+        />
+        <Route
           path="/history"
           element={isLoggedIn ? <History /> : <Navigate to="/" />}
         />
         <Route
           path="/profile-settings"
-          element={isLoggedIn ? <ProfileSettings /> : <Navigate to="/" />} // ✅ Protected route
+          element={isLoggedIn ? <ProfileSettings /> : <Navigate to="/" />}
         />
   <Route path="/about-us" element={<AboutUs />} />  
          <Route path="/dictionary" element={<Dictionary />} /> 

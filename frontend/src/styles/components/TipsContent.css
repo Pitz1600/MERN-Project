@@ -1,0 +1,54 @@
+/* Tips pagination styles */
+.tip-content {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+}
+
+.tips-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.tip-nav {
+  background: transparent;
+  border: 1px solid #e6eef8;
+  color: #023e8a;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tip-nav:hover {
+  background: #f0f8ff;
+}
+
+.tip-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tip-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #d9e9f9;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.tip-dot.active {
+  background: #023e8a;
+}

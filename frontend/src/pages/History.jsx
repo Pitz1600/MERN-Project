@@ -1,28 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import PopupModal from "../components/PopupModal";
+import AnalysisModal from "../components/AnalysisModal";
 import StartAnalyzingButton from "../components/StartAnalyzingButton";
 import SearchBar from "../components/SearchBar";
-import deleteIcon from "../assets/icon_delete.png";
 import "../styles/History.css";
 import Container from "../components/Container";
 
-
 const History = () => {
   const navigate = useNavigate();
-  const [showPopup, setShowPopup] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchBy, setSearchBy] = useState("text");
   const [historyData, setHistoryData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const [showModal, setShowModal] = useState(false);
+  const [selectedAnalysis, setSelectedAnalysis] = useState(null);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const totalPages = Math.ceil(historyData.length / itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil(historyData.length / itemsPerPage));
   const paginatedData = historyData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  // Ensure currentPage is valid when itemsPerPage or data length changes
+  useEffect(() => {
+    const newTotal = Math.max(1, Math.ceil(historyData.length / itemsPerPage));
+    if (currentPage > newTotal) setCurrentPage(newTotal);
+  }, [itemsPerPage, historyData, currentPage]);
 
   const handleStartAnalyzing = () => {
     navigate("/analyzer");
@@ -34,41 +41,85 @@ const History = () => {
   };
   const handleSearchByChange = (e) => setSearchBy(e.target.value);
 
-  const handleEmptyClick = () => setHistoryData([]);
-
-  const handleWithDataClick = () => {
-    setCurrentPage(1);
-    setHistoryData([
-      { id: "123456", dateTime: "Oct 1, 2025 | 12:55am", text: "Sample prompt 1", result: "BIAS", accuracy: "51%" },
-      { id: "654321", dateTime: "Oct 1, 2025 | 01:23am", text: "Sample prompt 2", result: "NEUTRAL", accuracy: "87%" },
-      { id: "123333", dateTime: "Oct 1, 2025 | 02:06pm", text: "Sample prompt 3", result: "UNCLEAR", accuracy: "90%" },
-      { id: "999999", dateTime: "Oct 1, 2025 | 03:12pm", text: "Extra prompt 4", result: "BIAS", accuracy: "74%" },
-      { id: "888888", dateTime: "Oct 1, 2025 | 03:25pm", text: "Extra prompt 5", result: "NEUTRAL", accuracy: "82%" },
-      { id: "777777", dateTime: "Oct 1, 2025 | 04:01pm", text: "Extra prompt 6", result: "UNCLEAR", accuracy: "66%" },
-    ]);
+  // Helper to format id so at least 4 characters are visible before ellipsis
+  const formatIdDisplay = (id) => {
+    if (!id) return '';
+    const str = String(id);
+    if (str.length <= 8) return str; // short ids show fully
+    // show first 4 chars and last 2 for context
+    return `${str.slice(0, 4)}...${str.slice(-2)}`;
   };
 
-  const handleDelete = (id) => {
-    const updated = historyData.filter((item) => item.id !== id);
-    setHistoryData(updated);
-    if ((currentPage - 1) * itemsPerPage >= updated.length && currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
+  // Fetch analyses for authenticated user on mount
+  useEffect(() => {
+    const fetchAnalyses = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const resp = await fetch("http://localhost:3001/api/user/analysis", {
+          method: "GET",
+          credentials: "include",
+        });
+        if (!resp.ok) throw new Error(`Failed to fetch analyses: ${resp.status}`);
+
+        const json = await resp.json();
+        if (!json.success) throw new Error(json.message || "Failed to fetch analyses");
+
+        const mapped = (json.analyses || []).map((a) => {
+          const resultsArray = Array.isArray(a.results) ? a.results : [a];
+
+          let category = "Neutral";
+          const allCategories = resultsArray.map((r) => (r.category || "").toLowerCase());
+          if (allCategories.includes("reviewable")) category = "Reviewable";
+          else if (allCategories.includes("biased")) category = "Biased";
+
+          const validScores = resultsArray
+            .map((r) => parseFloat(r.sentiment_score))
+            .filter((s) => !isNaN(s));
+          const avgSentiment =
+            validScores.length > 0
+              ? (validScores.reduce((sum, s) => sum + s, 0) / validScores.length).toFixed(2)
+              : "N/A";
+
+          return {
+            id: a._id || a.id || Math.random().toString(36).slice(2, 9),
+            dateTime: a.date
+              ? new Date(a.date).toLocaleString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "2-digit",
+                  hour12: true,
+                }).replace(",", "")
+              : "",
+            prompt: a.prompt || a.text || a.original_text || "",
+            category,
+            sentiment_score: avgSentiment,
+            raw: a,
+          };
+        });
+
+        setHistoryData(mapped);
+      } catch (err) {
+        console.error(err);
+        setError(err.message || "Error fetching analyses");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnalyses();
+  }, []);
+
+
+  const handleDeleteSuccess = (deletedId) => {
+    setHistoryData((prevData) => prevData.filter(item => item.id !== deletedId));
   };
 
   return (
     <div className="history-container">
       <Navbar />
-
-      {/* ✅ Buttons now directly below Navbar */}
-      <div className="history-buttons-row">
-        <button className="history-top-buttons" onClick={handleEmptyClick}>
-          Empty
-        </button>
-        <button className="history-top-buttons" onClick={handleWithDataClick}>
-          With data
-        </button>
-      </div>
 
       {/* ✅ Main content below buttons */}
       <div className="history-content">
@@ -99,25 +150,19 @@ const History = () => {
                       <tr>
                         <th>ID</th>
                         <th>Date / Time</th>
-                        <th>Submitted Text</th>
-                        <th>Result</th>
-                        <th>Accuracy</th>
-                        <th>Delete</th>
+                        <th>Prompt</th>
+                        <th>Category</th>
+                        <th>Sentiment Score</th>
                       </tr>
                     </thead>
                     <tbody>
                       {paginatedData.map((item) => (
-                        <tr key={item.id}>
-                          <td>{item.id}</td>
-                          <td>{item.dateTime}</td>
-                          <td>{item.text}</td>
-                          <td>{item.result}</td>
-                          <td>{item.accuracy}</td>
-                          <td>
-                            <button className="delete-btn" onClick={() => handleDelete(item.id)}>
-                              <img src={deleteIcon} alt="Delete" />
-                            </button>
-                          </td>
+                        <tr key={item.id} onClick={() => { setSelectedAnalysis(item.raw); setShowModal(true); }} style={{ cursor: 'pointer' }}>
+                          <td className="history-id-ellipsis" title={item.id}>{formatIdDisplay(item.id)}</td>
+                          <td className="history-date-ellipsis" title={item.dateTime}>{item.dateTime}</td>
+                          <td className="history-text-ellipsis" title={item.prompt}>{item.prompt}</td>
+                          <td>{item.category}</td>
+                          <td>{item.sentiment_score}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -126,6 +171,23 @@ const History = () => {
 
                 {/* Pagination */}
                 <div className="pagination">
+                  <div className="rows-per-page">
+                    <label htmlFor="rowsPerPage">Rows:</label>
+                    <select
+                      id="rowsPerPage"
+                      value={itemsPerPage}
+                      onChange={(e) => {
+                        const val = Number(e.target.value);
+                        setItemsPerPage(val);
+                        setCurrentPage(1); // reset to first page when page size changes
+                      }}
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={20}>20</option>
+                    </select>
+                  </div>
+
                   <button
                     onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                     disabled={currentPage === 1}
@@ -159,13 +221,16 @@ const History = () => {
         </Container>
       </div>
 
-      {/* Popup Modal */}
-      <PopupModal show={showPopup} onClose={() => setShowPopup(false)}>
-        <div className="popup-content">
-          <h2>Analyzing...</h2>
-          <p>Your input is being processed.</p>
-        </div>
-      </PopupModal>
+      {/* Analysis Detail Modal */}
+      {showModal && <AnalysisModal
+      show={showModal}
+      onClose={() => {
+        setShowModal(false);
+        setSelectedAnalysis(null);
+        }}
+      analysis={selectedAnalysis}
+      onDeleteSuccess={handleDeleteSuccess} />
+      }
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
-import PopupModal from "../components/PopupModal.jsx";
+import PopupModal from "../components/LoadingModal";
 import Container from "../components/Container";
 import AnalyzeButton from "../components/AnalyzeButton";
 import "../styles/Analyzer.css";
@@ -39,7 +39,46 @@ const Analyzer = () => {
       }
 
       const data = await response.json();
-      setResults(data);
+      const parsedResults = data.map((item) =>
+        typeof item === "string" ? JSON.parse(item) : item
+      );
+
+      setResults(parsedResults); 
+      // Parse the JSON response
+      // if (Array.isArray(data)) {
+      //   setResults(data);
+      // } else if (data) {
+      //   setResults([data]);
+      // } else {
+      //   setResults([]);
+      // }
+      // setResults(data ? [data] : []); 
+      // Wrap the data in an array if it exists, otherwise empty array
+      // Try to save the analysis result to the app backend (optional; requires authenticated user cookie)
+      (async () => {
+        try {
+          const payload = {
+            prompt: text,         // ✅ the full textarea input
+            results: parsedResults // ✅ the analyzer output array
+          };
+
+          const saveResp = await fetch("http://localhost:3001/api/user/analysis", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(payload),
+          });
+
+          if (!saveResp.ok) {
+            console.warn("Save analysis responded with status", saveResp.status);
+          } else {
+            console.log("Analysis saved successfully!");
+          }
+        } catch (saveErr) {
+          console.warn("Failed to save analysis:", saveErr);
+        }
+      })();
+
       console.log("Response status:", response.status);
       console.log("Response data:", data);
     } catch (error) {
@@ -49,16 +88,38 @@ const Analyzer = () => {
     }
   };
 
+  const labelClass = (category) => {
+    if (!category) return "neutral";
+    const cat = category.toLowerCase();
+    if (cat.includes("neutral")) return "Neutral";
+    if (cat.includes("biased")) return "Biased";
+    if (cat.includes("review")) return "Reviewable";
+    return "neutral";
+  };
+
+  const useCorrection = (original, correction) => {
+  const textarea = document.querySelector(".analyzer-textarea");
+  if (!textarea) return;
+
+  // Get the current text
+  const currentText = textarea.value;
+
+  // Replace the first occurrence of the original text with the correction
+  const updatedText = currentText.replace(original, correction);
+
+  // Update both the textarea and React state
+  textarea.value = updatedText;
+  setText(updatedText);
+
+  // Update counts
+  const trimmed = updatedText.trim();
+  setWordCount(trimmed ? trimmed.split(/\s+/).filter(Boolean).length : 0);
+  setCharCount(updatedText.length);
+};
+
   return (
     <div className="analyzer-page">
       <Navbar />
-
-      {/* Version Buttons Section */}
-      <div className="version-buttons">
-        <button className="version-btn">Version 1</button>
-        <button className="version-btn">Version 2</button>
-      </div>
-
       <Container>
         <div className="analyzer-content">
           {/* Left Section */}
@@ -149,25 +210,57 @@ const Analyzer = () => {
                 </div>
               ) : (
                 results.map((res, idx) => (
-                  <div key={idx} className="result-card">
-                    <p>
-                      Result:{" "}
-                      <span className={`label ${res.labelColor}`}>
-                        {res.sentiment}
-                      </span>
-                    </p>
-                    <p className="suggestion">{res.text}</p>
-                    <p className="date">{res.date}</p>
-                  </div>
-                ))
-              )}
+                <div key={idx} className="result-card">
+                  <p>
+                    Category:{" "}
+                    <span className={`label ${labelClass(res.category)}`}>
+                      {res.category || "N/A"}
+                    </span>
+                  </p>
+                  {res.words_detected && res.words_detected !== "None" && res.words_detected !== null && (
+                  <p className="suggestion">Word(s) Detected: {res.words_detected}</p>)}
+                  <p className="suggestion">
+                    Original: {res.original_text || res.text || "—"}
+                  </p>
+                  {res.correction && res.correction !== "None" && res.correction !== null && (                  
+                  <p className="suggestion" value={res.correction}>
+                    Correction: {res.correction}</p>)}
+                  {res.sentiment_score && <p className="suggestion">
+                    Sentiment Score: {res.sentiment_score}</p>}
+                  <p className="suggestion">Reason: {res.reason_of_correction || res.reason || "—"}</p>
+                  {res.date && <p className="date">{res.date}</p>}
+                  {res.correction && res.correction !== "None" && res.correction !== null && (
+                    <div className="result-actions">
+                      <button
+                        className="icon-btn"
+                        title="Copy"
+                        onClick={() => navigator.clipboard.writeText(res.correction)}
+                      >
+                        <img
+                          src="/src/assets/icon_copy.png"
+                          alt="Copy Icon"
+                          className="icon"
+                        />
+                      </button>
+
+                      <button
+                        className="use-correction-btn"
+                        title="Use Correction"
+                        onClick={() => useCorrection(res.original_text, res.correction)}
+                      >
+                        Use Correction
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )))}
             </div>
           </div>
         </div>
       </Container>
 
       {/* Popup Modal */}
-      <PopupModal show={showPopup} onClose={() => setShowPopup(false)}>
+      <PopupModal show={showPopup}>
         <h2 className="popup-title">Analyzing...</h2>
         <p className="popup-message">Your input is being processed.</p>
       </PopupModal>
