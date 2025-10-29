@@ -29,8 +29,6 @@
   font-size: 14px;
   border: none;
   border-radius: 0.75rem;
- 
-  
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -50,9 +48,11 @@
 .history-search-section {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
   align-items: center;
    transform: translateX(50px); 
+     justify-content: flex-end; /* Push everything to the right */
+
+   
     
 }
 
