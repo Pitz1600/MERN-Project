@@ -1,22 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import "../styles/Dashboard.css";
 import Navbar from "../components/Navbar.jsx";
 import PieChartElement from "../components/PieChartElement.jsx";
 import Container from "../components/Container.jsx";
 
 const Dashboard = () => {
+  const [historyData, setHistoryData] = useState([]);
+  
   return (
     <div className="dashboard-container">
       {/* Navbar */}
       <Navbar />
-      {/* Buttons above container */}
-      <div className="data-toggle">
-        <button className="data-btn active">Empty</button>
-        <button className="data-btn">With Data</button>
-      </div>
 
       {/* ✅ Wrap main content inside Container */}
       <Container>
+        {/* {historyData.length === 0 ? ( */}
+        {!historyData.length === 0 ? (
+          // Testing code for empty state
         <div className="empty-page">
           <div className="empty-wrapper">
             <div className="empty-card">
@@ -36,6 +36,14 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+        ) : (
+        <div className="dashboard-content">
+          <h2 className="dashboard-title">Usage Statistics</h2>
+          <div className="charts-container">
+            <PieChartElement />
+          </div>
+        </div>
+        )}
       </Container>
     </div>
   );
