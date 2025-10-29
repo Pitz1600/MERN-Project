@@ -10,8 +10,9 @@ import Container from "../components/Container";
 const History = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
-  const [searchBy, setSearchBy] = useState("text");
+  const [sortBy, setSortBy] = useState("dateTime"); // controlled sort field
   const [historyData, setHistoryData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -19,34 +20,36 @@ const History = () => {
   const [selectedAnalysis, setSelectedAnalysis] = useState(null);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const totalPages = Math.max(1, Math.ceil(historyData.length / itemsPerPage));
-  const paginatedData = historyData.slice(
+  // Define sort options here and pass to SearchBar
+  const sortOptions = [
+    { value: "id", label: "ID" },
+    { value: "dateTime", label: "Date/Time" },
+    { value: "prompt", label: "Prompt" },
+    { value: "category", label: "Category" },
+    { value: "score", label: "Sentiment Score" }, // 'score' will map to sentiment_score field
+  ];
+
+  // Pagination setup based on filtered data
+  const totalPages = Math.max(1, Math.ceil(filteredData.length / itemsPerPage));
+  const paginatedData = filteredData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  // Ensure currentPage is valid when itemsPerPage or data length changes
   useEffect(() => {
-    const newTotal = Math.max(1, Math.ceil(historyData.length / itemsPerPage));
+    // Keep currentPage valid when page size or filtered data changes
+    const newTotal = Math.max(1, Math.ceil(filteredData.length / itemsPerPage));
     if (currentPage > newTotal) setCurrentPage(newTotal);
-  }, [itemsPerPage, historyData, currentPage]);
+  }, [itemsPerPage, filteredData, currentPage]);
 
-  const handleStartAnalyzing = () => {
-    navigate("/analyzer");
-  };
-
+  const handleStartAnalyzing = () => navigate("/analyzer");
   const handleSearchChange = (e) => setSearchValue(e.target.value);
-  const handleSearchClick = () => {
-    console.log("Searching for:", searchValue, "by", searchBy);
-  };
-  const handleSearchByChange = (e) => setSearchBy(e.target.value);
+  const handleSortByChange = (e) => setSortBy(e.target.value);
 
-  // Helper to format id so at least 4 characters are visible before ellipsis
   const formatIdDisplay = (id) => {
-    if (!id) return '';
+    if (!id) return "";
     const str = String(id);
-    if (str.length <= 8) return str; // short ids show fully
-    // show first 4 chars and last 2 for context
+    if (str.length <= 8) return str;
     return `${str.slice(0, 4)}...${str.slice(-2)}`;
   };
 
@@ -83,15 +86,19 @@ const History = () => {
 
           return {
             id: a._id || a.id || Math.random().toString(36).slice(2, 9),
+            // keep an ISO date accessible for correct sorting (if a.date exists)
+            _rawDateISO: a.date ? new Date(a.date).toISOString() : null,
             dateTime: a.date
-              ? new Date(a.date).toLocaleString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                  hour: "numeric",
-                  minute: "2-digit",
-                  hour12: true,
-                }).replace(",", "")
+              ? new Date(a.date)
+                  .toLocaleString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true,
+                  })
+                  .replace(",", "")
               : "",
             prompt: a.prompt || a.text || a.original_text || "",
             category,
@@ -101,6 +108,7 @@ const History = () => {
         });
 
         setHistoryData(mapped);
+        setFilteredData(mapped);
       } catch (err) {
         console.error(err);
         setError(err.message || "Error fetching analyses");
@@ -112,16 +120,68 @@ const History = () => {
     fetchAnalyses();
   }, []);
 
+  // Combined effect: live-filter + sort whenever historyData, searchValue, or sortBy changes
+  useEffect(() => {
+    const term = searchValue.toLowerCase().trim();
+
+    // base filtering
+    const baseFiltered = historyData.filter((item) => {
+      if (!term) return true; // include all when no search term
+      // search across the main visible fields
+      return (
+        String(item.id || "").toLowerCase().includes(term) ||
+        String(item.dateTime || "").toLowerCase().includes(term) ||
+        String(item.prompt || "").toLowerCase().includes(term) ||
+        String(item.category || "").toLowerCase().includes(term) ||
+        String(item.sentiment_score || "").toLowerCase().includes(term)
+      );
+    });
+
+    // sorting
+    const sorted = [...baseFiltered].sort((a, b) => {
+    if (sortBy === "dateTime") {
+      const da = a._rawDateISO ? new Date(a._rawDateISO) : new Date(a.dateTime || 0);
+      const db = b._rawDateISO ? new Date(b._rawDateISO) : new Date(b.dateTime || 0);
+      return db - da; // newest first
+    }
+
+    if (sortBy === "score") {
+      // Handle "N/A" and numeric comparison properly
+      const aIsNA = a.sentiment_score === "N/A" || a.sentiment_score === "" || a.sentiment_score == null;
+      const bIsNA = b.sentiment_score === "N/A" || b.sentiment_score === "" || b.sentiment_score == null;
+
+      // If both are N/A, they’re equal
+      if (aIsNA && bIsNA) return 0;
+      // If only A is N/A, place it *after* B
+      if (aIsNA) return 1;
+      // If only B is N/A, place it *after* A
+      if (bIsNA) return -1;
+
+      // Both numeric → sort high to low
+      const va = parseFloat(a.sentiment_score);
+      const vb = parseFloat(b.sentiment_score);
+      return vb - va;
+    }
+
+    const va = String(a[sortBy] || "").toLowerCase();
+    const vb = String(b[sortBy] || "").toLowerCase();
+    return va.localeCompare(vb);
+  });
+
+    setFilteredData(sorted);
+    setCurrentPage(1);
+  }, [historyData, searchValue, sortBy]);
 
   const handleDeleteSuccess = (deletedId) => {
-    setHistoryData((prevData) => prevData.filter(item => item.id !== deletedId));
+    // remove from both states
+    setHistoryData((prev) => prev.filter((item) => item.id !== deletedId));
+    setFilteredData((prev) => prev.filter((item) => item.id !== deletedId));
   };
 
   return (
     <div className="history-container">
       <Navbar />
 
-      {/* ✅ Main content below buttons */}
       <div className="history-content">
         <Container>
           {/* Search Bar */}
@@ -129,17 +189,19 @@ const History = () => {
             <SearchBar
               searchValue={searchValue}
               onSearchChange={handleSearchChange}
-              onSearchClick={handleSearchClick}
-              searchBy={searchBy}
-              onSearchByChange={handleSearchByChange}
+              onSearchClick={() => {}} // kept for compatibility if SearchBar still expects it
+              // provide both old 'searchBy' prop and new sort props if SearchBar uses them
+              sortBy={sortBy}
+              onSortByChange={handleSortByChange}
+              sortOptions={sortOptions}
             />
           </div>
 
           {/* Table or Empty State */}
           <div className="history-table-container">
-            {historyData.length === 0 ? (
+            {filteredData.length === 0 ? (
               <div className="history-empty">
-                <p>History is empty.</p>
+                <p>{loading ? "Loading..." : "No results found."}</p>
                 <StartAnalyzingButton onClick={handleStartAnalyzing} />
               </div>
             ) : (
@@ -157,10 +219,23 @@ const History = () => {
                     </thead>
                     <tbody>
                       {paginatedData.map((item) => (
-                        <tr key={item.id} onClick={() => { setSelectedAnalysis(item.raw); setShowModal(true); }} style={{ cursor: 'pointer' }}>
-                          <td className="history-id-ellipsis" title={item.id}>{formatIdDisplay(item.id)}</td>
-                          <td className="history-date-ellipsis" title={item.dateTime}>{item.dateTime}</td>
-                          <td className="history-text-ellipsis" title={item.prompt}>{item.prompt}</td>
+                        <tr
+                          key={item.id}
+                          onClick={() => {
+                            setSelectedAnalysis(item.raw);
+                            setShowModal(true);
+                          }}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <td className="history-id-ellipsis" title={item.id}>
+                            {formatIdDisplay(item.id)}
+                          </td>
+                          <td className="history-date-ellipsis" title={item.dateTime}>
+                            {item.dateTime}
+                          </td>
+                          <td className="history-text-ellipsis" title={item.prompt}>
+                            {item.prompt}
+                          </td>
                           <td>{item.category}</td>
                           <td>{item.sentiment_score}</td>
                         </tr>
@@ -179,7 +254,7 @@ const History = () => {
                       onChange={(e) => {
                         const val = Number(e.target.value);
                         setItemsPerPage(val);
-                        setCurrentPage(1); // reset to first page when page size changes
+                        setCurrentPage(1);
                       }}
                     >
                       <option value={5}>5</option>
@@ -222,15 +297,17 @@ const History = () => {
       </div>
 
       {/* Analysis Detail Modal */}
-      {showModal && <AnalysisModal
-      show={showModal}
-      onClose={() => {
-        setShowModal(false);
-        setSelectedAnalysis(null);
-        }}
-      analysis={selectedAnalysis}
-      onDeleteSuccess={handleDeleteSuccess} />
-      }
+      {showModal && (
+        <AnalysisModal
+          show={showModal}
+          onClose={() => {
+            setShowModal(false);
+            setSelectedAnalysis(null);
+          }}
+          analysis={selectedAnalysis}
+          onDeleteSuccess={handleDeleteSuccess}
+        />
+      )}
     </div>
   );
 };

@@ -65,7 +65,7 @@
   height: 1rem;
 }
 
-.searchbar-dropdown {
+.sortbar-dropdown {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -74,13 +74,13 @@
   left: -100px;         
 }
 
-.searchbar-label {
+.sortbar-label {
   color: #1f2937; 
   font-weight: 500;
    font-size: 1.25rem; 
 }
 
-.searchbar-select {
+.sortbar-select {
   width: 200px;                
   padding: 1rem 1.2rem;        
   font-size: 1rem;       

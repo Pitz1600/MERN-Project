@@ -5,6 +5,7 @@ import Container from "../components/Container";
 import AnalyzeButton from "../components/AnalyzeButton";
 import "../styles/Analyzer.css";
 import chevronRight from "../assets/arrow.png"; // ✅ Add this import at the top
+import { toast } from "react-toastify";
 
 const Analyzer = () => {
   const [text, setText] = useState("");
@@ -35,6 +36,7 @@ const Analyzer = () => {
       });
 
       if (!response.ok) {
+        toast.error("Failed to analyze text.");
         throw new Error("Failed to analyze text");
       }
 
@@ -73,9 +75,11 @@ const Analyzer = () => {
             console.warn("Save analysis responded with status", saveResp.status);
           } else {
             console.log("Analysis saved successfully!");
+            toast.success("Analysis saved successfully!");
           }
         } catch (saveErr) {
           console.warn("Failed to save analysis:", saveErr);
+          toast.error("Failed to save analysis.");
         }
       })();
 
