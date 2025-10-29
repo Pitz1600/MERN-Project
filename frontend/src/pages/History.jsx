@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import PopupModal from "../components/Popupmodal";
+import PopupModal from "../components/PopupModal";
 import StartAnalyzingButton from "../components/StartAnalyzingButton";
 import SearchBar from "../components/SearchBar";
 import deleteIcon from "../assets/icon_delete.png";

@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
-import PopupModal from "../components/Popupmodal";
+import PopupModal from "../components/PopupModal.jsx";
 import Container from "../components/Container";
 import AnalyzeButton from "../components/AnalyzeButton";
 import "../styles/Analyzer.css";
+import chevronRight from "../assets/arrow.png"; // ✅ Add this import at the top
 
 const Analyzer = () => {
   const [text, setText] = useState("");
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState([]); 
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -114,20 +115,30 @@ const Analyzer = () => {
           {/* Right Section */}
           <div className="analyzer-results">
             {/* Header with Tabs */}
-            <div className="results-header">
-              <div className="results-tabs">
-              <span className="tab all">
-      All <span className="count all-count">0</span>
-</span>
-<span className="tab biased">
-  Biased <span className="count biased-count">0</span>
-</span>
-<span className="tab reviewable">
-  Reviewable <span className="count reviewable-count">0</span>
-</span>
-              </div>
-            </div>
+         <div className="results-header">
+  {/* Tabs + Chevron */}
+  <div className="results-tabs">
+    {/* 👇 Chevron on the left of All 0 */}
+    <img
+      src={chevronRight}
+      alt="Chevron Right"
+      className="chevron-right"
+    />
 
+    <span className="tab all">
+      All <span className="count all-count">0</span>
+    </span>
+    <span className="tab biased">
+      Biased <span className="count biased-count">0</span>
+    </span>
+    <span className="tab reviewable">
+      Reviewable <span className="count reviewable-count">0</span>
+    </span>
+  </div>
+
+  {/* Divider */}
+  <div className="results-divider"></div>
+</div>
             <div className="results-list">
               {results.length === 0 ? (
                 <div className="no-results-box">

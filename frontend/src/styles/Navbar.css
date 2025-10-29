@@ -35,10 +35,11 @@
 
 /* For mobile dropdown */
 .mobile-profile {
-  display: flex;
+  
   align-items: center;
   gap: 0.5rem;
   font-weight: bold;
+   display: block;
 }
 
 
@@ -84,7 +85,8 @@
   color: black;
   cursor: pointer;
   font-weight: 500;
-  transition: all 0.3s ease;
+ transition: background-color 0.25s ease, color 0.25s ease;
+  
 }
 
 /* Active (highlighted) */
@@ -152,6 +154,12 @@
   }
   .nav-hamburger,
   .mobile-menu {
+    display: none;
+  }
+}
+/* Hide profile initial on small screens */
+@media (max-width: 767px) {
+  .nav-profile-initial {
     display: none;
   }
 }
