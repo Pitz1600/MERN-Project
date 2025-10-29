@@ -1,17 +1,27 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar.jsx";
 import Container from "../components/Container.jsx";
+import SearchBar from "../components/SearchBar.jsx";
 import "../styles/Dictionary.css";
 
 const Dictionary = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchValue, setSearchValue] = useState("");
   const [results, setResults] = useState([]);
   const [filteredResults, setFilteredResults] = useState([]);
+
+  // Sorting
+  const [sortBy, setSortBy] = useState("word");
+  const sortOptions = [
+    { value: "word", label: "Word (A–Z)" },
+    { value: "score", label: "Sentiment Score" },
+    { value: "meaning", label: "Meaning (A–Z)" },
+  ];
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  // --- Fetch Data ---
   useEffect(() => {
     fetch("http://localhost:3001/api/lexicon/bias-lexicon")
       .then((res) => res.json())
@@ -22,15 +32,46 @@ const Dictionary = () => {
       .catch((err) => console.error("Error fetching lexicon:", err));
   }, []);
 
-  const handleSearch = () => {
-    const filtered = results.filter((item) =>
-      item.word.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  // --- 🔍 Live Search: filters all columns ---
+  useEffect(() => {
+    const filtered = results.filter((item) => {
+      const search = searchValue.toLowerCase();
+      return (
+        item.word.toLowerCase().includes(search) ||
+        String(item.score).toLowerCase().includes(search) ||
+        item.meaning.toLowerCase().includes(search)
+      );
+    });
     setFilteredResults(filtered);
-    setCurrentPage(1); // reset to first page on search
+    setCurrentPage(1);
+  }, [searchValue, results]);
+
+  // --- Sorting ---
+  const handleSortByChange = (e) => {
+    const value = e.target.value;
+    setSortBy(value);
+
+    const sorted = [...filteredResults].sort((a, b) => {
+      if (value === "word" || value === "meaning") {
+        return a[value].localeCompare(b[value]);
+      }
+
+      if (value === "score") {
+        const scoreA = isNaN(parseFloat(a.score)) ? null : parseFloat(a.score);
+        const scoreB = isNaN(parseFloat(b.score)) ? null : parseFloat(b.score);
+        if (scoreA === null && scoreB === null) return 0;
+        if (scoreA === null) return 1;
+        if (scoreB === null) return -1;
+        return scoreB - scoreA;
+      }
+
+      return 0;
+    });
+
+    setFilteredResults(sorted);
   };
 
-  // Pagination calculations
+  // --- Pagination ---
   const indexOfLast = currentPage * rowsPerPage;
   const indexOfFirst = indexOfLast - rowsPerPage;
   const currentRows = filteredResults.slice(indexOfFirst, indexOfLast);
@@ -49,26 +90,30 @@ const Dictionary = () => {
     setCurrentPage(1);
   };
 
+  // --- Input change handler ---
+  const handleSearchChange = (e) => {
+    setSearchValue(e.target.value);
+  };
+
   return (
     <div className="dictionary-container">
       <Navbar />
       <Container>
         <div className="dictionary-content">
           <div className="dictionary-card">
-            {/* Search bar */}
+            {/* 🔍 Search & Sort Bar */}
             <div className="search-bar">
-              <input
-                type="text"
-                placeholder="Search for a word..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+              <SearchBar
+                searchValue={searchValue}
+                onSearchChange={handleSearchChange}
+                onSearchClick={() => {}} // not used for live filtering
+                sortBy={sortBy}
+                onSortByChange={handleSortByChange}
+                sortOptions={sortOptions}
               />
-              <button className="search-btn" onClick={handleSearch}>
-                Search
-              </button>
             </div>
 
-            {/* Table */}
+            {/* 📖 Table */}
             <table className="dictionary-table">
               <thead>
                 <tr>
@@ -96,7 +141,7 @@ const Dictionary = () => {
 
             <div className="table-divider"></div>
 
-            {/* Footer controls (pagination + rows per page) */}
+            {/* 📄 Footer controls */}
             <div className="table-footer">
               <div className="rows-per-page">
                 <label>Rows per page: </label>
@@ -109,19 +154,13 @@ const Dictionary = () => {
               </div>
 
               <div className="pagination">
-                <button
-                  onClick={handlePrevPage}
-                  disabled={currentPage === 1}
-                >
+                <button onClick={handlePrevPage} disabled={currentPage === 1}>
                   &lt;
                 </button>
                 <span>
                   Page {currentPage} of {totalPages}
                 </span>
-                <button
-                  onClick={handleNextPage}
-                  disabled={currentPage === totalPages}
-                >
+                <button onClick={handleNextPage} disabled={currentPage === totalPages}>
                   &gt;
                 </button>
               </div>

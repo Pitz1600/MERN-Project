@@ -189,8 +189,6 @@ const History = () => {
             <SearchBar
               searchValue={searchValue}
               onSearchChange={handleSearchChange}
-              onSearchClick={() => {}} // kept for compatibility if SearchBar still expects it
-              // provide both old 'searchBy' prop and new sort props if SearchBar uses them
               sortBy={sortBy}
               onSortByChange={handleSortByChange}
               sortOptions={sortOptions}
