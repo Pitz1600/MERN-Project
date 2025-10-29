@@ -1,63 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar.jsx";
 import Container from "../components/Container.jsx";
 import "../styles/Dictionary.css";
 
 const Dictionary = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [results, setResults] = useState([
-    {
-      word: "Worse",
-      sentiment: "-0.60",
-      definition:
-        "Of poorer quality or lower standard; less good or desirable.",
-    },
-    {
-      word: "Better",
-      sentiment: "0.80",
-      definition: "Of a more excellent or effective kind; superior.",
-    },
-    {
-      word: "Happy",
-      sentiment: "0.90",
-      definition: "Feeling or showing pleasure or contentment.",
-    },
-    {
-      word: "Sad",
-      sentiment: "-0.75",
-      definition: "Feeling or showing sorrow; unhappy.",
-    },
-    {
-      word: "Excited",
-      sentiment: "0.85",
-      definition: "Very enthusiastic and eager.",
-    },
-    {
-      word: "Angry",
-      sentiment: "-0.80",
-      definition: "Feeling or showing strong annoyance or displeasure.",
-    },
-    {
-      word: "Calm",
-      sentiment: "0.60",
-      definition: "Not showing or feeling nervousness, anger, or other strong emotions.",
-    },
-    {
-      word: "Confused",
-      sentiment: "-0.50",
-      definition: "Unable to think clearly; bewildered.",
-    },
-  
-  ]);
+  const [results, setResults] = useState([]);
+  const [filteredResults, setFilteredResults] = useState([]);
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  useEffect(() => {
+    fetch("http://localhost:3001/api/lexicon/bias-lexicon")
+      .then((res) => res.json())
+      .then((data) => {
+        setResults(data);
+        setFilteredResults(data);
+      })
+      .catch((err) => console.error("Error fetching lexicon:", err));
+  }, []);
 
   const handleSearch = () => {
-    console.log("Searching for:", searchTerm);
+    const filtered = results.filter((item) =>
+      item.word.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredResults(filtered);
+    setCurrentPage(1); // reset to first page on search
+  };
+
+  // Pagination calculations
+  const indexOfLast = currentPage * rowsPerPage;
+  const indexOfFirst = indexOfLast - rowsPerPage;
+  const currentRows = filteredResults.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(filteredResults.length / rowsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleRowsChange = (e) => {
+    setRowsPerPage(Number(e.target.value));
+    setCurrentPage(1);
   };
 
   return (
     <div className="dictionary-container">
       <Navbar />
-
       <Container>
         <div className="dictionary-content">
           <div className="dictionary-card">
@@ -84,28 +78,52 @@ const Dictionary = () => {
                 </tr>
               </thead>
               <tbody>
-                {results.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item.word}</td>
-                    <td>{item.sentiment}</td>
-                    <td>{item.definition}</td>
+                {currentRows.length > 0 ? (
+                  currentRows.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.word}</td>
+                      <td>{item.score}</td>
+                      <td>{item.meaning}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3">No results found.</td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
 
-            {/* Divider above footer */}
             <div className="table-divider"></div>
 
-            {/* Footer controls */}
+            {/* Footer controls (pagination + rows per page) */}
             <div className="table-footer">
-              <select>
-                <option>10 rows</option>
-              </select>
+              <div className="rows-per-page">
+                <label>Rows per page: </label>
+                <select value={rowsPerPage} onChange={handleRowsChange}>
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                </select>
+              </div>
+
               <div className="pagination">
-                <button>&lt;</button>
-                <span>Page 1</span>
-                <button>&gt;</button>
+                <button
+                  onClick={handlePrevPage}
+                  disabled={currentPage === 1}
+                >
+                  &lt;
+                </button>
+                <span>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                >
+                  &gt;
+                </button>
               </div>
             </div>
           </div>

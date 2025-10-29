@@ -244,6 +244,8 @@ const History = () => {
                   </table>
                 </div>
 
+                <div className="table-divider"></div>
+
                 {/* Pagination */}
                 <div className="pagination">
                   <div className="rows-per-page">
