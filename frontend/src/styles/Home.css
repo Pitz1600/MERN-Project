@@ -13,6 +13,36 @@
   overflow-x: hidden;
 }
 
+.intro-logo {
+  width: 120px;       
+  margin-bottom: 24px;  
+ margin-left: 120px;
+  margin-top: 10px;   
+  display: block;
+}
+
+
+
+.intro-tips-wrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 10rem;
+  flex-wrap: wrap; 
+  margin-top: 2rem;
+}
+
+.intro-section {
+  flex: 1;
+  max-width: 400px;
+  text-align: center;
+}
+
+.tips-card {
+  flex: 1;
+  max-width: 400px;
+  min-height: auto;
+}
 
 .home-container .navbar {
   margin-bottom: 1rem;
