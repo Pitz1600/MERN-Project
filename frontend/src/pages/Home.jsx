@@ -42,25 +42,42 @@ const Home = () => {
     <div className="home-container">
       <Navbar />
 
-      {/* Intro page if not logged in */}
       {!isLoggedIn ? (
-        <Container>
-          <div className="intro-section">
-            <img src='/src/assets/Logo_transparent.png' alt="App Logo" style={{ width: 120, marginBottom: 24 }} />
-            <h1>PureText</h1>
-            <h1>Bias Text Detector</h1>
-            <h2>App for Identifying Biased Language</h2>
-            <br/>
-            <button className="nav-login-btn" style={{ marginTop: 24 }} onClick={() => navigate("/login")}>Login to Get Started</button>
-          </div>
-        </Container>
+       <Container>
+  <div className="intro-tips-wrapper">
+    {/* Left side: intro */}
+    <div className="intro-section">
+     <img
+  src="/src/assets/Logo_transparent.png"
+  alt="App Logo"
+  className="intro-logo"
+/>
+
+      <h1>PureText</h1>
+      <h1>Bias Text Detector</h1>
+      <h2>App for Identifying Biased Language</h2>
+      <br />
+      <button
+        className="nav-login-btn"
+        style={{ marginTop: 24 }}
+        onClick={() => navigate("/login")}
+      >
+        Login to Get Started
+      </button>
+    </div>
+
+    {/* Right side: tips */}
+    <div className="dashboard-card tips-card">
+      <TipsContent />
+    </div>
+  </div>
+</Container>
       ) : (
-        // ...existing code for verified/unverified user...
         !userData.isAccountVerified ? (
           <Container>
             <div>
               <div className="verify-email-section">
-                <img src='/src/assets/logo_transparent.png' alt="App Logo" />
+                <img src="/src/assets/logo_transparent.png" alt="App Logo" />
                 <h1>Hey {userData ? userData.name : 'User'}!</h1>
                 <p>Please verify your email to continue.</p>
                 <button onClick={sendVerificationOtp} disabled={isLoading}>
@@ -85,12 +102,15 @@ const Home = () => {
                       <p>Sample prompt 2...</p>
                       <p>Sample prompt 3...</p>
                     </>
-                  ) : (<>
-                    <p >No analyzed text yet?<br />
-                      {!hasData && (
-                        <StartAnalyzingButton onClick={() => navigate("/analyzer")} />
-                      )}</p>
-                  </>
+                  ) : (
+                    <>
+                      <p>
+                        No analyzed text yet?<br />
+                        {!hasData && (
+                          <StartAnalyzingButton onClick={() => navigate("/analyzer")} />
+                        )}
+                      </p>
+                    </>
                   )}
                 </div>
 

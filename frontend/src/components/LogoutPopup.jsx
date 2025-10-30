@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/components/LogoutPopup.css";
-import logoImg from "../assets/logo.png"; 
+import logoImg from "../assets/logo_transparent.png"; 
 
 const LogoutPopup = ({ onConfirm, onCancel }) => {
   return (

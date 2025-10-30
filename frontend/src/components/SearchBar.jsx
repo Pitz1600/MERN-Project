@@ -30,7 +30,7 @@ const SearchBar = ({
 
       {/* Dropdown */}
       <div className="searchbar-dropdown">
-        <span className="searchbar-label">Search By:</span>
+        <span className="searchbar-label">Sort By:</span>
         <select
           className="searchbar-select"
           value={searchBy}

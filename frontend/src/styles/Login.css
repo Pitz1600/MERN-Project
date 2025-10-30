@@ -201,7 +201,7 @@ body {
 }
 
 .icon-back-btn:hover {
-  transform: translateX(-4px) scale(1.08);
+  background: none;
 }
 
 /* ✅ Responsive Design */

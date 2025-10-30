@@ -18,6 +18,7 @@ import deleteIcon from "../assets/icon_delete.png";
 import logoutIcon from "../assets/icon_logout.png";
 
 
+
 const ProfileSettings = () => {
   const navigate = useNavigate();
   const { userData, backendUrl, setUserData, setIsLoggedIn } = useContext(AppContext);
