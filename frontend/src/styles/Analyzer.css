@@ -13,15 +13,6 @@
     align-items: center;
      
   }
-  
-.results-tabs {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start; 
-  gap: 0.75rem;
-  width: fit-content; 
-  margin-left: 0;
-}
 
 .chevron-right {
   width: 30px;
@@ -49,44 +40,51 @@
   margin: 0.75rem 0 1rem 0;
   opacity: 0.2; /* subtle and not too harsh */
 }
-  .count.all-count {
-  background-color: black !important;
-  color: white !important;
-}
-
-.count.biased-count {
-  background-color: #ff9800 !important;
-  color: white !important;
-}
-
-.count.reviewable-count {
-  background-color: #4caf50 !important;
-  color: white !important;
-}
 
 .results-tabs {
   display: flex;
+  align-items: center;
   justify-content: center;
   gap: 1rem;
   margin-bottom: 1rem;
+  width: fit-content; 
+  margin-left: 0;
 }
 
-.tab.biased {
-  color: black;
-}
-
-.tab.reviewable { 
-  color: black;
-}
-
-  /* ---- RIGHT SECTION HEADER ---- */
-.tab {
+.results-tabs .tab {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: transparent;
   font-weight: 600;
   font-size: 0.9rem;
   color: #001f3f;
   border-radius: 6px;
   padding: 4px 10px;
 }
+
+.results-tabs .tab:hover {
+  background-color: #69D84F;
+}
+
+.results-tabs .tab.active {
+  background-color: #f2f2f2;        /* You can change to match your theme */
+  color: #000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.tab.biased.active {
+  background-color: #FF7F7F;
+}
+
+.tab.reviewable.active { 
+  background-color: #FFFF00;
+}
+
+.tab.neutral.active { 
+  background-color: #69D84F;
+}
+
+  /* ---- RIGHT SECTION HEADER ---- */
 
 .count.all-count {
   background-color: white !important;
@@ -100,6 +98,11 @@
 
 .count.reviewable-count {
   background-color: #FFFF00 !important;
+  color: black !important;
+}
+
+.count.neutral-count {
+  background-color: #69D84F !important;
   color: black !important;
 }
 
