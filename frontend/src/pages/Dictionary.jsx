@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar.jsx";
 import Container from "../components/Container.jsx";
 import SearchBar from "../components/SearchBar.jsx";
+import Pagination from "../components/Pagination.jsx";
 import "../styles/Dictionary.css";
 
 const Dictionary = () => {
@@ -38,7 +39,7 @@ const Dictionary = () => {
       const search = searchValue.toLowerCase();
       return (
         item.word.toLowerCase().includes(search) ||
-        String(item.score/5).toLowerCase().includes(search) ||
+        String(item.score / 5).toLowerCase().includes(search) ||
         item.meaning.toLowerCase().includes(search)
       );
     });
@@ -71,24 +72,11 @@ const Dictionary = () => {
     setFilteredResults(sorted);
   };
 
-  // --- Pagination ---
+  // --- Pagination logic ---
   const indexOfLast = currentPage * rowsPerPage;
   const indexOfFirst = indexOfLast - rowsPerPage;
   const currentRows = filteredResults.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(filteredResults.length / rowsPerPage);
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-  };
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
-  };
-
-  const handleRowsChange = (e) => {
-    setRowsPerPage(Number(e.target.value));
-    setCurrentPage(1);
-  };
 
   // --- Input change handler ---
   const handleSearchChange = (e) => {
@@ -106,7 +94,7 @@ const Dictionary = () => {
               <SearchBar
                 searchValue={searchValue}
                 onSearchChange={handleSearchChange}
-                onSearchClick={() => {}} // not used for live filtering
+                onSearchClick={() => {}}
                 sortBy={sortBy}
                 onSortByChange={handleSortByChange}
                 sortOptions={sortOptions}
@@ -127,7 +115,7 @@ const Dictionary = () => {
                   currentRows.map((item, index) => (
                     <tr key={index}>
                       <td>{item.word}</td>
-                      <td>{item.score/5}</td>
+                      <td>{item.score / 5}</td>
                       <td>{item.meaning}</td>
                     </tr>
                   ))
@@ -141,30 +129,17 @@ const Dictionary = () => {
 
             <div className="table-divider"></div>
 
-            {/* 📄 Footer controls */}
-            <div className="table-footer">
-              <div className="rows-per-page">
-                <label>Rows per page: </label>
-                <select value={rowsPerPage} onChange={handleRowsChange}>
-                  <option value={5}>5</option>
-                  <option value={10}>10</option>
-                  <option value={25}>25</option>
-                  <option value={50}>50</option>
-                </select>
-              </div>
-
-              <div className="pagination">
-                <button onClick={handlePrevPage} disabled={currentPage === 1}>
-                  &lt;
-                </button>
-                <span>
-                  Page {currentPage} of {totalPages}
-                </span>
-                <button onClick={handleNextPage} disabled={currentPage === totalPages}>
-                  &gt;
-                </button>
-              </div>
-            </div>
+            {/* 📄 Pagination Component */}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              itemsPerPage={rowsPerPage}
+              onRowsPerPageChange={(val) => {
+                setRowsPerPage(val);
+                setCurrentPage(1);
+              }}
+              onPageChange={setCurrentPage}
+            />
           </div>
         </div>
       </Container>
