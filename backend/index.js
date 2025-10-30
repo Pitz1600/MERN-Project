@@ -5,7 +5,6 @@ import cookieParser from 'cookie-parser';
 import connectDB from './config/mongodb.js';
 import authRouter from './routes/authRoutes.js';
 import userRouter from './routes/userRoutes.js';
-import statsRouter from './routes/statsRoutes.js';
 import lexiconRoutes from "./routes/lexiconRoutes.js";
 
 const app = express();
@@ -27,7 +26,6 @@ const port = process.env.PORT || 3001;
 app.get('/', (req, res) => { res.send('API connected.'); });
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
-app.use('/api/stats', statsRouter);
 app.use("/api/lexicon", lexiconRoutes);
 
 app.listen(port, () => {

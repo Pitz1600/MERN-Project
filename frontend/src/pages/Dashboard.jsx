@@ -1,62 +1,127 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/Dashboard.css";
 import Navbar from "../components/Navbar.jsx";
 import Container from "../components/Container.jsx";
 import PieChart from "../components/PieChartElement.jsx";
-import PopModal from "../components/PopupModal.jsx"; // ✅ modal component
+import PopModal from "../components/PopupModal.jsx";
 
 const Dashboard = () => {
   const [showData, setShowData] = useState(false);
-  const [showPopup, setShowPopup] = useState(false); // ✅ for popup visibility
+  const [showPopup, setShowPopup] = useState(false);
+  const [analyses, setAnalyses] = useState([]);
+  const [stats, setStats] = useState({
+    total: 0,
+    biased: 0,
+    neutral: 0,
+    unclear: 0,
+    avgSentimentScore: 0,
+    highestPositiveSentiment: 0,
+    highestNegativeSentiment: 0,
+    mostCommon: "",
+  });
 
+  // 🟢 Fetch user's analyses (token from cookies)
+  const fetchAnalyses = async () => {
+    try {
+      const res = await fetch("http://localhost:3001/api/user/analysis", {
+        method: "GET",
+        credentials: "include", // ✅ includes cookie in request
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setAnalyses(data.analyses || []);
+        computeStats(data.analyses || []);
+      } else {
+        console.error("Fetch failed:", data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching analyses:", error);
+    }
+  };
+
+  // 🧮 Compute sentiment statistics
+  const computeStats = (analysesData) => {
+    let total = 0;
+    let biased = 0;
+    let neutral = 0;
+    let unclear = 0;
+    let sentimentScores = [];
+
+    analysesData.forEach((analysis) => {
+      analysis.results.forEach((r) => {
+        total++;
+
+        const category = r.category?.toLowerCase();
+        if (category === "biased") biased++;
+        else if (category === "neutral") neutral++;
+        else unclear++;
+
+        const score = parseFloat(r.sentiment_score);
+        if (!isNaN(score)) sentimentScores.push(score);
+      });
+    });
+
+    const avgSentimentScore =
+      sentimentScores.length > 0
+        ? (
+            sentimentScores.reduce((a, b) => a + b, 0) / sentimentScores.length
+          ).toFixed(2)
+        : 0;
+
+    const highestPositiveSentiment =
+      sentimentScores.length > 0 ? Math.max(...sentimentScores) : 0;
+
+    const highestNegativeSentiment =
+      sentimentScores.length > 0 ? Math.min(...sentimentScores) : 0;
+
+    const counts = { biased, neutral, unclear };
+    const mostCommon = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
+
+    setStats({
+      total,
+      biased,
+      neutral,
+      unclear,
+      avgSentimentScore: (avgSentimentScore * 100).toFixed(2),
+      highestPositiveSentiment: (highestPositiveSentiment * 100).toFixed(2),
+      highestNegativeSentiment: (highestNegativeSentiment * 100).toFixed(2),
+      mostCommon: mostCommon?.toUpperCase() || "",
+    });
+  };
+
+  // 🧩 When "Start Analyzing" is clicked
+  const handleStartAnalyzing = async () => {
+    setShowPopup(true);
+    await new Promise((resolve) => setTimeout(resolve, 3000)); // simulate loading
+    setShowPopup(false);
+    await fetchAnalyses();
+    setShowData(true);
+  };
+
+  // 🟣 Pie chart data
   const chartData = [
-    { name: "Biased", value: 50 },
-    { name: "Neutral", value: 30 },
-    { name: "Unclear", value: 20 },
+    { name: "Biased", value: stats.biased },
+    { name: "Neutral", value: stats.neutral },
+    { name: "Unclear", value: stats.unclear },
   ];
 
-  // ✅ Function triggered when "Start Analyzing" is clicked
-  const handleStartAnalyzing = async () => {
-    setShowPopup(true); // show popup
-
-    // simulate analyzing for 3 seconds
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-
-    setShowPopup(false); // hide popup
-    setShowData(true); // switch to "With Data" view after analyzing
-  };
+  useEffect(() => {
+    fetchAnalyses();
+  }, []);
 
   return (
     <div className="dashboard-container">
-      {/* Navbar */}
       <Navbar />
 
-      {/* Toggle Buttons */}
-      <div className="data-toggle">
-        <button
-          className={`data-btn ${!showData ? "active" : ""}`}
-          onClick={() => setShowData(false)}
-        >
-          Empty
-        </button>
-        <button
-          className={`data-btn ${showData ? "active" : ""}`}
-          onClick={() => setShowData(true)}
-        >
-          With Data
-        </button>
-      </div>
-
       <Container>
-        {!showData ? (
+        {!analyses.length === 0 ? (
           // ===== EMPTY PAGE =====
           <div className="empty-page">
             <div className="empty-wrapper">
               <div className="empty-card">
                 <div className="empty-left">
                   <p className="usage-text">Usage statistics is empty.</p>
-
-                  {/* ✅ Start Analyzing Button with popup trigger */}
                   <button className="start-btn" onClick={handleStartAnalyzing}>
                     Start <br /> Analyzing
                   </button>
@@ -66,7 +131,7 @@ const Dashboard = () => {
                   <div className="circle"></div>
                   <p className="no-stats">No statistics yet</p>
                   <p className="description">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit...
+                    Click “Start Analyzing” to view your usage statistics.
                   </p>
                 </div>
               </div>
@@ -80,31 +145,37 @@ const Dashboard = () => {
                 <h2>OVERVIEW</h2>
                 <div className="overview-row">
                   <span>Total Text Analyzed:</span>
-                  <span className="data-number">50</span>
+                  <span className="data-number">{stats.total}</span>
                 </div>
                 <div className="overview-row">
-                  <span>Biased Inputs:</span>
-                  <span>25</span>
+                  <span>Biased Results:</span>
+                  <span>{stats.biased}</span>
                 </div>
                 <div className="overview-row">
-                  <span>Neutral Inputs:</span>
-                  <span>15</span>
+                  <span>Neutral Results:</span>
+                  <span>{stats.neutral}</span>
                 </div>
                 <div className="overview-row">
-                  <span>Pending Inputs:</span>
-                  <span>10</span>
+                  <span>Unclear Results:</span>
+                  <span>{stats.unclear}</span>
                 </div>
                 <div className="overview-row">
                   <span>Most Common Result:</span>
-                  <span><b>BIASED</b></span>
+                  <span>
+                    <b>{stats.mostCommon}</b>
+                  </span>
                 </div>
                 <div className="overview-row">
-                  <span>Average Accuracy:</span>
-                  <span>76%</span>
+                  <span>Average Sentiment Score:</span>
+                  <span>{stats.avgSentimentScore}%</span>
                 </div>
                 <div className="overview-row">
-                  <span>Highest Accuracy:</span>
-                  <span>90%</span>
+                  <span>Highest Positive Sentiment Score:</span>
+                  <span>{stats.highestPositiveSentiment}%</span>
+                </div>
+                <div className="overview-row">
+                  <span>Highest Negative Sentiment Score:</span>
+                  <span>{stats.highestNegativeSentiment}%</span>
                 </div>
 
                 <div className="filter-row">
@@ -117,7 +188,6 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* ✅ Divider Line */}
               <div className="vertical-divider"></div>
 
               <div className="overview-right">
@@ -125,14 +195,15 @@ const Dashboard = () => {
                 <p className="result-text">
                   <strong>Results</strong>
                   <br />
-                  50% Biased
+                  {((stats.biased / stats.total) * 100 || 0).toFixed(1)}% Biased
                   <br />
-                  30% Neutral
+                  {((stats.neutral / stats.total) * 100 || 0).toFixed(1)}% Neutral
                   <br />
-                  20% Unclear
+                  {((stats.unclear / stats.total) * 100 || 0).toFixed(1)}% Unclear
                 </p>
-                <p className="lorem">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                <p className="pie-description">
+                  The pie chart represents the proportion of each sentiment category identified 
+                  in the analysis, helping visualize the balance between biased, neutral, and unclear results.
                 </p>
               </div>
             </div>
