@@ -38,7 +38,7 @@ const Dictionary = () => {
       const search = searchValue.toLowerCase();
       return (
         item.word.toLowerCase().includes(search) ||
-        String(item.score).toLowerCase().includes(search) ||
+        String(item.score/5).toLowerCase().includes(search) ||
         item.meaning.toLowerCase().includes(search)
       );
     });
@@ -127,7 +127,7 @@ const Dictionary = () => {
                   currentRows.map((item, index) => (
                     <tr key={index}>
                       <td>{item.word}</td>
-                      <td>{item.score}</td>
+                      <td>{item.score/5}</td>
                       <td>{item.meaning}</td>
                     </tr>
                   ))
