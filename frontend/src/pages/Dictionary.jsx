@@ -95,37 +95,40 @@ const Dictionary = () => {
                 searchValue={searchValue}
                 onSearchChange={handleSearchChange}
                 onSearchClick={() => {}}
+                onSearchClick={() => {}}
                 sortBy={sortBy}
                 onSortByChange={handleSortByChange}
                 sortOptions={sortOptions}
               />
             </div>
 
-            {/* 📖 Table */}
-            <table className="dictionary-table">
-              <thead>
-                <tr>
-                  <th>Word</th>
-                  <th>Sentiment Score</th>
-                  <th>Definition</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentRows.length > 0 ? (
-                  currentRows.map((item, index) => (
-                    <tr key={index}>
-                      <td>{item.word}</td>
-                      <td>{item.score / 5}</td>
-                      <td>{item.meaning}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="3">No results found.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+          {/* 📖 Table (scrollable container) */}
+<div className="table-scroll">
+  <table className="dictionary-table">
+    <thead>
+      <tr>
+        <th>Word</th>
+        <th>Sentiment Score</th>
+        <th>Definition</th>
+      </tr>
+    </thead>
+    <tbody>
+      {currentRows.length > 0 ? (
+        currentRows.map((item, index) => (
+          <tr key={index}>
+            <td>{item.word}</td>
+            <td>{item.score / 5}</td>
+            <td>{item.meaning}</td>
+          </tr>
+        ))
+      ) : (
+        <tr>
+          <td colSpan="3">No results found.</td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>
 
             <div className="table-divider"></div>
 

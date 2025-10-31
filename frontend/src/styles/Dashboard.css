@@ -6,17 +6,47 @@
   background-color: #012a54; 
   color: white;
   font-family: Arial, sans-serif;
-    align-items: center;
+  align-items: center;
+  overflow-y: auto;    
+  overflow-x: hidden;   
+  height: 100vh;       
   
 }
 
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.usage-pie {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+}
+
+.pie-labels {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pie-labels .color {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  border-radius: 2px;
+}
 
 .vertical-divider {
   width: 1px;
   background-color: #000;
   margin: 0 2rem;
   height: auto;
-  min-height: 700px;
+  min-height: 500px;
   align-self: center;
 }
 
@@ -40,47 +70,45 @@
   background: white;
   border-radius: 20px;
   display: grid;
-  grid-template-columns: 1fr auto 1fr; /* ✅ Added "auto" for divider */
+  grid-template-columns: 1fr auto 1fr; 
   color: black;
   padding: 2rem;
   width: 100%;
   max-width: 1200px;
-  align-items: start; /* ✅ vertically align center */
+  align-items: start; 
+ max-height: 600px; /* ✅ limit height */  
 }
 
 .overview-left {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
-  font-size: 20px; /* ✅ makes the paragraph text bigger */
-
+  font-size: 20px;
   color: #000;
-    padding-right: 0.1rem;
+  padding-right: 0.1rem;
 }
 
 .overview-row {
   display: flex;
-  justify-content: space-between; /* ✅ pushes label left and value right */
+  justify-content: space-between; 
   width: 100%;
-  max-width: 600px; /* adjust width as needed */
+  max-width: 600px;
   padding-right: 0.1rem; 
 }
 
 .overview-row span:last-child {
-
-  color: #000; /* makes values stand out */
+  color: #000;
 }
 
 .overview-left h2 {
   font-size: 28px;
- 
   color: #000;
   margin-bottom: 1rem;
 }
 
 
 .overview-left .data-number {
-  font-size: 24px; /* ✅ highlights the total number */
+  font-size: 24px;
   font-weight: bold;
   color: #5cc13b;
 }
