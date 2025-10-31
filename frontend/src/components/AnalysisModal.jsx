@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/components/AnalysisModal.css";
 import DeleteModal from "../components/DeleteModal";
+import ExportModal from "../components/ExportModal";
 import deleteIcon from "../assets/icon_delete.png";
 import { toast } from "react-toastify";
 
@@ -10,6 +11,7 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
   const [showJson, setShowJson] = useState(false);
   const navigate = useNavigate();
 
@@ -40,8 +42,10 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
   }, [analysis]);
 
   const handleExportCSV = () => {
+    setShowExportModal(false); // Close modal first
+
     if (!analysisData || !analysisData.results) {
-      alert("No analysis data to export.");
+      toast.error("No analysis data to export.");
       return;
     }
 
@@ -75,9 +79,10 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `analysis_${_id || "export"}.csv`;
+    link.download = `Analysis_${_id || "export"}.csv`;
     link.click();
     URL.revokeObjectURL(url);
+    toast.success("CSV exported successfully!");
   };
 
   const handleDelete = async () => {
@@ -153,7 +158,7 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
 
         <div className="analysis-modal-body">
           <div className="modal-actions">
-            <button className="action-btn export" onClick={handleExportCSV}>Export</button>
+            <button className="action-btn export" onClick={() => setShowExportModal(true)}>Export</button>
             <button className="action-btn delete-btn" onClick={() => setShowDeleteModal(true)}>
               <img src={deleteIcon} alt="Delete" /> Delete
             </button>
@@ -300,6 +305,13 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
         show={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleDelete}
+      />
+
+      {/* ✅ Export Confirmation */}
+      <ExportModal
+        show={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        onExport={handleExportCSV}
       />
     </div>
   );
