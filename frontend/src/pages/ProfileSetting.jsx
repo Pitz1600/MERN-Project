@@ -23,8 +23,7 @@ const ProfileSettings = () => {
   const navigate = useNavigate();
   const { userData, backendUrl, setUserData, setIsLoggedIn } = useContext(AppContext);
   const [showPopup, setShowPopup] = useState(false);
-    const [showChangePasswordPopup, setShowChangePasswordPopup] = useState(false);
-
+  const [showChangePasswordPopup, setShowChangePasswordPopup] = useState(false);
 
   const handleLogout = async () => {
     try {

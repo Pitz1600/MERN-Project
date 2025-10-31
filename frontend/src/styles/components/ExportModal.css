@@ -1,0 +1,73 @@
+.export-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.export-modal-container {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px 32px;
+  text-align: center;
+  width: 380px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.export-modal-logo img {
+  width: 60px;
+  margin-bottom: 10px;
+}
+
+.export-modal-title {
+  font-size: 1.6rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.export-modal-message {
+  color: #555;
+  margin-bottom: 20px;
+  font-size: 1rem;
+}
+
+.export-modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.export-modal-cancel,
+.export-modal-confirm {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  transition: background 0.3s;
+}
+
+.export-modal-cancel {
+  background-color: #e5e5e5;
+}
+
+.export-modal-cancel:hover {
+  background-color: #d4d4d4;
+}
+
+.export-modal-confirm {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.export-modal-confirm:hover {
+  background-color: #0069d9;
+}

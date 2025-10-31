@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "../styles/Dashboard.css";
 import Navbar from "../components/Navbar.jsx";
 import Container from "../components/Container.jsx";
 import PieChart from "../components/PieChartElement.jsx";
-import PopModal from "../components/PopupModal.jsx";
+import ExportModal from "../components/ExportModal.jsx";
+import { AppContext } from "../context/AppContext.jsx";
 
 const Dashboard = () => {
   const [showData, setShowData] = useState(false);
@@ -19,13 +20,94 @@ const Dashboard = () => {
     highestNegativeSentiment: 0,
     mostCommon: "",
   });
+  const [showExportModal, setShowExportModal] = useState(false);
 
-  // 🟢 Fetch user's analyses (token from cookies)
+  const { userData } = useContext(AppContext);
+  const name = userData.name || "PureText_User";
+
+  // 🧾 CSV Export Helper
+  const exportToCSV = (analyses) => {
+    if (!analyses || analyses.length === 0) {
+      alert("No analyses available to export.");
+      return;
+    }
+
+    // Define CSV header (removed "Type")
+    const headers = [
+      "Analysis ID",
+      "Date",
+      "Category",
+      "Original Text",
+      "Correction",
+      "Reason of Correction",
+      "Sentiment Score",
+    ];
+
+    const rows = [];
+
+    analyses.forEach((analysis) => {
+      // ✅ Try multiple possible date fields
+      const rawDate =
+        analysis.createdAt || analysis.date || analysis.updatedAt || null;
+
+      // ✅ Fix "Invalid date" issue
+      const date = rawDate ? new Date(rawDate).toLocaleString() : "Unknown";
+
+      // Flatten results
+      if (analysis.results && Array.isArray(analysis.results)) {
+        analysis.results.forEach((r) => {
+          rows.push([
+            analysis._id,
+            date,
+            r.category || "N/A",
+            r.original_text?.replace(/\n/g, " ") || "",
+            r.correction?.replace(/\n/g, " ") || "",
+            r.reason_of_correction?.replace(/\n/g, " ") || "",
+            r.sentiment_score || "N/A",
+          ]);
+        });
+      }
+    });
+
+    // ✅ Convert to CSV text
+    const csvContent =
+      [headers.join(","), ...rows.map((r) => r.map(escapeCSV).join(","))].join(
+        "\n"
+      );
+
+    // ✅ Trigger download
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${name} Analyses ${new Date()
+      .toISOString()
+      .slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // 🧹 Escape quotes/commas/newlines
+  const escapeCSV = (value) => {
+    if (value == null) return "";
+    const str = String(value).replace(/"/g, '""'); // escape quotes
+    if (str.search(/("|,|\n)/g) >= 0) return `"${str}"`;
+    return str;
+  };
+
+  const handleExportData = () => {
+    exportToCSV(analyses);
+    console.log("Exporting data...");
+    setShowExportModal(false);
+    toast.success("Data exported successfully!");
+  };
+
   const fetchAnalyses = async () => {
     try {
       const res = await fetch("http://localhost:3001/api/user/analysis", {
         method: "GET",
-        credentials: "include", // ✅ includes cookie in request
+        credentials: "include",
       });
 
       const data = await res.json();
@@ -186,6 +268,10 @@ const Dashboard = () => {
                     <option>September 2025</option>
                   </select>
                 </div>
+                <div className="export-row">
+                  <button className="export-btn" onClick={() => setShowExportModal(true)}>
+                    Export Data</button>
+                </div>
               </div>
 
               <div className="vertical-divider"></div>
@@ -211,11 +297,12 @@ const Dashboard = () => {
         )}
       </Container>
 
-      {/* ✅ Popup Modal */}
-      <PopModal show={showPopup} onClose={() => setShowPopup(false)}>
-        <h2>Analyzing...</h2>
-        <p>Your text is being processed. Please wait...</p>
-      </PopModal>
+      {/* Export Modal */}
+      <ExportModal
+        show={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        onExport={handleExportData}
+      />
     </div>
   );
 };
