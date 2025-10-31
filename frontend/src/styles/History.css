@@ -37,13 +37,14 @@
 .history-top-buttons:hover {
    background-color: #69d84f;
 }
-
 .history-content {
   display: flex;
   justify-content: center;
-  align-items: center;
-  max-height: 100vh;
-  overflow-y: auto;
+  align-items: flex-start;    /* ✅ scroll starts from top */
+  height: calc(100vh - 70px); /* ✅ leave room for Navbar height */
+  overflow-y: auto;           /* ✅ scrolls vertically */
+  overflow-x: hidden;
+  padding: 1rem 0;
 }
   
 /* Search section */
@@ -63,12 +64,29 @@
   width: 90%;
   margin: 1rem auto;
   background: white;
-  border-radius: 1rem;  
-  min-height: 10%;
+  border-radius: 1rem;
   padding-bottom: 1rem;
   box-sizing: border-box;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  max-height: 75vh;          /* ✅ limit table height */
+  overflow-y: auto;          /* ✅ allow scrolling inside */
+  scrollbar-width: thin;     /* for Firefox */
 }
 
+.history-table-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.history-table-container::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border-radius: 10px;
+}
+
+.history-table-container::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
 .history-empty {
   box-sizing: border-box;
   width: 90%;              

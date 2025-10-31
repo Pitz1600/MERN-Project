@@ -1,4 +1,5 @@
 const tips = [
+  "nigga",
   "Neutral words can also be perceived as biased depending on context and perception.",
   "Analyze any piece of text quickly — paste or type and get bias and sentiment insights in seconds.",
   "Automatically saves your analyses to your history and review them later to track improvements over time.",
