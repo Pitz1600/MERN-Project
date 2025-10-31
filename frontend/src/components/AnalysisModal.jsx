@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/components/AnalysisModal.css";
 import DeleteModal from "../components/DeleteModal";
 import deleteIcon from "../assets/icon_delete.png";
@@ -9,10 +10,11 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showJson, setShowJson] = useState(false);
+  const navigate = useNavigate();
 
   // 🧩 Fetch the selected analysis details from backend
   useEffect(() => {
-
     if (!show || !analysis) return;
     const fetchAnalysisDetails = async () => {
       try {
@@ -24,7 +26,6 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
 
         if (!res.ok) throw new Error(`Error fetching analysis: ${res.status}`);
         const json = await res.json();
-
         if (!json.success) throw new Error(json.message || "Failed to load analysis details");
 
         setAnalysisData(json.analysis);
@@ -35,7 +36,6 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
         setLoading(false);
       }
     };
-
     fetchAnalysisDetails();
   }, [analysis]);
 
@@ -46,8 +46,6 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
     }
 
     const { prompt, date, results, _id } = analysisData;
-
-    // Define CSV headers
     const headers = [
       "category",
       "type",
@@ -58,25 +56,21 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
       "words_detected",
     ];
 
-    // Build CSV rows for each result
     const csvRows = results.map((r) =>
       headers
         .map((header) => {
-          // Safely wrap text fields in quotes
           const val = r[header] !== undefined ? String(r[header]) : "";
-          return `"${val.replace(/"/g, '""')}"`;
+          return `"${val.replace(/"/g, '""')}"`
         })
         .join(",")
     );
 
-    // Combine headers + rows + top metadata
     const csvContent =
       `Prompt,"${prompt.replace(/"/g, '""')}"\nDate,"${new Date(date).toISOString()}"\nID,"${_id}"\n\n` +
       headers.join(",") +
       "\n" +
       csvRows.join("\n");
 
-    // Create blob and trigger download
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -86,7 +80,6 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
     URL.revokeObjectURL(url);
   };
 
-  // 🧩 Delete selected analysis
   const handleDelete = async () => {
     try {
       const res = await fetch(`http://localhost:3001/api/user/analysis/${analysis._id}`, {
@@ -109,7 +102,11 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
     }
   };
 
-  const handleOutsideClick = (e) => e.stopPropagation();
+  const handleEdit = (textToEdit) => {
+    // ✅ Save the text temporarily in sessionStorage
+    sessionStorage.setItem("analyzer_text", textToEdit);
+    navigate("/analyzer");
+  };
 
   if (loading) {
     return (
@@ -136,6 +133,13 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
   if (!analysisData) return null;
 
   const { prompt, date, results } = analysisData;
+  const allCorrections = results
+    .map((r) =>
+      r.correction && r.correction.trim() !== "" && r.correction !== "None"
+        ? r.correction
+        : r.original_text || ""
+    )
+    .join(" ");
 
   return (
     <div className="analysis-modal-overlay">
@@ -149,19 +153,64 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
 
         <div className="analysis-modal-body">
           <div className="modal-actions">
-            <button className="action-btn edit">Edit</button>
             <button className="action-btn export" onClick={handleExportCSV}>Export</button>
-            <button
-              className="action-btn delete-btn"
-              onClick={() => setShowDeleteModal(true)}
-            >
+            <button className="action-btn delete-btn" onClick={() => setShowDeleteModal(true)}>
               <img src={deleteIcon} alt="Delete" /> Delete
             </button>
           </div>
 
+          {/* PROMPT SECTION */}
           <div className="analysis-field">
             <label>Prompt:</label>
-            <div className="field-content">{prompt || "—"}</div>
+            <div className="field-content">
+              {prompt || "—"}
+              <div className="field-buttons">
+                <button onClick={() => handleEdit(prompt)} className="small-btn">Edit</button>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(prompt);
+                    toast.success("Prompt copied!");
+                  }}
+                  className="small-btn"
+                >
+                  Copy
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* ALL CORRECTIONS SECTION */}
+          <div className="analysis-field">
+            <label>All Corrections:</label>
+            <div className="field-content">
+              {results && results.length > 0 ? (
+                results.map((r, i) => {
+                  const correctionText =
+                    r.correction && r.correction.trim() !== "" && r.correction !== "None"
+                      ? r.correction
+                      : r.original_text || "—";
+                  return (
+                    <span key={i} className="correction-item">
+                      {correctionText}{" "}
+                    </span>
+                  );
+                })
+              ) : (
+                <div>—</div>
+              )}
+              <div className="field-buttons">
+                <button onClick={() => handleEdit(allCorrections)} className="small-btn">Edit</button>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(allCorrections);
+                    toast.success("All corrections copied!");
+                  }}
+                  className="small-btn"
+                >
+                  Copy
+                </button>
+              </div>
+            </div>
           </div>
 
           <div className="analysis-field">
@@ -178,6 +227,7 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
             </div>
           </div>
 
+          {/* Raw JSON */}
           <h2 className="section-title">Detected Results</h2>
           <div className="results-list">
             {results && results.length > 0 ? (
@@ -186,31 +236,26 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
                   <div className="result-header">
                     <strong>{r.category || "Unknown"}</strong>
                   </div>
-
                   <div className="result-field">
                     <label>Original Text:</label>
                     <div>{r.original_text || "—"}</div>
                   </div>
-
                   {r.correction && (
                     <div className="result-field">
                       <label>Correction:</label>
                       <div>{r.correction || "—"}</div>
                     </div>
                   )}
-
                   {r.sentiment_score && (
                     <div className="result-field">
                       <label>Sentiment Score:</label>
                       <div>{r.sentiment_score || "—"}</div>
                     </div>
                   )}
-
                   <div className="result-field">
                     <label>Reason of Correction:</label>
                     <div>{r.reason_of_correction || "—"}</div>
                   </div>
-
                   <div className="result-field">
                     <label>Words Detected:</label>
                     <div>{r.words_detected || "—"}</div>
@@ -224,11 +269,28 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
 
           <div className="analysis-field full-width">
             <label>Raw JSON:</label>
-            <textarea
-              className="raw-json"
-              readOnly
-              value={JSON.stringify(analysisData, null, 2)}
-            />
+            <div className="raw-json-controls">
+              <button className="toggle-json-btn" onClick={() => setShowJson((prev) => !prev)}>
+                {showJson ? "Hide JSON" : "Show JSON"}
+              </button>
+              <button
+                className="copy-json-btn"
+                onClick={() => {
+                  navigator.clipboard.writeText(JSON.stringify(analysisData, null, 2));
+                  toast.success("JSON copied to clipboard!");
+                }}
+              >
+                Copy
+              </button>
+            </div>
+
+            {showJson && (
+              <textarea
+                className="raw-json"
+                readOnly
+                value={JSON.stringify(analysisData, null, 2)}
+              />
+            )}
           </div>
         </div>
       </div>

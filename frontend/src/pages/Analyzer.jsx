@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import PopupModal from "../components/LoadingModal";
 import Container from "../components/Container";
@@ -135,6 +135,17 @@ const Analyzer = () => {
       : results.filter((r) =>
           r.category?.toLowerCase().includes(activeTab.toLowerCase())
         );
+  
+  useEffect(() => {
+    const storedText = sessionStorage.getItem("analyzer_text");
+    if (storedText) {
+      setText(storedText);
+      setWordCount(storedText.trim().split(/\s+/).filter(Boolean).length);
+      setCharCount(storedText.length);
+      sessionStorage.removeItem("analyzer_text"); // ✅ clear after load
+    }
+  }, []);
+
 
   return (
     <div className="analyzer-page">
