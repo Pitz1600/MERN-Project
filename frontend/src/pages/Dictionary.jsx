@@ -95,7 +95,6 @@ const Dictionary = () => {
                 searchValue={searchValue}
                 onSearchChange={handleSearchChange}
                 onSearchClick={() => {}}
-                onSearchClick={() => {}}
                 sortBy={sortBy}
                 onSortByChange={handleSortByChange}
                 sortOptions={sortOptions}
