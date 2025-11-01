@@ -35,7 +35,6 @@ const Login = () => {
   return (
     <div className="login-wrapper">
       <div className="login-container">
-        {/* Left panel */}
         <div className="login-left">
           <button
             className="icon-back-btn"
@@ -59,7 +58,6 @@ const Login = () => {
           <p className="login-note">Login to Continue</p>
         </div>
 
-        {/* Right panel */}
         <div className="login-right">
           <form onSubmit={onSubmitLogin}>
             <div className="form-group">

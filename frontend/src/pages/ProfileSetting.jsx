@@ -1,23 +1,34 @@
 import React, { useContext, useState } from "react";
-import { Pencil, Moon, Trash2, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { AppContext } from "../context/AppContext";
 import LogoutModal from "../components/LogoutModal";
 import axios from "axios";
 import { toast } from "react-toastify";
-import '../styles/ProfileSetting.css';
-import userIcon from "../assets/icon_user.png";
+import "../styles/ProfileSetting.css";
+import userIcon from "../assets/user.png";
+import Container from "../components/Container.jsx";
+import LogoutPopup from "../components/LogoutPopup.jsx"; 
+import ChangePasswordPopup from "../components/ChangePasswordPopup.jsx"; 
+import aboutIcon from "../assets/icon_about.png";
+import changeIcon from "../assets/icon_change.png";
+import darkIcon from "../assets/icon_dark.png";
+import privacyIcon from "../assets/icon_privacy.png";
+import deleteIcon from "../assets/icon_delete.png";
+import logoutIcon from "../assets/icon_logout.png";
+
+
 
 const ProfileSettings = () => {
   const navigate = useNavigate();
   const { userData, backendUrl, setUserData, setIsLoggedIn } = useContext(AppContext);
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [showChangePasswordPopup, setShowChangePasswordPopup] = useState(false);
 
   const handleLogout = async () => {
     try {
       axios.defaults.withCredentials = true;
-      const { data } = await axios.post(backendUrl + "/api/auth/logout");
+      const { data } = await axios.post(`${backendUrl}/api/auth/logout`);
       if (data.success) {
         setIsLoggedIn(false);
         setUserData(false);
@@ -28,67 +39,84 @@ const ProfileSettings = () => {
     }
   };
 
-  return (
-    <div className="profile-settings-container">
-      {/* Navbar */}
-      <Navbar />
+   const handlePasswordChange = async (newPassword) => {
+    try {
+      const { data } = await axios.post(`${backendUrl}/api/auth/change-password`, { newPassword });
+      if (data.success) {
+        toast.success("Password changed successfully!");
+        setShowChangePasswordPopup(false);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
-      {/* Main Container */}
-      <div className="profile-settings-main">
-        <div className="profile-settings-card">
-          {/* Profile Header */}
+  return (
+    <div className="profile-page">
+      <Navbar />
+      <Container>
+        <div className="profile-card">
+          {/* Header */}
           <div className="profile-header">
             <div className="profile-left">
-              <div className="profile-avatar">
-                <img src={userIcon} alt="User" />
-              </div>
-              <div className="profile-texts">
-                <h2 className="profile-name">
-                  {userData ? userData.name : "Full Name Long Example"}
-                </h2>
-                <p className="profile-email">
-                  {userData ? userData.email : "example@email.com"}
-                </p>
+              <img src={userIcon} alt="User" className="profile-avatar" />
+              <div className="profile-info">
+                <h2>{userData ? userData.name : "Full Name"}</h2>
+                <p>{userData ? userData.email : "example@email.com"}</p>
               </div>
             </div>
-            <div className="section-title-right">Profile</div>
+            <h3 className="profile-label">Profile</h3>
           </div>
 
           <hr className="profile-divider" />
 
-          {/* Settings Section */}
-          <div className="settings-section">
-            <div className="section-title-right">Settings</div>
-
+         
+          <div className="profile-settings">
+            <h3 className="profile-setting">Settings</h3>
             <div className="settings-grid">
-              <button className="settings-btn">About Us</button>
-              <button className="settings-btn">
-                Change Password <Pencil size={18} />
-              </button>
-              <button className="settings-btn">
-                Dark Mode <Moon size={18} />
-              </button>
-              <button className="settings-btn">Privacy Policy</button>
-              <button className="settings-btn settings-btn-red">
-                Delete Account <Trash2 size={18} />
-              </button>
-              <button
-                onClick={() => setShowLogoutModal(true)}
-                className="settings-btn settings-btn-red"
-              >
-                Logout <LogOut size={18} />
-              </button>
-            </div>
+<button className="settings-btn about" onClick={() => navigate("/about-us")}>
+  <img src={aboutIcon} alt="About" className="btn-icon" /> About Us
+</button>
+
+
+  <button className="settings-btn change" onClick={() => setShowChangePasswordPopup(true)}>
+    <img src={changeIcon} alt="Change" className="btn-icon" /> Change Password
+  </button>
+
+  <button className="settings-btn dark">
+    <img src={darkIcon} alt="Dark" className="btn-icon" /> Dark Mode
+  </button>
+
+  <button className="settings-btn privacy">
+    <img src={privacyIcon} alt="Privacy" className="btn-icon" /> Privacy Policy
+  </button>
+
+  <button className="settings-btn delete">
+    <img src={deleteIcon} alt="Delete" className="btn-icon" /> Delete Account
+  </button>
+
+  <button className="settings-btn logout" onClick={() => setShowPopup(true)}>
+    <img src={logoutIcon} alt="Logout" className="btn-icon" /> Logout
+  </button>
+</div>
           </div>
         </div>
-      </div>
-      
-      {/* Logout Modal */}
-      <LogoutModal 
-        show={showLogoutModal}
-        onClose={() => setShowLogoutModal(false)}
-        onLogout={handleLogout}
-      />
+      </Container>
+
+    
+      {showPopup && (
+        <LogoutPopup
+          onConfirm={handleLogout}
+          onCancel={() => setShowPopup(false)}
+        />
+      )}
+
+      {showChangePasswordPopup && (
+        <ChangePasswordPopup
+          onCancel={() => setShowChangePasswordPopup(false)}
+          onSave={handlePasswordChange}
+        />
+      )}
     </div>
   );
 };

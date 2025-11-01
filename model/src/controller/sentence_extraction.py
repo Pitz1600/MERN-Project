@@ -10,7 +10,7 @@ def split_sentence(text):
         messages=[
             {
                 "role":"user",
-                "content": f'Accept UK and US based English. Split the text into correct sentences. Output only a list of the sentences. text: "{text}"',
+                "content": f'Accept UK and US based English. Split the text into correct sentences. Output only a list of the sentences. Strictly do not modify anything in the text: "{text}"',
             },
         ],
         model="gpt-oss:120b-cloud",

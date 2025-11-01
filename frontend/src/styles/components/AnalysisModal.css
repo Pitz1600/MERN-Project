@@ -162,3 +162,37 @@
 .delete-btn img:hover {
   transform: scale(1.2);
 }
+
+.raw-json-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.toggle-json-btn,
+.copy-json-btn {
+  background-color: #e0e0e0;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.toggle-json-btn:hover,
+.copy-json-btn:hover {
+  background-color: #d0d0d0;
+}
+
+.raw-json {
+  width: 100%;
+  min-height: 200px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  resize: vertical;
+}

@@ -4,14 +4,16 @@ import Navbar from "../components/Navbar";
 import AnalysisModal from "../components/AnalysisModal";
 import StartAnalyzingButton from "../components/StartAnalyzingButton";
 import SearchBar from "../components/SearchBar";
+import Pagination from "../components/Pagination";
 import "../styles/History.css";
 import Container from "../components/Container";
 
 const History = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
-  const [searchBy, setSearchBy] = useState("text");
+  const [sortBy, setSortBy] = useState("dateTime");
   const [historyData, setHistoryData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -19,38 +21,36 @@ const History = () => {
   const [selectedAnalysis, setSelectedAnalysis] = useState(null);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const totalPages = Math.max(1, Math.ceil(historyData.length / itemsPerPage));
-  const paginatedData = historyData.slice(
+  const sortOptions = [
+    { value: "id", label: "ID" },
+    { value: "dateTime", label: "Date/Time" },
+    { value: "prompt", label: "Prompt" },
+    { value: "category", label: "Category" },
+    { value: "score", label: "Sentiment Score" },
+  ];
+
+  const totalPages = Math.max(1, Math.ceil(filteredData.length / itemsPerPage));
+  const paginatedData = filteredData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  // Ensure currentPage is valid when itemsPerPage or data length changes
   useEffect(() => {
-    const newTotal = Math.max(1, Math.ceil(historyData.length / itemsPerPage));
+    const newTotal = Math.max(1, Math.ceil(filteredData.length / itemsPerPage));
     if (currentPage > newTotal) setCurrentPage(newTotal);
-  }, [itemsPerPage, historyData, currentPage]);
+  }, [itemsPerPage, filteredData, currentPage]);
 
-  const handleStartAnalyzing = () => {
-    navigate("/analyzer");
-  };
-
+  const handleStartAnalyzing = () => navigate("/analyzer");
   const handleSearchChange = (e) => setSearchValue(e.target.value);
-  const handleSearchClick = () => {
-    console.log("Searching for:", searchValue, "by", searchBy);
-  };
-  const handleSearchByChange = (e) => setSearchBy(e.target.value);
+  const handleSortByChange = (e) => setSortBy(e.target.value);
 
-  // Helper to format id so at least 4 characters are visible before ellipsis
   const formatIdDisplay = (id) => {
-    if (!id) return '';
+    if (!id) return "";
     const str = String(id);
-    if (str.length <= 8) return str; // short ids show fully
-    // show first 4 chars and last 2 for context
+    if (str.length <= 8) return str;
     return `${str.slice(0, 4)}...${str.slice(-2)}`;
   };
 
-  // Fetch analyses for authenticated user on mount
   useEffect(() => {
     const fetchAnalyses = async () => {
       setLoading(true);
@@ -83,15 +83,18 @@ const History = () => {
 
           return {
             id: a._id || a.id || Math.random().toString(36).slice(2, 9),
+            _rawDateISO: a.date ? new Date(a.date).toISOString() : null,
             dateTime: a.date
-              ? new Date(a.date).toLocaleString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                  hour: "numeric",
-                  minute: "2-digit",
-                  hour12: true,
-                }).replace(",", "")
+              ? new Date(a.date)
+                  .toLocaleString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true,
+                  })
+                  .replace(",", "")
               : "",
             prompt: a.prompt || a.text || a.original_text || "",
             category,
@@ -101,6 +104,7 @@ const History = () => {
         });
 
         setHistoryData(mapped);
+        setFilteredData(mapped);
       } catch (err) {
         console.error(err);
         setError(err.message || "Error fetching analyses");
@@ -112,34 +116,71 @@ const History = () => {
     fetchAnalyses();
   }, []);
 
+  useEffect(() => {
+    const term = searchValue.toLowerCase().trim();
+
+    const baseFiltered = historyData.filter((item) => {
+      if (!term) return true;
+      return (
+        String(item.id || "").toLowerCase().includes(term) ||
+        String(item.dateTime || "").toLowerCase().includes(term) ||
+        String(item.prompt || "").toLowerCase().includes(term) ||
+        String(item.category || "").toLowerCase().includes(term) ||
+        String(item.sentiment_score || "").toLowerCase().includes(term)
+      );
+    });
+
+    const sorted = [...baseFiltered].sort((a, b) => {
+      if (sortBy === "dateTime") {
+        const da = a._rawDateISO ? new Date(a._rawDateISO) : new Date(a.dateTime || 0);
+        const db = b._rawDateISO ? new Date(b._rawDateISO) : new Date(b.dateTime || 0);
+        return db - da;
+      }
+
+      if (sortBy === "score") {
+        const aIsNA = a.sentiment_score === "N/A" || a.sentiment_score === "" || a.sentiment_score == null;
+        const bIsNA = b.sentiment_score === "N/A" || b.sentiment_score === "" || b.sentiment_score == null;
+        if (aIsNA && bIsNA) return 0;
+        if (aIsNA) return 1;
+        if (bIsNA) return -1;
+        const va = parseFloat(a.sentiment_score);
+        const vb = parseFloat(b.sentiment_score);
+        return vb - va;
+      }
+
+      const va = String(a[sortBy] || "").toLowerCase();
+      const vb = String(b[sortBy] || "").toLowerCase();
+      return va.localeCompare(vb);
+    });
+
+    setFilteredData(sorted);
+    setCurrentPage(1);
+  }, [historyData, searchValue, sortBy]);
 
   const handleDeleteSuccess = (deletedId) => {
-    setHistoryData((prevData) => prevData.filter(item => item.id !== deletedId));
+    setHistoryData((prev) => prev.filter((item) => item.id !== deletedId));
+    setFilteredData((prev) => prev.filter((item) => item.id !== deletedId));
   };
 
   return (
     <div className="history-container">
       <Navbar />
-
-      {/* ✅ Main content below buttons */}
       <div className="history-content">
         <Container>
-          {/* Search Bar */}
           <div className="history-search-section">
             <SearchBar
               searchValue={searchValue}
               onSearchChange={handleSearchChange}
-              onSearchClick={handleSearchClick}
-              searchBy={searchBy}
-              onSearchByChange={handleSearchByChange}
+              sortBy={sortBy}
+              onSortByChange={handleSortByChange}
+              sortOptions={sortOptions}
             />
           </div>
 
-          {/* Table or Empty State */}
           <div className="history-table-container">
-            {historyData.length === 0 ? (
+            {filteredData.length === 0 ? (
               <div className="history-empty">
-                <p>History is empty.</p>
+                <p>{loading ? "Loading..." : "No results found."}</p>
                 <StartAnalyzingButton onClick={handleStartAnalyzing} />
               </div>
             ) : (
@@ -157,10 +198,23 @@ const History = () => {
                     </thead>
                     <tbody>
                       {paginatedData.map((item) => (
-                        <tr key={item.id} onClick={() => { setSelectedAnalysis(item.raw); setShowModal(true); }} style={{ cursor: 'pointer' }}>
-                          <td className="history-id-ellipsis" title={item.id}>{formatIdDisplay(item.id)}</td>
-                          <td className="history-date-ellipsis" title={item.dateTime}>{item.dateTime}</td>
-                          <td className="history-text-ellipsis" title={item.prompt}>{item.prompt}</td>
+                        <tr
+                          key={item.id}
+                          onClick={() => {
+                            setSelectedAnalysis(item.raw);
+                            setShowModal(true);
+                          }}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <td className="history-id-ellipsis" title={item.id}>
+                            {formatIdDisplay(item.id)}
+                          </td>
+                          <td className="history-date-ellipsis" title={item.dateTime}>
+                            {item.dateTime}
+                          </td>
+                          <td className="history-text-ellipsis" title={item.prompt}>
+                            {item.prompt}
+                          </td>
                           <td>{item.category}</td>
                           <td>{item.sentiment_score}</td>
                         </tr>
@@ -169,68 +223,36 @@ const History = () => {
                   </table>
                 </div>
 
-                {/* Pagination */}
-                <div className="pagination">
-                  <div className="rows-per-page">
-                    <label htmlFor="rowsPerPage">Rows:</label>
-                    <select
-                      id="rowsPerPage"
-                      value={itemsPerPage}
-                      onChange={(e) => {
-                        const val = Number(e.target.value);
-                        setItemsPerPage(val);
-                        setCurrentPage(1); // reset to first page when page size changes
-                      }}
-                    >
-                      <option value={5}>5</option>
-                      <option value={10}>10</option>
-                      <option value={20}>20</option>
-                    </select>
-                  </div>
+                <div className="table-divider"></div>
 
-                  <button
-                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                    disabled={currentPage === 1}
-                  >
-                    Previous
-                  </button>
-
-                  {[...Array(totalPages)].map((_, idx) => {
-                    const page = idx + 1;
-                    return (
-                      <button
-                        key={page}
-                        className={currentPage === page ? "active" : ""}
-                        onClick={() => setCurrentPage(page)}
-                      >
-                        {page}
-                      </button>
-                    );
-                  })}
-
-                  <button
-                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                    disabled={currentPage === totalPages}
-                  >
-                    Next
-                  </button>
-                </div>
+                {/* ✅ Reusable Pagination Component */}
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  itemsPerPage={itemsPerPage}
+                  onRowsPerPageChange={(val) => {
+                    setItemsPerPage(val);
+                    setCurrentPage(1);
+                  }}
+                  onPageChange={setCurrentPage}
+                />
               </>
             )}
           </div>
         </Container>
       </div>
 
-      {/* Analysis Detail Modal */}
-      {showModal && <AnalysisModal
-      show={showModal}
-      onClose={() => {
-        setShowModal(false);
-        setSelectedAnalysis(null);
-        }}
-      analysis={selectedAnalysis}
-      onDeleteSuccess={handleDeleteSuccess} />
-      }
+      {showModal && (
+        <AnalysisModal
+          show={showModal}
+          onClose={() => {
+            setShowModal(false);
+            setSelectedAnalysis(null);
+          }}
+          analysis={selectedAnalysis}
+          onDeleteSuccess={handleDeleteSuccess}
+        />
+      )}
     </div>
   );
 };

@@ -10,8 +10,9 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Analyzer from "./pages/Analyzer.jsx";  
 import History from "./pages/History.jsx";
 import ProfileSettings from "./pages/ProfileSetting.jsx"; 
+import AboutUs from "./pages/AboutUs.jsx"; 
+import Dictionary from "./pages/Dictionary.jsx"; 
 import { AppContext } from "./context/AppContext.jsx";
-import Dictionary from "./pages/Dictionary.jsx";
 
 const App = () => {
   const { isLoggedIn } = useContext(AppContext);
@@ -54,6 +55,8 @@ const App = () => {
           path="/profile-settings"
           element={isLoggedIn ? <ProfileSettings /> : <Navigate to="/" />}
         />
+  <Route path="/about-us" element={<AboutUs />} />  
+         <Route path="/dictionary" element={<Dictionary />} /> 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

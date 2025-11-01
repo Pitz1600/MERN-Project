@@ -125,14 +125,14 @@ const Navbar = () => {
           ))}
 
           <button
-            onClick={() => {
-              navigate("/profile-settings");
-              setMenuOpen(false);
-            }}
-            className={`mobile-profile ${isActive("/profile-settings") ? "active" : ""}`}
-          >
-            {firstLetter} Profile
-          </button>
+  onClick={() => {
+    navigate("/profile-settings");
+    setMenuOpen(false);
+  }}
+  className={`mobile-profile ${isActive("/profile-settings") ? "active" : ""}`}
+>
+  Profile
+</button>
         </div>
       )}
     </nav>

@@ -1,12 +1,13 @@
 import React from "react";
-import "../styles/components/SearchBar.css"; 
+import "../styles/components/SearchBar.css";
 
 const SearchBar = ({
   searchValue,
   onSearchChange,
   onSearchClick,
-  searchBy,
-  onSearchByChange,
+  sortBy,
+  onSortByChange,
+  sortOptions,
 }) => {
   return (
     <div className="searchbar-container">
@@ -29,16 +30,18 @@ const SearchBar = ({
       </div>
 
       {/* Dropdown */}
-      <div className="searchbar-dropdown">
-        <span className="searchbar-label">Search By:</span>
+      <div className="sortbar-dropdown">
+        <span className="sortbar-label">Sort By:</span>
         <select
-          className="searchbar-select"
-          value={searchBy}
-          onChange={onSearchByChange}
+          className="sortbar-select"
+          value={sortBy}
+          onChange={onSortByChange}
         >
-          <option value="text">Submitted Text</option>
-          <option value="filename">File Name</option>
-          <option value="date">Date</option>
+          {sortOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
         </select>
       </div>
     </div>
