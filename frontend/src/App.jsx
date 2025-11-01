@@ -12,6 +12,8 @@ import History from "./pages/History.jsx";
 import ProfileSettings from "./pages/ProfileSetting.jsx"; 
 import AboutUs from "./pages/AboutUs.jsx"; 
 import Dictionary from "./pages/Dictionary.jsx"; 
+import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
+
 import { AppContext } from "./context/AppContext.jsx";
 
 const App = () => {
@@ -55,8 +57,13 @@ const App = () => {
           path="/profile-settings"
           element={isLoggedIn ? <ProfileSettings /> : <Navigate to="/" />}
         />
-  <Route path="/about-us" element={<AboutUs />} />  
+        
+        <Route path="/about-us" element={<AboutUs />} />  
+
          <Route path="/dictionary" element={<Dictionary />} /> 
+
+         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

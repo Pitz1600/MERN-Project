@@ -5,6 +5,9 @@ import DeleteModal from "../components/DeleteModal";
 import ExportModal from "../components/ExportModal";
 import deleteIcon from "../assets/icon_delete.png";
 import { toast } from "react-toastify";
+import exportIcon from "../assets/export_icon.png";
+import editIcon from "../assets/icon_edit.png";
+import copyIcon from "../assets/icon_copy.png";
 
 const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
   const [analysisData, setAnalysisData] = useState(null);
@@ -15,7 +18,6 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
   const [showJson, setShowJson] = useState(false);
   const navigate = useNavigate();
 
-  // 🧩 Fetch the selected analysis details from backend
   useEffect(() => {
     if (!show || !analysis) return;
     const fetchAnalysisDetails = async () => {
@@ -42,7 +44,7 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
   }, [analysis]);
 
   const handleExportCSV = () => {
-    setShowExportModal(false); // Close modal first
+    setShowExportModal(false); 
 
     if (!analysisData || !analysisData.results) {
       toast.error("No analysis data to export.");
@@ -150,7 +152,7 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
     <div className="analysis-modal-overlay">
       <div className="analysis-modal-container">
         <div className="analysis-modal-header">
-          <h2>Analysis Details</h2>
+          <h2>ANALYSIS DETAILS</h2>
           <button className="close-btn" onClick={onClose} aria-label="Close">
             ×
           </button>
@@ -158,7 +160,8 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
 
         <div className="analysis-modal-body">
           <div className="modal-actions">
-            <button className="action-btn export" onClick={() => setShowExportModal(true)}>Export</button>
+           <button className="action-btn export-btn" onClick={() => setShowExportModal(true)}>
+            <img src={exportIcon} alt="Export" /> Export </button>
             <button className="action-btn delete-btn" onClick={() => setShowDeleteModal(true)}>
               <img src={deleteIcon} alt="Delete" /> Delete
             </button>
@@ -169,18 +172,20 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
             <label>Prompt:</label>
             <div className="field-content">
               {prompt || "—"}
-              <div className="field-buttons">
-                <button onClick={() => handleEdit(prompt)} className="small-btn">Edit</button>
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(prompt);
-                    toast.success("Prompt copied!");
-                  }}
-                  className="small-btn"
-                >
-                  Copy
-                </button>
-              </div>
+             <div className="field-buttons">
+  <button onClick={() => handleEdit(prompt)} className="small-btn">
+    <img src={editIcon} alt="Edit" className="icon" /> Edit
+  </button>
+  <button
+    onClick={() => {
+      navigator.clipboard.writeText(prompt);
+      toast.success("Prompt copied!");
+    }}
+    className="small-btn"
+  >
+    <img src={copyIcon} alt="Copy" className="icon" /> Copy
+  </button>
+</div>
             </div>
           </div>
 
@@ -204,17 +209,19 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
                 <div>—</div>
               )}
               <div className="field-buttons">
-                <button onClick={() => handleEdit(allCorrections)} className="small-btn">Edit</button>
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(allCorrections);
-                    toast.success("All corrections copied!");
-                  }}
-                  className="small-btn"
-                >
-                  Copy
-                </button>
-              </div>
+  <button onClick={() => handleEdit(allCorrections)} className="small-btn">
+    <img src={editIcon} alt="Edit" className="icon" /> Edit
+  </button>
+  <button
+    onClick={() => {
+      navigator.clipboard.writeText(allCorrections);
+      toast.success("All corrections copied!");
+    }}
+    className="small-btn"
+  >
+    <img src={copyIcon} alt="Copy" className="icon" /> Copy
+  </button>
+</div>
             </div>
           </div>
 
@@ -233,37 +240,48 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
           </div>
 
           {/* Raw JSON */}
-          <h2 className="section-title">Detected Results</h2>
+          <div className="analysis-field"><label>Detected Results</label></div>
           <div className="results-list">
             {results && results.length > 0 ? (
               results.map((r, index) => (
                 <div key={index} className="result-card">
-                  <div className="result-header">
-                    <strong>{r.category || "Unknown"}</strong>
-                  </div>
-                  <div className="result-field">
-                    <label>Original Text:</label>
+                 <div
+                  className={`result-header ${
+                    r.category?.toLowerCase() === "biased"
+                      ? "biased"
+                      : r.category?.toLowerCase() === "neutral"
+                      ? "neutral"
+                      : r.category?.toLowerCase() === "reviewable"
+                      ? "reviewable"
+                      : ""
+                  }`}
+                >
+                  <strong>{r.category || "Unknown"}</strong>
+                </div>
+                  <div className="original-text">
+                    <label><strong>Original Text:</strong></label>
                     <div>{r.original_text || "—"}</div>
                   </div>
                   {r.correction && (
-                    <div className="result-field">
-                      <label>Correction:</label>
+                    <div className="correction-text">
+                      <label><strong>Correction:</strong></label>
                       <div>{r.correction || "—"}</div>
                     </div>
                   )}
                   {r.sentiment_score && (
-                    <div className="result-field">
-                      <label>Sentiment Score:</label>
+                    <div className="sentiment-score">
+                      <label><strong>Sentiment Score:</strong></label>
                       <div>{r.sentiment_score || "—"}</div>
                     </div>
                   )}
-                  <div className="result-field">
-                    <label>Reason of Correction:</label>
+                  <div className="reason-of-correction">
+                    <label><strong>Reason of Correction:</strong></label>
                     <div>{r.reason_of_correction || "—"}</div>
                   </div>
                   <div className="result-field">
-                    <label>Words Detected:</label>
-                    <div>{r.words_detected || "—"}</div>
+                    <label><strong>Words Detected:</strong></label>
+                    <div style={{ fontStyle: "italic" }}>{r.words_detected || "—"}</div>
+
                   </div>
                 </div>
               ))

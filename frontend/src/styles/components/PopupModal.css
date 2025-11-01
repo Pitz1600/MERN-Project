@@ -37,7 +37,6 @@
   padding: 3rem;
 }
 
-/* Spinner container */
 .spinner {
   position: relative;
   width: 40px;
@@ -45,7 +44,6 @@
   margin-bottom: 0.5rem;
 }
 
-/* Spinner background track */
 .spinner-track {
   position: absolute;
   inset: 0;
@@ -53,7 +51,6 @@
   border: 4px solid #e8def8;
 }
 
-/* Rotating top segment */
 .spinner-active {
   position: absolute;
   inset: 0;
@@ -63,7 +60,6 @@
   animation: spin 1s linear infinite;
 }
 
-/* Text inside popup */
 .popup-text {
   color: black;
   font-size: 0.9rem;
@@ -75,7 +71,6 @@
   text-align: center;
 }
 
-/* Keyframes for rotation */
 @keyframes spin {
   100% {
     transform: rotate(360deg);

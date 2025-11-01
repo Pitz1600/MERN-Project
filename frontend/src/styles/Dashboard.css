@@ -13,6 +13,48 @@
   
 }
 
+.filter-export-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+.export-btn {
+  background-color: #5cc13b;
+  color: black;
+  font-weight: 600;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.export-btn:hover {
+  background-color: #4da834;
+}
+
+.filter-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-section label {
+  color: #333;
+  font-weight: 600;
+}
+
+.filter-section select {
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+
 .navbar {
   position: sticky;
   top: 0;

@@ -10,7 +10,6 @@ import { computeLineChartData } from "../utils/chartUtils.jsx";
 import { toast } from "react-toastify";
 
 const Dashboard = () => {
-  const [showData, setShowData] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [analyses, setAnalyses] = useState([]);
   const [stats, setStats] = useState({
@@ -36,7 +35,6 @@ const Dashboard = () => {
       return;
     }
 
-    // Define CSV header (removed "Type")
     const headers = [
       "Analysis ID",
       "Date",
@@ -48,16 +46,10 @@ const Dashboard = () => {
     ];
 
     const rows = [];
-
     analyses.forEach((analysis) => {
-      // ✅ Try multiple possible date fields
-      const rawDate =
-        analysis.createdAt || analysis.date || analysis.updatedAt || null;
-
-      // ✅ Fix "Invalid date" issue
+      const rawDate = analysis.createdAt || analysis.date || analysis.updatedAt || null;
       const date = rawDate ? new Date(rawDate).toLocaleString() : "Unknown";
 
-      // Flatten results
       if (analysis.results && Array.isArray(analysis.results)) {
         analysis.results.forEach((r) => {
           rows.push([
@@ -73,38 +65,31 @@ const Dashboard = () => {
       }
     });
 
-    // ✅ Convert to CSV text
-    const csvContent =
-      [headers.join(","), ...rows.map((r) => r.map(escapeCSV).join(","))].join(
-        "\n"
-      );
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((r) => r.map(escapeCSV).join(",")),
+    ].join("\n");
 
-    // ✅ Trigger download
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `${name} Analyses ${new Date()
-      .toISOString()
-      .slice(0, 10)}.csv`;
+    link.download = `${name} Analyses ${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  // 🧹 Escape quotes/commas/newlines
   const escapeCSV = (value) => {
     if (value == null) return "";
-    const str = String(value).replace(/"/g, '""'); // escape quotes
+    const str = String(value).replace(/"/g, '""');
     if (str.search(/("|,|\n)/g) >= 0) return `"${str}"`;
     return str;
   };
 
   const handleExportData = () => {
     exportToCSV(analyses);
-    console.log("Exporting data...");
     setShowExportModal(false);
-    toast.success("Data exported successfully!");
   };
 
   const fetchAnalyses = async () => {
@@ -113,7 +98,6 @@ const Dashboard = () => {
         method: "GET",
         credentials: "include",
       });
-
       const data = await res.json();
       if (data.success) {
         setAnalyses(data.analyses || []);
@@ -127,7 +111,6 @@ const Dashboard = () => {
     }
   };
 
-  // 🧮 Compute sentiment statistics
   const computeStats = (analysesData) => {
     let total = 0;
     let biased = 0;
@@ -138,7 +121,6 @@ const Dashboard = () => {
     analysesData.forEach((analysis) => {
       analysis.results.forEach((r) => {
         total++;
-
         const category = r.category?.toLowerCase();
         if (category === "biased") biased++;
         else if (category === "neutral") neutral++;
@@ -151,9 +133,7 @@ const Dashboard = () => {
 
     const avgSentimentScore =
       sentimentScores.length > 0
-        ? (
-            sentimentScores.reduce((a, b) => a + b, 0) / sentimentScores.length
-          ).toFixed(2)
+        ? (sentimentScores.reduce((a, b) => a + b, 0) / sentimentScores.length).toFixed(2)
         : 0;
 
     const highestPositiveSentiment =
@@ -177,16 +157,13 @@ const Dashboard = () => {
     });
   };
 
-  // 🧩 When "Start Analyzing" is clicked
   const handleStartAnalyzing = async () => {
     setShowPopup(true);
-    await new Promise((resolve) => setTimeout(resolve, 3000)); // simulate loading
+    await new Promise((resolve) => setTimeout(resolve, 3000));
     setShowPopup(false);
     await fetchAnalyses();
-    setShowData(true);
   };
 
-  // 🟣 Pie chart data
   const chartData = [
     { name: "Biased", value: stats.biased, color: "#FF7F7F" },
     { name: "Neutral", value: stats.neutral, color: "#00FF00" },
@@ -202,8 +179,7 @@ const Dashboard = () => {
       <Navbar />
 
       <Container>
-        {!analyses.length === 0 ? (
-          // ===== EMPTY PAGE =====
+        {analyses.length === 0 ? (
           <div className="empty-page">
             <div className="empty-wrapper">
               <div className="empty-card">
@@ -225,7 +201,6 @@ const Dashboard = () => {
             </div>
           </div>
         ) : (
-          // ===== WITH DATA PAGE =====
           <div className="data-page">
             <div className="data-card">
               <div className="overview-left">
@@ -248,9 +223,7 @@ const Dashboard = () => {
                 </div>
                 <div className="overview-row">
                   <span>Most Common Result:</span>
-                  <span>
-                    <b>{stats.mostCommon}</b>
-                  </span>
+                  <span><b>{stats.mostCommon}</b></span>
                 </div>
                 <div className="overview-row">
                   <span>Average Sentiment Score:</span>
@@ -265,17 +238,19 @@ const Dashboard = () => {
                   <span>{stats.highestNegativeSentiment}%</span>
                 </div>
 
-                <div className="filter-row">
-                  <label>Filter:</label>
-                  <select>
-                    <option>Select Date</option>
-                    <option>October 2025</option>
-                    <option>September 2025</option>
-                  </select>
-                </div>
-                <div className="export-row">
+                {/* ✅ Export + Filter in one row */}
+                <div className="filter-export-row">
                   <button className="export-btn" onClick={() => setShowExportModal(true)}>
-                    Export Data</button>
+                    Export Data
+                  </button>
+                  <div className="filter-section">
+                    <label>Filter:</label>
+                    <select>
+                      <option>Select Date</option>
+                      <option>October 2025</option>
+                      <option>September 2025</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -298,7 +273,6 @@ const Dashboard = () => {
         )}
       </Container>
 
-      {/* Export Modal */}
       <ExportModal
         show={showExportModal}
         onClose={() => setShowExportModal(false)}

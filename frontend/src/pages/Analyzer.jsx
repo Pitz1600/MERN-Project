@@ -80,14 +80,15 @@ const Analyzer = () => {
     }
   };
 
-  const labelClass = (category) => {
-    if (!category) return "neutral";
-    const cat = category.toLowerCase();
-    if (cat.includes("neutral")) return "Neutral";
-    if (cat.includes("biased")) return "Biased";
-    if (cat.includes("review")) return "Reviewable";
-    return "neutral";
-  };
+const labelClass = (category) => {
+  if (!category) return "neutral";
+  const cat = category.toLowerCase();
+  if (cat.includes("biased")) return "biased";
+  if (cat.includes("review")) return "reviewable";
+  if (cat.includes("neutral")) return "neutral";
+  return "neutral";
+};
+
 
   const useCorrection = (original, correction) => {
     const textarea = document.querySelector(".analyzer-textarea");

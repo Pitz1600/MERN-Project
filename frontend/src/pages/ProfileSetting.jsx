@@ -2,22 +2,19 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { AppContext } from "../context/AppContext";
-import LogoutModal from "../components/LogoutModal";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "../styles/ProfileSetting.css";
 import userIcon from "../assets/user.png";
 import Container from "../components/Container.jsx";
-import LogoutPopup from "../components/LogoutPopup.jsx"; 
-import ChangePasswordPopup from "../components/ChangePasswordPopup.jsx"; 
+import LogoutPopup from "../components/LogoutPopup.jsx";
+import ChangePasswordPopup from "../components/ChangePasswordPopup.jsx";
 import aboutIcon from "../assets/icon_about.png";
 import changeIcon from "../assets/icon_change.png";
 import darkIcon from "../assets/icon_dark.png";
 import privacyIcon from "../assets/icon_privacy.png";
 import deleteIcon from "../assets/icon_delete.png";
 import logoutIcon from "../assets/icon_logout.png";
-
-
 
 const ProfileSettings = () => {
   const navigate = useNavigate();
@@ -39,9 +36,11 @@ const ProfileSettings = () => {
     }
   };
 
-   const handlePasswordChange = async (newPassword) => {
+  const handlePasswordChange = async (newPassword) => {
     try {
-      const { data } = await axios.post(`${backendUrl}/api/auth/change-password`, { newPassword });
+      const { data } = await axios.post(`${backendUrl}/api/auth/change-password`, {
+        newPassword,
+      });
       if (data.success) {
         toast.success("Password changed successfully!");
         setShowChangePasswordPopup(false);
@@ -70,45 +69,48 @@ const ProfileSettings = () => {
 
           <hr className="profile-divider" />
 
-         
+          {/* Settings Section */}
           <div className="profile-settings">
             <h3 className="profile-setting">Settings</h3>
             <div className="settings-grid">
-<button className="settings-btn about" onClick={() => navigate("/about-us")}>
-  <img src={aboutIcon} alt="About" className="btn-icon" /> About Us
+
+              <button className="settings-btn about" onClick={() => navigate("/about-us")}>
+                <img src={aboutIcon} alt="About" className="btn-icon" /> About Us
+              </button>
+
+              <button
+                className="settings-btn change"
+                onClick={() => setShowChangePasswordPopup(true)}
+              >
+                <img src={changeIcon} alt="Change" className="btn-icon" /> Change Password
+              </button>
+
+              <button className="settings-btn dark">
+                <img src={darkIcon} alt="Dark" className="btn-icon" /> Dark Mode
+              </button>
+
+             <button
+  className="settings-btn privacy"
+  onClick={() => navigate("/privacy-policy")}
+>
+  <img src={privacyIcon} alt="Privacy" className="btn-icon" /> Privacy Policy
 </button>
 
+              <button className="settings-btn delete">
+                <img src={deleteIcon} alt="Delete" className="btn-icon" /> Delete Account
+              </button>
 
-  <button className="settings-btn change" onClick={() => setShowChangePasswordPopup(true)}>
-    <img src={changeIcon} alt="Change" className="btn-icon" /> Change Password
-  </button>
+              <button className="settings-btn logout" onClick={() => setShowPopup(true)}>
+                <img src={logoutIcon} alt="Logout" className="btn-icon" /> Logout
+              </button>
 
-  <button className="settings-btn dark">
-    <img src={darkIcon} alt="Dark" className="btn-icon" /> Dark Mode
-  </button>
-
-  <button className="settings-btn privacy">
-    <img src={privacyIcon} alt="Privacy" className="btn-icon" /> Privacy Policy
-  </button>
-
-  <button className="settings-btn delete">
-    <img src={deleteIcon} alt="Delete" className="btn-icon" /> Delete Account
-  </button>
-
-  <button className="settings-btn logout" onClick={() => setShowPopup(true)}>
-    <img src={logoutIcon} alt="Logout" className="btn-icon" /> Logout
-  </button>
-</div>
+            </div>
           </div>
         </div>
       </Container>
 
-    
       {showPopup && (
-        <LogoutPopup
-          onConfirm={handleLogout}
-          onCancel={() => setShowPopup(false)}
-        />
+        <LogoutPopup onConfirm={handleLogout} onCancel={() => setShowPopup(false)} />
       )}
 
       {showChangePasswordPopup && (

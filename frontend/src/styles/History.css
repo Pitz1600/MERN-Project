@@ -6,9 +6,18 @@
   background-color: #012a54;
   color: white;
   font-family: Arial, sans-serif;
-  
 }
 
+.history-table-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+.history-table-wrapper::-webkit-scrollbar-thumb {
+  background-color: #b3b3b3;
+  border-radius: 8px;
+}
+.history-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background-color: #999;
+} 
 .history-buttons-row {
  display: flex;
   justify-content: flex-end;  
@@ -40,9 +49,9 @@
 .history-content {
   display: flex;
   justify-content: center;
-  align-items: flex-start;    /* ✅ scroll starts from top */
-  height: calc(100vh - 70px); /* ✅ leave room for Navbar height */
-  overflow-y: auto;           /* ✅ scrolls vertically */
+  align-items: flex-start;   
+  height: calc(100vh - 70px); 
+  overflow-y: auto;           
   overflow-x: hidden;
   padding: 1rem 0;
 }
@@ -59,22 +68,24 @@
     
 }
 
-/* Table container */
+/* Make the history white container same size and layout as dictionary-card */
 .history-table-container {
-  width: 90%;
-  margin: 1rem auto;
   background: white;
-  border-radius: 1rem;
-  padding-bottom: 1rem;
-  box-sizing: border-box;
-  color: black;
+  border-radius: 16px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 1100px;
+  height: 78vh;              /* ✅ same fixed height */
+  padding: 2rem;             /* ✅ same inner spacing */
   display: flex;
   flex-direction: column;
-  max-height: 75vh;          /* ✅ limit table height */
-  overflow-y: auto;          /* ✅ allow scrolling inside */
-  scrollbar-width: thin;     /* for Firefox */
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;          /* ✅ prevent stretching */
+  color: black;
+  margin: 1rem auto;         /* ✅ center horizontally */
+  box-sizing: border-box;
 }
-
 .history-table-container::-webkit-scrollbar {
   width: 8px;
 }
@@ -106,7 +117,11 @@
 
 /* Table styling */
 .history-table-wrapper {
-  overflow-x: auto;
+  flex: 1;
+  overflow-y: auto;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 10px;
 }
 
 .history-table {

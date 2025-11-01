@@ -14,6 +14,39 @@
      
   }
 
+.label {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  color: #000;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+/* 🟥 Biased */
+.label.biased {
+  background-color: #ffe5e5;
+  color: #b00020;
+  border-color: #e63946;
+}
+
+/* 🟨 Reviewable */
+.label.reviewable {
+  background-color: #fff8d5;
+  color: #8a6d00;
+  border-color: #FFFF00;
+}
+
+/* 🟩 Neutral */
+.label.neutral {
+  background-color: #e6ffe6;
+  color: #1b5e20;
+  border-color: #2ecc71;
+}
+
+
 .chevron-right {
   width: 30px;
   height: 30px;
