@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import PopupModal from "../components/LoadingModal";
+import PopupModal from "../components/PopupModal";
 import Container from "../components/Container";
 import AnalyzeButton from "../components/AnalyzeButton";
 import "../styles/Analyzer.css";
@@ -11,7 +11,7 @@ const Analyzer = () => {
   const [text, setText] = useState("");
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
-  const [showPopup, setShowPopup] = useState(false);
+  const [showPopup, setShowPopup] = useState(true);
   const [results, setResults] = useState([]);
   const [activeTab, setActiveTab] = useState("All");
   const [usedCorrections, setUsedCorrections] = useState(new Set()); 
@@ -320,10 +320,7 @@ const Analyzer = () => {
       </Container>
 
       {/* Popup Modal */}
-      <PopupModal show={showPopup}>
-        <h2 className="popup-title">Analyzing...</h2>
-        <p className="popup-message">Your input is being processed.</p>
-      </PopupModal>
+      <PopupModal show={showPopup}/>
     </div>
   );
 };

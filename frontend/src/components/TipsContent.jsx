@@ -32,7 +32,7 @@ const TipsContent = () => {
   return (
     <div>
         <h3>Additional Tips</h3>
-        <div className="tip-content">
+        <div className="tip-list">
             <p>{tips && tips.length ? tips[currentTipIndex] : 'No tips available.'}</p>
         </div>
 
