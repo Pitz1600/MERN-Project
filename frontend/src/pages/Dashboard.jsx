@@ -3,6 +3,7 @@ import "../styles/Dashboard.css";
 import Navbar from "../components/Navbar.jsx";
 import Container from "../components/Container.jsx";
 import PieChart from "../components/PieChartElement.jsx";
+import LineChartElement from "../components/LineChartElement.jsx";
 import ExportModal from "../components/ExportModal.jsx";
 import { AppContext } from "../context/AppContext.jsx";
 
@@ -14,12 +15,13 @@ const Dashboard = () => {
     total: 0,
     biased: 0,
     neutral: 0,
-    unclear: 0,
+    reviewable: 0,
     avgSentimentScore: 0,
     highestPositiveSentiment: 0,
     highestNegativeSentiment: 0,
     mostCommon: "",
   });
+  const [lineChartData, setLineChartData] = useState([]);
   const [showExportModal, setShowExportModal] = useState(false);
 
   const { userData } = useContext(AppContext);
@@ -114,6 +116,7 @@ const Dashboard = () => {
       if (data.success) {
         setAnalyses(data.analyses || []);
         computeStats(data.analyses || []);
+        computeLineChartData(data.analyses || []);
       } else {
         console.error("Fetch failed:", data.message);
       }
@@ -127,7 +130,7 @@ const Dashboard = () => {
     let total = 0;
     let biased = 0;
     let neutral = 0;
-    let unclear = 0;
+    let reviewable = 0;
     let sentimentScores = [];
 
     analysesData.forEach((analysis) => {
@@ -137,7 +140,7 @@ const Dashboard = () => {
         const category = r.category?.toLowerCase();
         if (category === "biased") biased++;
         else if (category === "neutral") neutral++;
-        else unclear++;
+        else reviewable++;
 
         const score = parseFloat(r.sentiment_score);
         if (!isNaN(score)) sentimentScores.push(score);
@@ -157,14 +160,14 @@ const Dashboard = () => {
     const highestNegativeSentiment =
       sentimentScores.length > 0 ? Math.min(...sentimentScores) : 0;
 
-    const counts = { biased, neutral, unclear };
+    const counts = { biased, neutral, reviewable };
     const mostCommon = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
 
     setStats({
       total,
       biased,
       neutral,
-      unclear,
+      reviewable,
       avgSentimentScore: (avgSentimentScore * 100).toFixed(2),
       highestPositiveSentiment: (highestPositiveSentiment * 100).toFixed(2),
       highestNegativeSentiment: (highestNegativeSentiment * 100).toFixed(2),
@@ -183,10 +186,44 @@ const Dashboard = () => {
 
   // 🟣 Pie chart data
   const chartData = [
-    { name: "Biased", value: stats.biased },
-    { name: "Neutral", value: stats.neutral },
-    { name: "Unclear", value: stats.unclear },
+    { name: "Biased", value: stats.biased, color: "#FF7F7F" },
+    { name: "Neutral", value: stats.neutral, color: "#00FF00" },
+    { name: "Reviewable", value: stats.reviewable, color: "#FFFF00" },
   ];
+
+  // 📊 Aggregate analyses by date for Line Chart
+const computeLineChartData = (analysesData) => {
+  const dailyCounts = {};
+
+  analysesData.forEach((analysis) => {
+    const rawDate =
+      analysis.createdAt || analysis.date || analysis.updatedAt || null;
+    if (!rawDate) return;
+
+    // Convert to YYYY-MM-DD for grouping
+    const date = new Date(rawDate).toISOString().slice(0, 10);
+
+    // Ensure structure exists
+    if (!dailyCounts[date]) {
+      dailyCounts[date] = { date, biased: 0, neutral: 0, reviewable: 0 };
+    }
+
+    // Count each category
+    analysis.results?.forEach((r) => {
+      const category = r.category?.toLowerCase();
+      if (category === "biased") dailyCounts[date].biased += 1;
+      else if (category === "neutral") dailyCounts[date].neutral += 1;
+      else dailyCounts[date].reviewable += 1;
+    });
+  });
+
+  // Convert object → sorted array by date
+  const sortedData = Object.values(dailyCounts).sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
+
+  setLineChartData(sortedData);
+};
 
   useEffect(() => {
     fetchAnalyses();
@@ -238,8 +275,8 @@ const Dashboard = () => {
                   <span>{stats.neutral}</span>
                 </div>
                 <div className="overview-row">
-                  <span>Unclear Results:</span>
-                  <span>{stats.unclear}</span>
+                  <span>Reviewable Results:</span>
+                  <span>{stats.reviewable}</span>
                 </div>
                 <div className="overview-row">
                   <span>Most Common Result:</span>
@@ -278,18 +315,14 @@ const Dashboard = () => {
 
               <div className="overview-right">
                 <PieChart data={chartData} />
-                <p className="result-text">
-                  <strong>Results</strong>
-                  <br />
-                  {((stats.biased / stats.total) * 100 || 0).toFixed(1)}% Biased
-                  <br />
-                  {((stats.neutral / stats.total) * 100 || 0).toFixed(1)}% Neutral
-                  <br />
-                  {((stats.unclear / stats.total) * 100 || 0).toFixed(1)}% Unclear
-                </p>
-                <p className="pie-description">
+                <p className="chart-description">
                   The pie chart represents the proportion of each sentiment category identified 
-                  in the analysis, helping visualize the balance between biased, neutral, and unclear results.
+                  in the analysis, helping visualize the balance between biased, neutral, and reviewable results.
+                </p>
+                <LineChartElement data={lineChartData} />
+                <p className="chart-description">
+                  The line chart illustrates the trend of sentiment categories over time, 
+                  showing how the counts of biased, neutral, and reviewable results have changed across different dates.
                 </p>
               </div>
             </div>

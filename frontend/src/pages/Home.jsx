@@ -90,9 +90,9 @@ const Home = () => {
 
   // Dynamic PieChart data
   const chartData = [
-    { name: "Biased", value: stats.biased || 1 },
-    { name: "Neutral", value: stats.neutral || 1 },
-    { name: "Unclear", value: stats.unclear || 1 },
+    { name: "Biased", value: stats.biased, color: "#FF7F7F" || 1 },
+    { name: "Neutral", value: stats.neutral, color: "#00FF00" || 1 },
+    { name: "Unclear", value: stats.unclear, color: "#FFFF00" || 1 },
   ];
 
   return (
@@ -143,7 +143,7 @@ const Home = () => {
                 <h3>Recent Activity</h3>
                 {hasData ? (
                   <>
-                    {analyses.slice(-3).map((a, i) => (
+                    {analyses.slice(0,3).map((a, i) => (
                       <p key={i}>{a.prompt}</p>
                     ))}
                   </>
@@ -157,12 +157,9 @@ const Home = () => {
 
               <div className="dashboard-card usage-stats">
                 <h3>Usage Statistics</h3>
-                <PieChartElement data={chartData} width={200} height={200} />
                 {hasData ? (
                   <>
-                    <p>{((stats.biased / (stats.biased + stats.neutral + stats.unclear)) * 100).toFixed(1)}% Biased</p>
-                    <p>{((stats.neutral / (stats.biased + stats.neutral + stats.unclear)) * 100).toFixed(1)}% Neutral</p>
-                    <p>{((stats.unclear / (stats.biased + stats.neutral + stats.unclear)) * 100).toFixed(1)}% Unclear</p>
+                <PieChartElement data={chartData} width={200} height={200} />
                   </>
                 ) : (
                   <>
