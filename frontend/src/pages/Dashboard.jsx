@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "../styles/Dashboard.css";
 import Navbar from "../components/Navbar.jsx";
 import Container from "../components/Container.jsx";
 import PieChart from "../components/PieChartElement.jsx";
-import PopModal from "../components/PopupModal.jsx";
+import ExportModal from "../components/ExportModal.jsx";
+import { AppContext } from "../context/AppContext.jsx";
 
 const Dashboard = () => {
-  const [showData, setShowData] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [analyses, setAnalyses] = useState([]);
   const [stats, setStats] = useState({
@@ -19,39 +19,101 @@ const Dashboard = () => {
     highestNegativeSentiment: 0,
     mostCommon: "",
   });
+  const [showExportModal, setShowExportModal] = useState(false);
 
-  // 🟢 Fetch user's analyses (token from cookies)
+  const { userData } = useContext(AppContext);
+  const name = userData.name || "PureText_User";
+
+  // 🧾 CSV Export Helper
+  const exportToCSV = (analyses) => {
+    if (!analyses || analyses.length === 0) {
+      alert("No analyses available to export.");
+      return;
+    }
+
+    const headers = [
+      "Analysis ID",
+      "Date",
+      "Category",
+      "Original Text",
+      "Correction",
+      "Reason of Correction",
+      "Sentiment Score",
+    ];
+
+    const rows = [];
+    analyses.forEach((analysis) => {
+      const rawDate = analysis.createdAt || analysis.date || analysis.updatedAt || null;
+      const date = rawDate ? new Date(rawDate).toLocaleString() : "Unknown";
+
+      if (analysis.results && Array.isArray(analysis.results)) {
+        analysis.results.forEach((r) => {
+          rows.push([
+            analysis._id,
+            date,
+            r.category || "N/A",
+            r.original_text?.replace(/\n/g, " ") || "",
+            r.correction?.replace(/\n/g, " ") || "",
+            r.reason_of_correction?.replace(/\n/g, " ") || "",
+            r.sentiment_score || "N/A",
+          ]);
+        });
+      }
+    });
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((r) => r.map(escapeCSV).join(",")),
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${name} Analyses ${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const escapeCSV = (value) => {
+    if (value == null) return "";
+    const str = String(value).replace(/"/g, '""');
+    if (str.search(/("|,|\n)/g) >= 0) return `"${str}"`;
+    return str;
+  };
+
+  const handleExportData = () => {
+    exportToCSV(analyses);
+    setShowExportModal(false);
+  };
+
   const fetchAnalyses = async () => {
     try {
       const res = await fetch("http://localhost:3001/api/user/analysis", {
         method: "GET",
-        credentials: "include", // ✅ includes cookie in request
+        credentials: "include",
       });
-
       const data = await res.json();
       if (data.success) {
         setAnalyses(data.analyses || []);
         computeStats(data.analyses || []);
-      } else {
-        console.error("Fetch failed:", data.message);
       }
     } catch (error) {
       console.error("Error fetching analyses:", error);
     }
   };
 
-  // 🧮 Compute sentiment statistics
   const computeStats = (analysesData) => {
-    let total = 0;
-    let biased = 0;
-    let neutral = 0;
-    let unclear = 0;
-    let sentimentScores = [];
+    let total = 0,
+      biased = 0,
+      neutral = 0,
+      unclear = 0;
+    const sentimentScores = [];
 
     analysesData.forEach((analysis) => {
       analysis.results.forEach((r) => {
         total++;
-
         const category = r.category?.toLowerCase();
         if (category === "biased") biased++;
         else if (category === "neutral") neutral++;
@@ -64,9 +126,7 @@ const Dashboard = () => {
 
     const avgSentimentScore =
       sentimentScores.length > 0
-        ? (
-            sentimentScores.reduce((a, b) => a + b, 0) / sentimentScores.length
-          ).toFixed(2)
+        ? (sentimentScores.reduce((a, b) => a + b, 0) / sentimentScores.length).toFixed(2)
         : 0;
 
     const highestPositiveSentiment =
@@ -90,16 +150,13 @@ const Dashboard = () => {
     });
   };
 
-  // 🧩 When "Start Analyzing" is clicked
   const handleStartAnalyzing = async () => {
     setShowPopup(true);
-    await new Promise((resolve) => setTimeout(resolve, 3000)); // simulate loading
+    await new Promise((resolve) => setTimeout(resolve, 3000));
     setShowPopup(false);
     await fetchAnalyses();
-    setShowData(true);
   };
 
-  // 🟣 Pie chart data
   const chartData = [
     { name: "Biased", value: stats.biased },
     { name: "Neutral", value: stats.neutral },
@@ -115,8 +172,7 @@ const Dashboard = () => {
       <Navbar />
 
       <Container>
-        {!analyses.length === 0 ? (
-          // ===== EMPTY PAGE =====
+        {analyses.length === 0 ? (
           <div className="empty-page">
             <div className="empty-wrapper">
               <div className="empty-card">
@@ -138,7 +194,6 @@ const Dashboard = () => {
             </div>
           </div>
         ) : (
-          // ===== WITH DATA PAGE =====
           <div className="data-page">
             <div className="data-card">
               <div className="overview-left">
@@ -161,9 +216,7 @@ const Dashboard = () => {
                 </div>
                 <div className="overview-row">
                   <span>Most Common Result:</span>
-                  <span>
-                    <b>{stats.mostCommon}</b>
-                  </span>
+                  <span><b>{stats.mostCommon}</b></span>
                 </div>
                 <div className="overview-row">
                   <span>Average Sentiment Score:</span>
@@ -178,13 +231,19 @@ const Dashboard = () => {
                   <span>{stats.highestNegativeSentiment}%</span>
                 </div>
 
-                <div className="filter-row">
-                  <label>Filter:</label>
-                  <select>
-                    <option>Select Date</option>
-                    <option>October 2025</option>
-                    <option>September 2025</option>
-                  </select>
+                {/* ✅ Export + Filter in one row */}
+                <div className="filter-export-row">
+                  <button className="export-btn" onClick={() => setShowExportModal(true)}>
+                    Export Data
+                  </button>
+                  <div className="filter-section">
+                    <label>Filter:</label>
+                    <select>
+                      <option>Select Date</option>
+                      <option>October 2025</option>
+                      <option>September 2025</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -202,8 +261,8 @@ const Dashboard = () => {
                   {((stats.unclear / stats.total) * 100 || 0).toFixed(1)}% Unclear
                 </p>
                 <p className="pie-description">
-                  The pie chart represents the proportion of each sentiment category identified 
-                  in the analysis, helping visualize the balance between biased, neutral, and unclear results.
+                  The pie chart represents the proportion of each sentiment category identified,
+                  helping visualize the balance between biased, neutral, and unclear results.
                 </p>
               </div>
             </div>
@@ -211,11 +270,11 @@ const Dashboard = () => {
         )}
       </Container>
 
-      {/* ✅ Popup Modal */}
-      <PopModal show={showPopup} onClose={() => setShowPopup(false)}>
-        <h2>Analyzing...</h2>
-        <p>Your text is being processed. Please wait...</p>
-      </PopModal>
+      <ExportModal
+        show={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        onExport={handleExportData}
+      />
     </div>
   );
 };

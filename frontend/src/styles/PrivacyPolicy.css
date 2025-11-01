@@ -1,4 +1,4 @@
-.aboutus-container {
+.privacy-container {
   background: linear-gradient(to bottom right, #012a54, #001f3f);
   min-height: 100vh;
   width: 100vw;
@@ -18,7 +18,6 @@
   cursor: pointer;
   margin-right: 20px;
     outline: none; /* remove focus outline */
-
 }
 
 .back-btn:hover,
@@ -28,15 +27,16 @@
   box-shadow: none;
 }
 
-.aboutus-title {
+
+.privacy-title {
   font-size: 2rem;
-  margin-bottom:20px;
+  margin-bottom: 20px;
   color: black;
   text-align: center;
 }
 
-
-.aboutus-card {
+/* Card */
+.privacy-card {
   background: white;
   border-radius: 20px;
   padding: 30px;
@@ -47,32 +47,9 @@
   
 }
 
-.aboutus-card h2 {
+.privacy-card h2 {
   font-size: 1.1rem;
   margin-bottom: 5px;
 }
 
-.aboutus-card p {
-  margin-bottom: 15px;
-  color: #333;
-}
 
-.aboutus-logo {
-  position: absolute;
-  right: 150px;
-  top: 70px;
-  background: white;
-  border: 1px solid #858585;
-  border-radius: 50%;
-  width: 100px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.aboutus-logo img {
-  width: 50px;
-  height: 50px;
-  object-fit: contain;
-}

@@ -26,6 +26,8 @@
 }
 
 .searchbar-input-group {
+    align-items: center; /* ✅ vertically align input + icon */
+
   display: flex;
   flex: 1;
   max-width: 30vw;
@@ -58,6 +60,9 @@
 
 .searchbar-button {
   background-color: #ffffff;
+   background: none; /* ✅ make button background blend with input */
+  border: none;     /* ✅ remove border line */
+  cursor: pointer;  /* ✅ make it clickable */
   border: 1px solid #d1d5db;
   border-left: none;
   padding: 1rem 1.2rem;
@@ -68,6 +73,9 @@
 .searchbar-icon {
   width: 1rem;
   height: 1rem;
+    display: block; /* ✅ prevents inline baseline line */
+
+  
 }
 
 .sortbar-dropdown {
