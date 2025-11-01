@@ -6,6 +6,8 @@ import PieChart from "../components/PieChartElement.jsx";
 import LineChartElement from "../components/LineChartElement.jsx";
 import ExportModal from "../components/ExportModal.jsx";
 import { AppContext } from "../context/AppContext.jsx";
+import { computeLineChartData } from "../utils/chartUtils.jsx";
+import { toast } from "react-toastify";
 
 const Dashboard = () => {
   const [showData, setShowData] = useState(false);
@@ -116,7 +118,7 @@ const Dashboard = () => {
       if (data.success) {
         setAnalyses(data.analyses || []);
         computeStats(data.analyses || []);
-        computeLineChartData(data.analyses || []);
+        setLineChartData(computeLineChartData(data.analyses || []));
       } else {
         console.error("Fetch failed:", data.message);
       }
@@ -190,40 +192,6 @@ const Dashboard = () => {
     { name: "Neutral", value: stats.neutral, color: "#00FF00" },
     { name: "Reviewable", value: stats.reviewable, color: "#FFFF00" },
   ];
-
-  // 📊 Aggregate analyses by date for Line Chart
-const computeLineChartData = (analysesData) => {
-  const dailyCounts = {};
-
-  analysesData.forEach((analysis) => {
-    const rawDate =
-      analysis.createdAt || analysis.date || analysis.updatedAt || null;
-    if (!rawDate) return;
-
-    // Convert to YYYY-MM-DD for grouping
-    const date = new Date(rawDate).toISOString().slice(0, 10);
-
-    // Ensure structure exists
-    if (!dailyCounts[date]) {
-      dailyCounts[date] = { date, biased: 0, neutral: 0, reviewable: 0 };
-    }
-
-    // Count each category
-    analysis.results?.forEach((r) => {
-      const category = r.category?.toLowerCase();
-      if (category === "biased") dailyCounts[date].biased += 1;
-      else if (category === "neutral") dailyCounts[date].neutral += 1;
-      else dailyCounts[date].reviewable += 1;
-    });
-  });
-
-  // Convert object → sorted array by date
-  const sortedData = Object.values(dailyCounts).sort(
-    (a, b) => new Date(a.date) - new Date(b.date)
-  );
-
-  setLineChartData(sortedData);
-};
 
   useEffect(() => {
     fetchAnalyses();

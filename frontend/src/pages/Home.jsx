@@ -10,6 +10,8 @@ import StartAnalyzingButton from '../components/StartAnalyzingButton.jsx';
 import PieChartElement from "../components/PieChartElement.jsx";
 import Container from '../components/Container.jsx';
 import TipsContent from '../components/TipsContent.jsx';
+import LineChartElement from '../components/LineChartElement.jsx';
+import { computeLineChartData } from "../utils/chartUtils.jsx";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -18,6 +20,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [analyses, setAnalyses] = useState([]);
   const [stats, setStats] = useState({ biased: 0, neutral: 0, unclear: 0 });
+  const [lineChartData, setLineChartData] = useState([]);
   const [hasData, setHasData] = useState(false);
 
   // Send verification OTP
@@ -52,6 +55,7 @@ const Home = () => {
       if (data.success && data.analyses) {
         setAnalyses(data.analyses);
         computeStats(data.analyses);
+        setLineChartData(computeLineChartData(data.analyses || []));
       } else {
         setAnalyses([]);
         setStats({ biased: 0, neutral: 0, unclear: 0 });
@@ -160,11 +164,11 @@ const Home = () => {
                 {hasData ? (
                   <>
                 <PieChartElement data={chartData} width={200} height={200} />
+                <LineChartElement data={lineChartData} />
                   </>
                 ) : (
                   <>
                     <p>No statistics yet.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                   </>
                 )}
               </div>
