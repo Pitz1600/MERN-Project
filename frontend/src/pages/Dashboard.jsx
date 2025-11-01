@@ -114,7 +114,6 @@ const Dashboard = () => {
       if (data.success) {
         setAnalyses(data.analyses || []);
         computeStats(data.analyses || []);
-        computeLineChartData(data.analyses || []);
       } else {
         console.error("Fetch failed:", data.message);
       }
