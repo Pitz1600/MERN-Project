@@ -1,28 +1,28 @@
 import React from "react";
-import "../styles/components/ExportModal.css";
+import "../styles/components/AllPopup.css";
 import logo from "../assets/logo_transparent.png";
 
 const ExportModal = ({ show, onClose, onExport }) => {
   if (!show) return null;
 
   return (
-    <div className="export-modal-overlay" onClick={onClose}>
+    <div className="popup-overlay" onClick={onClose}>
       <div
-        className="export-modal-container"
+        className="popup-box"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="export-modal-logo">
+        <div className="popup-logo">
           <img src={logo} alt="Logo" />
         </div>
-        <h2 className="export-modal-title">Export Data</h2>
-        <p className="export-modal-message">
+        <h2 className="popup-title">Export Data</h2>
+        <p className="popup-message">
           Would you like to export your dashboard data as a CSV file?
         </p>
-        <div className="export-modal-buttons">
-          <button className="export-modal-cancel" onClick={onClose}>
+        <div className="popup-buttons">
+          <button className="popup-btn cancel" onClick={onClose}>
             Cancel
           </button>
-          <button className="export-modal-confirm" onClick={onExport}>
+          <button className="popup-btn logout" onClick={onExport}>
             Export
           </button>
         </div>
