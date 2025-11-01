@@ -20,10 +20,7 @@ def find_words_in_sentence(sentence, word_dict):
     return matches
 
 # Test function.. Don't mind
-def main():
+def words_detected(sentence):
     dictionary = load_word_dict("./lexicon/bias_lexicon.csv")
-    sentence = "Hello, I fucking hate you."
     result = find_words_in_sentence(sentence, dictionary)
-    print(result)
-
-main()
+    return(result)
