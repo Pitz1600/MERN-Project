@@ -152,7 +152,7 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
     <div className="analysis-modal-overlay">
       <div className="analysis-modal-container">
         <div className="analysis-modal-header">
-          <h2>Analysis Details</h2>
+          <h2>ANALYSIS DETAILS</h2>
           <button className="close-btn" onClick={onClose} aria-label="Close">
             ×
           </button>
