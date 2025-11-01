@@ -11,7 +11,7 @@ const Analyzer = () => {
   const [text, setText] = useState("");
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
-  const [showPopup, setShowPopup] = useState(true);
+  const [showPopup, setShowPopup] = useState(false);
   const [results, setResults] = useState([]);
   const [activeTab, setActiveTab] = useState("All");
   const [usedCorrections, setUsedCorrections] = useState(new Set()); 
