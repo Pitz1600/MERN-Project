@@ -6,6 +6,7 @@ from src.controller.need_grammar_correction import need_grammar_correction
 from src.controller.need_tone_correction import need_tone_correction
 from src.controller.need_sentiment_correction import need_sentiment_correction
 from src.controller.json_extract import extract
+from src.controller.words_lexicon_detected import words_detected
 from ollama import _types
 import json
 
@@ -16,16 +17,24 @@ def main():
         main_function(get_input)
 
 def main_function(text):
+    word_in_lexicon = words_detected(text)
+    words_only = [n[0] for n in word_in_lexicon]
+    words_score = [(int(n[1]) / 5) for n in word_in_lexicon]
     try:
         check_grammar_correction = need_grammar_correction(text)
         if check_grammar_correction.lower() == "yes":
             grammar_correct = grammar_correction(text)
             return extract(grammar_correct, "grammar", "Reviewable")
         else:
-            check_sentiment_correction = need_sentiment_correction(text)
+            check_sentiment_correction = need_sentiment_correction(text, words_only)
             if check_sentiment_correction.lower() == "yes":
                 sentiment_correct = sentiment_correction(text)
-                return extract(sentiment_correct, "sentiment", "Biased")
+                data = extract(sentiment_correct, "sentiment", "Biased")
+                data["sentiment_score"] = float(data["sentiment_score"]) + sum(words_score)
+                model_word_list = [word.strip().strip('"') for word in data["words_detected"].split(',')]
+                combined_word_list = model_word_list + words_only
+                data["words_detected"] = ', '.join(f'"{item}"' for item in set(combined_word_list))
+                return data
             else:
                 neutral_correct = neutral_correction(text)
                 return extract(neutral_correct, "sentiment", "Neutral")
