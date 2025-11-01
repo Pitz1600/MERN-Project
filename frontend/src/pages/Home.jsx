@@ -163,8 +163,7 @@ const Home = () => {
                 <h3>Usage Statistics</h3>
                 {hasData ? (
                   <>
-                <PieChartElement data={chartData} width={200} height={200} />
-                <LineChartElement data={lineChartData} />
+                <PieChartElement data={chartData} />
                   </>
                 ) : (
                   <>

@@ -14,46 +14,56 @@ const LineChartElement = ({ data = [] }) => {
     return <p style={{ textAlign: "center" }}>No data to display</p>;
   }
 
-  // Extract X (dates) and Y (values)
-  const xLabels = data.map((d) =>
-    new Date(d.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })
-  );
-
-  const biasedData = data.map((d) => d.biased || 0);
-  const neutralData = data.map((d) => d.neutral || 0);
-  const reviewableData = data.map((d) => d.reviewable || 0);
+  // Format X labels (dates)
+  const formattedData = data.map((d) => ({
+    dateLabel: new Date(d.date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    }),
+    biased: d.biased || 0,
+    neutral: d.neutral || 0,
+    reviewable: d.reviewable || 0,
+  }));
 
   return (
-    <div style={{ width: "100%", maxWidth: "600px", margin: "0 auto", background: "#90E0EF", padding: "1rem", borderRadius: "8px" }}>
+    <div
+      style={{
+        width: "100%",
+        maxWidth: "650px",
+        margin: "0 auto",
+        background: "#E0F7FA",
+        padding: "1rem",
+        borderRadius: "8px",
+      }}
+    >
       <h3 style={{ textAlign: "center", marginBottom: "0.5rem" }}>
         Trend Over Time
       </h3>
+
       <LineChart
+        dataset={formattedData}
         xAxis={[
           {
-            data: xLabels,
+            dataKey: "dateLabel",
             scaleType: "band",
             label: "Date",
           },
         ]}
         series={[
           {
-            id: "biased",
+            dataKey: "biased",
             label: "Biased",
-            data: biasedData,
             color: "#FF7F7F",
           },
           {
-            id: "neutral",
+            dataKey: "neutral",
             label: "Neutral",
-            data: neutralData,
-            color: "#00FF00",
+            color: "#00C853",
           },
           {
-            id: "reviewable",
+            dataKey: "reviewable",
             label: "Reviewable",
-            data: reviewableData,
-            color: "#FFFF00",
+            color: "#FFD600",
           },
         ]}
         height={300}
