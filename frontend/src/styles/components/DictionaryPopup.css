@@ -1,0 +1,99 @@
+.d-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.d-popup-box {
+  background-color: #00b9d6; /* bright cyan outer container */
+  border-radius: 20px;
+  padding: 20px;
+  width: 300px;
+  display: flex;
+  justify-content: center;
+}
+
+.popup-white {
+  background-color: #ffffff;
+  border-radius: 16px;
+  width: 100%;
+  padding: 25px 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  text-align: left;
+  font-family: Arial, sans-serif;
+  color: #111;
+}
+
+.d-popup-title {
+  font-size: 1.8rem;
+  margin: 0;
+  font-weight: bold;
+}
+
+.d-popup-definition {
+  font-size: 0.95rem;
+  margin: 5px 0 10px;
+}
+
+.d-popup-score {
+  font-size: 0.95rem;
+  margin: 5px 0;
+}
+
+.more-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  margin: 10px 0;
+}
+
+.more-info a {
+  color: #2196f3;
+  text-decoration: none;
+}
+
+.more-info a:hover {
+  text-decoration: underline;
+}
+.info-icon {
+  display: flex;                
+  align-items: center;         
+  justify-content: center;     
+  width: 30px;                  
+  height: 30px;                 
+  background-color: orange;     
+  border-radius: 50%;           
+}
+
+.info-icon img {
+  width: 16px;   
+  height: 16px;
+}
+
+.d-popup-btn.cancel {
+  background-color: #8bc34a;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  align-self: center;
+  margin-top: 10px;
+  color: white;
+  transition: 0.2s;
+}
+
+.d-popup-btn.cancel:hover {
+  background-color: #7cb342;
+}

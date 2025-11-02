@@ -1,27 +1,37 @@
 import React from "react";
+import '../styles/components/DictionaryPopup.css';
 
 const DictionaryPopup = ({ show, onClose, wordData }) => {
   if (!show || !wordData) return null;
 
   return (
-    <div className="dictionary-popup-overlay" onClick={onClose}>
+    <div className="d-popup-overlay" onClick={onClose}> 
       <div
-        className="dictionary-popup-content"
+        className="d-popup-box"
         onClick={(e) => e.stopPropagation()}
       >
-        <button className="close-btn" onClick={onClose}>
-          ✕
-        </button>
+        <div className="popup-white">
+        
 
-        <h2 className="popup-word">{wordData.word}</h2>
+        <h2 className="d-popup-title">{wordData.word}</h2>
 
-        <div className="popup-details">
+        <div className="d-popup-message">
           <p>
             <strong>Sentiment Score:</strong> {wordData.score / 5}
           </p>
           <p>
             <strong>Definition:</strong> {wordData.meaning}
+          </p>          
+        </div>
+          {/* More Info with Icon */}
+          <p className="more-info">
+            <div className="info-icon"> <img src="src\assets\icon_bulb.png"/>
+            </div>
+            <strong>More Info</strong>
           </p>
+        <button className="d-popup-btn cancel" onClick={onClose}>
+          Close
+        </button>
         </div>
       </div>
     </div>
