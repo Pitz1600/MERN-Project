@@ -31,7 +31,8 @@ def main_function(text):
                 sentiment_correct = sentiment_correction(text)
                 data = extract(sentiment_correct, "sentiment", "Biased")
                 data["sentiment_score"] = round(float(data["sentiment_score"]) + sum(words_score), 2)
-                model_word_list = [word.strip().strip('"') for word in data["words_detected"].split(',')]
+                comma_split =  data["words_detected"].replace(',', ' ')
+                model_word_list = [word.strip().strip('"') for word in comma_split.split()]
                 combined_word_list = model_word_list + words_only
                 data["words_detected"] = ', '.join(f'"{item}"' for item in set(combined_word_list))
                 return data
