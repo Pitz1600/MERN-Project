@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import AnalysisModal from "../components/AnalysisModal";
 import StartAnalyzingButton from "../components/StartAnalyzingButton";
@@ -10,6 +10,7 @@ import Container from "../components/Container";
 
 const History = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchValue, setSearchValue] = useState("");
   const [sortBy, setSortBy] = useState("dateTime");
   const [historyData, setHistoryData] = useState([]);
@@ -161,6 +162,15 @@ const History = () => {
     setHistoryData((prev) => prev.filter((item) => item.id !== deletedId));
     setFilteredData((prev) => prev.filter((item) => item.id !== deletedId));
   };
+
+  useEffect(() => {
+  if (location.state?.selectedAnalysis) {
+    setSelectedAnalysis(location.state.selectedAnalysis);
+    setShowModal(true);
+    // Clear state so modal doesn’t reopen on refresh
+    window.history.replaceState({}, document.title);
+  }
+}, [location.state]);
 
   return (
     <div className="history-container">

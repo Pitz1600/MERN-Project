@@ -10,7 +10,6 @@ import StartAnalyzingButton from '../components/StartAnalyzingButton.jsx';
 import PieChartElement from "../components/PieChartElement.jsx";
 import Container from '../components/Container.jsx';
 import TipsContent from '../components/TipsContent.jsx';
-import LineChartElement from '../components/LineChartElement.jsx';
 import { computeLineChartData } from "../utils/chartUtils.jsx";
 
 const Home = () => {
@@ -109,7 +108,6 @@ const Home = () => {
             <div className="intro-section">
               <img src="/src/assets/Logo_transparent.png" alt="App Logo" className="intro-logo" />
               <h1>PureText</h1>
-              <h1>Bias Text Detector</h1>
               <h2>App for Identifying Biased Language</h2>
               <br />
               <button
@@ -147,9 +145,38 @@ const Home = () => {
                 <h3>Recent Activity</h3>
                 {hasData ? (
                   <>
-                    {analyses.slice(0,3).map((a, i) => (
-                      <p key={i}>{a.prompt}</p>
-                    ))}
+                    {analyses.slice(0, 3).map((a, i) => {
+                      const firstResult = a.results?.[0] || {};
+                      const category = firstResult.category || "Category";
+                      const score = firstResult.sentiment_score ?? "N/A";
+                      const dateTime = new Date(a.date)
+                      .toLocaleString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                            hour: "numeric",
+                            minute: "2-digit",
+                            hour12: true,
+                          })
+                          .replace(",", "");
+
+                      return (
+                        <div
+                          key={i}
+                          className="activity-item"
+                          onClick={() => navigate("/history", {
+                            state: { selectedAnalysis: a }, // pass the full analysis object
+                          })}
+                        >
+                          <p className='item-prompt'>{a.prompt}</p>
+                          <p className='item-details'>
+                            <strong>Category:</strong> {category} &nbsp;|&nbsp; 
+                            <strong>Score:</strong> {score} <br/> 
+                            <strong>Date:</strong> {dateTime}
+                          </p>
+                        </div>
+                      );
+                    })}
                   </>
                 ) : (
                   <p>
@@ -163,7 +190,8 @@ const Home = () => {
                 <h3>Usage Statistics</h3>
                 {hasData ? (
                   <>
-                <PieChartElement data={chartData} />
+                <span onClick={() => navigate('/dashboard')}><PieChartElement data={chartData} /></span>
+                <div></div>
                   </>
                 ) : (
                   <>

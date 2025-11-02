@@ -260,14 +260,14 @@ const Dashboard = () => {
                   <span>{stats.highestNegativeSentiment}%</span>
                 </div>
 
-                <div className="filter-row">
+                {/* <div className="filter-row">
                   <label>Filter:</label>
                   <select>
                     <option>Select Date</option>
                     <option>October 2025</option>
                     <option>September 2025</option>
                   </select>
-                </div>
+                </div> */}
                 <div className="export-row">
                   <button className="export-btn" onClick={() => setShowExportModal(true)}>
                     Export Data</button>
