@@ -38,7 +38,8 @@ def main_function(text):
                 get_word_not_in_dict = list(set(model_word_list) - set(words_only))
                 data["words_detected"] = ', '.join(f'"{item}"' for item in set(combined_word_list))
                 words_not_in_dict = [create_word(word) for word in get_word_not_in_dict]
-                output = [data, words_not_in_dict]
+                turn_to_json = {i: words_not_in_dict[i] for i in range(len(words_not_in_dict))}
+                output = [data, turn_to_json]
                 return output
             else:
                 neutral_correct = neutral_correction(text)
