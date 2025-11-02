@@ -37,7 +37,7 @@ def main_function(text):
                 combined_word_list = model_word_list + words_only
                 get_word_not_in_dict = list(set(model_word_list) - set(words_only))
                 data["words_detected"] = ', '.join(f'"{item}"' for item in set(combined_word_list))
-                words_not_in_dict = {create_word(word) for word in get_word_not_in_dict}
+                words_not_in_dict = [create_word(word) for word in get_word_not_in_dict]
                 output = [data, words_not_in_dict]
                 return output
             else:

@@ -40,9 +40,14 @@ const Analyzer = () => {
       }
 
       const data = await response.json();
-      const parsedResults = data.map((item) =>
-        typeof item === "string" ? JSON.parse(item) : item
-      );
+      const parsedResults = data
+      .flat() // flatten in case backend returns nested arrays
+      .map((item) => (typeof item === "string" ? JSON.parse(item) : item))
+      .filter((item) => item.category &&
+        item.correction &&
+        item.original_text &&
+        item.reason_of_correction &&
+        item.sentiment_score);
 
       setResults(parsedResults);
       (async () => {
