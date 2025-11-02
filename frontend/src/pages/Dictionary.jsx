@@ -3,12 +3,17 @@ import Navbar from "../components/Navbar.jsx";
 import Container from "../components/Container.jsx";
 import SearchBar from "../components/SearchBar.jsx";
 import Pagination from "../components/Pagination.jsx";
+import DictionaryPopup from "../components/DictionaryPopup.jsx";
 import "../styles/Dictionary.css";
 
 const Dictionary = () => {
   const [searchValue, setSearchValue] = useState("");
   const [results, setResults] = useState([]);
   const [filteredResults, setFilteredResults] = useState([]);
+  
+  // Popup
+  const [selectedWord, setSelectedWord] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
 
   // Sorting
   const [sortBy, setSortBy] = useState("word");
@@ -83,6 +88,12 @@ const Dictionary = () => {
     setSearchValue(e.target.value);
   };
 
+  // --- Clickable row handler ---
+  const handleRowClick = (wordItem) => {
+    setSelectedWord(wordItem);
+    setShowPopup(true);
+  };
+
     return (
   <div className="dictionary-container">
     <Navbar />
@@ -116,7 +127,9 @@ const Dictionary = () => {
               <tbody>
                 {currentRows.length > 0 ? (
                   currentRows.map((item, index) => (
-                    <tr key={index}>
+                    <tr key={index}
+                      onClick={() => handleRowClick(item)}
+                      className="clickable-row">
                       <td>{item.word}</td>
                       <td>{item.score / 5}</td>
                       <td>{item.meaning}</td>
@@ -143,6 +156,13 @@ const Dictionary = () => {
               setCurrentPage(1);
             }}
             onPageChange={setCurrentPage}
+          />
+
+          {/* ✅ Popup */}
+          <DictionaryPopup
+            show={showPopup}
+            onClose={() => setShowPopup(false)}
+            wordData={selectedWord}
           />
         </div>
       </div>
