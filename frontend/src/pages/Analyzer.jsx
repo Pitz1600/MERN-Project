@@ -211,7 +211,7 @@ const labelClass = (category) => {
             {/* Header with Tabs */}
             <div className="results-header">
               <div className="results-tabs">
-                <img src={chevronRight} alt="Chevron Right" className="chevron-right" />
+                {/* <img src={chevronRight} alt="Chevron Right" className="chevron-right" /> */}
 
                 {["All", "Biased", "Reviewable", "Neutral"].map((tab) => (
                   <span
