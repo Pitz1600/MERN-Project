@@ -44,7 +44,7 @@ const PopupModal = ({ show, onClose }) => {
           {/* Text */}
           <p className="popup-text">Analyzing...</p>
           <br/>
-          <p className="tip-content">{currentTip}</p>
+          <p className="tip-content"><em>{currentTip}</em></p>
         </div>
       </div>
     </div>

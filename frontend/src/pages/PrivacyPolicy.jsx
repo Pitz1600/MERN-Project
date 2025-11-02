@@ -22,9 +22,31 @@ const PrivacyPolicy = () => {
      
         {/* Content Card */}
         <div className="privacy-card">
-          <h2>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim  veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea  commodo consequat. Duis aute irure dolor in reprehenderit in voluptate  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint  occaecat cupidatat non proident, sunt in culpa qui officia deserunt  mollit anim id est laborum.</h2>
-          
-        </div>
+            <h2>Privacy Policy</h2>
+            <p>
+              At PureText, we value your privacy and are committed to protecting
+              your personal information. This policy explains how we collect, use,
+              and safeguard your data when using our services.
+            </p>
+
+            <h2>Information We Collect</h2>
+            <p>
+              We may collect limited personal information (such as name and email)
+              to provide better user experiences and maintain account security.
+            </p>
+
+            <h2>How We Use Your Information</h2>
+            <p>
+              We use collected information solely to enhance platform functionality,
+              personalize your experience, and ensure service reliability.
+            </p>
+
+            <h2>Your Consent</h2>
+            <p>
+              By using PureText, you consent to this privacy policy. You can request
+              data removal anytime by contacting us at privacy@puretext.com.
+            </p>
+          </div>
       </Container>
     </div>
   );

@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
@@ -13,11 +13,13 @@ import ProfileSettings from "./pages/ProfileSetting.jsx";
 import AboutUs from "./pages/AboutUs.jsx"; 
 import Dictionary from "./pages/Dictionary.jsx"; 
 import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
-
 import { AppContext } from "./context/AppContext.jsx";
+import LoadingScreen from "./components/LoadingScreen.jsx";
 
 const App = () => {
-  const { isLoggedIn } = useContext(AppContext);
+  const { isLoggedIn, loading } = useContext(AppContext);
+
+  if (loading) return <LoadingScreen />;
 
   return (
     <div>
@@ -57,14 +59,12 @@ const App = () => {
           path="/profile-settings"
           element={isLoggedIn ? <ProfileSettings /> : <Navigate to="/" />}
         />
-        
+
+        {/* Public routes */}
         <Route path="/about-us" element={<AboutUs />} />  
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
-         <Route path="/dictionary" element={<Dictionary />} /> 
-
-         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-
-        {/* Fallback */}
+        {/* Fallback route */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>

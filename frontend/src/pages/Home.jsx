@@ -190,7 +190,7 @@ const Home = () => {
                 <h3>Usage Statistics</h3>
                 {hasData ? (
                   <>
-                <span onClick={() => navigate('/dashboard')}><PieChartElement data={chartData} /></span>
+                <span style={{cursor: "pointer"}} onClick={() => navigate('/dashboard')}><PieChartElement data={chartData} /></span>
                 <div></div>
                   </>
                 ) : (

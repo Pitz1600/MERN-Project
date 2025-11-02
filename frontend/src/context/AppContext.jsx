@@ -10,8 +10,12 @@ const AppContextProvider = (props) => {
 
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    // Load from localStorage as fallback
+    return localStorage.getItem("isLoggedIn") === "true";
+  });
     const [userData, setUserData] = useState(false);
+  const [loading, setLoading] = useState(true);
 
     const getAuthState = async () => {
         try {
@@ -22,6 +26,8 @@ const AppContextProvider = (props) => {
             }
         } catch (error) {
             toast.error(error.message)
+        } finally {
+        setLoading(false);
         }
     }
 
@@ -42,7 +48,8 @@ const AppContextProvider = (props) => {
         backendUrl,
         isLoggedIn, setIsLoggedIn,
         userData, setUserData,
-        getUserData
+        getUserData,
+        loading
     };
 
     return (

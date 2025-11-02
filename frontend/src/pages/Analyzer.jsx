@@ -64,10 +64,11 @@ const Analyzer = () => {
             toast.success("Analysis saved successfully!");
           } else {
             console.warn("Save analysis responded with status", saveResp.status);
+            toast.warn("Save analysis responded with status", saveResp.status);
           }
         } catch (saveErr) {
           console.warn("Failed to save analysis:", saveErr);
-          toast.error("Failed to save analysis.");
+          toast.error("Failed to save analysis: "+ saveErr);
         }
       })();
 
@@ -75,6 +76,7 @@ const Analyzer = () => {
       console.log("Response data:", data);
     } catch (error) {
       console.error("Error analyzing text:", error);
+      toast.error("Error analyzing text: ", error);
     } finally {
       setShowPopup(false);
     }
