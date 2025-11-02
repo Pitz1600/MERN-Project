@@ -8,7 +8,7 @@ def create_word(word):
 
     Respond using the exact format below:
     word:
-    score: -1, 0, or +1 based on bias
+    score: -1, 0, or 1 based on bias
     meaning: 1 sentence if possible
 
     Scoring rules:
@@ -17,7 +17,7 @@ def create_word(word):
 
     0 (neutral): The word has no clear bias or is objective.
 
-    +1 (positive): The word shows a positive or favorable bias.
+    1 (positive): The word shows a positive or favorable bias.
     """
     response = ollama.chat(
         messages=[
