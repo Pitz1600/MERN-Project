@@ -7,6 +7,7 @@ from src.controller.need_tone_correction import need_tone_correction
 from src.controller.need_sentiment_correction import need_sentiment_correction
 from src.controller.json_extract import extract
 from src.controller.words_lexicon_detected import words_detected
+from src.controller.create_word import create_word
 from ollama import _types
 import json
 
@@ -34,8 +35,11 @@ def main_function(text):
                 comma_split =  data["words_detected"].replace(',', ' ')
                 model_word_list = [word.strip().strip('"') for word in comma_split.split()]
                 combined_word_list = model_word_list + words_only
+                get_word_not_in_dict = list(set(model_word_list) - set(words_only))
                 data["words_detected"] = ', '.join(f'"{item}"' for item in set(combined_word_list))
-                return data
+                words_not_in_dict = [create_word(word) for word in get_word_not_in_dict]
+                output = [data, words_not_in_dict]
+                return output
             else:
                 neutral_correct = neutral_correction(text)
                 return extract(neutral_correct, "sentiment", "Neutral")
