@@ -9,10 +9,9 @@ def need_sentiment_correction(text, words_detected):
     text:
     words_detected:
 
-
-    Accept both UK and US English. Evaluate only the neutrality of the provided text. Do not analyse grammar, spelling, or tone except where they introduce bias. Determine whether the text contains any subjective, emotional, judgemental, derogatory, or persuasive language. 
-    If the text is not fully neutral, respond: "Yes". If the text is fully neutral, respond: "No". 
-    If there are words in the words_detected. Respond Immediately with "Yes". Otherwise, analyse the text.
+    Accept both UK and US English. Evaluate only the neutrality or bias of the provided text. Do not analyse grammar, spelling, or tone except where they introduce bias. Internally score the text from -10 to +10, where -10 is extremely negatively biased, 0 is fully neutral, and +10 is extremely positively biased.
+    If there are words in the words_detected, respond immediately with "Yes". Otherwise, analyse the text.
+    If the internal score is 0, respond "No". If the score is anything other than 0, respond "Yes".
     Respond only with Yes or No — no explanation.
     """
     
