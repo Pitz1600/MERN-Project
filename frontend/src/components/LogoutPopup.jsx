@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/components/LogoutPopup.css";
+import "../styles/components/AllPopup.css";
 import logoImg from "../assets/logo_transparent.png"; 
 
 const LogoutPopup = ({ onConfirm, onCancel }) => {
@@ -11,7 +11,6 @@ const LogoutPopup = ({ onConfirm, onCancel }) => {
           </div>
         <h2 className="popup-title">PureText</h2>
         <p className="popup-message">Are you sure you want to log out?</p>
-
         <div className="popup-buttons">
           <button className="popup-btn cancel" onClick={onCancel}>
             Cancel

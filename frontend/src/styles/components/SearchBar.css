@@ -1,15 +1,18 @@
 .searchbar-container {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 1rem;
+  align-items: flex-start;
+  gap: 10rem;
   width: 100%;
+  margin-left: 100px;
+  box-sizing: border-box;
 }
 
+
 .searchbar-button:hover {
-  background-color: #ffffff; 
-  border-color: #d1d5db;  
-  cursor: default;         
+  background-color: #ffffff;
+  border-color: #d1d5db;
+  cursor: default;
 }
 
 .searchbar-icon:hover {
@@ -17,35 +20,95 @@
   opacity: 1;
 }
 
-/* For medium and larger screens */
-@media (min-width: 768px) {
+/* ===== MOBILE (≤640px) ===== */
+@media (max-width: 640px) {
+  .searchbar-container {
+    flex-direction: column;          /* Stack search + sort vertically */
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;                       /* Reduce spacing */
+    margin-left: 0;                  /* Remove left offset on mobile */
+    padding: 0 1rem;
+  }
+
+  .searchbar-input-group {
+    width: 90%;                     /* Full width */
+    padding: 0.6rem 0.8rem;
+      justify-content: space-between;
+
+  }
+
+  .searchbar-input {
+    font-size: 0.9rem;
+  }
+
+  .searchbar-button {
+    padding: 0.6rem;
+  }
+
+  .sortbar-dropdown {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+  }
+
+  .sortbar-label {
+    font-size: 1rem;
+  }
+
+  .sortbar-select {
+    width: 90%;
+    font-size: 0.9rem;
+    padding: 0.6rem;
+  }
+}
+
+/* ===== TABLETS (641px–1023px) ===== */
+@media (min-width: 641px) and (max-width: 1023px) {
+  .searchbar-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    margin-left: 0;
+  }
+
+  .searchbar-input-group {
+    width: 80%;
+    max-width: 600px;
+    
+  }
+
+  .sortbar-select {
+    width: 200px;
+  }
+}
+
+/* ===== DESKTOP (≥1024px) ===== */
+@media (min-width: 1024px) {
   .searchbar-container {
     flex-direction: row;
     align-items: center;
+    gap: 10rem; /* Keep your original large spacing */
+    margin-left: 100px;
+  }
+
+  .searchbar-input-group {
+    max-width: 30vw;
+    width: 60%;
   }
 }
 
+/* Base input group style */
 .searchbar-input-group {
-    align-items: center; /* ✅ vertically align input + icon */
-
   display: flex;
   flex: 1;
-  max-width: 30vw;
   padding: 10px 15px;
   border-radius: 10px;
   border: 1px solid #ccc;
-  outline: none;
-  font-size: 16px;
-  width: 100%;
   background-color: #ffffff;
   overflow: hidden;
-}
-
-/* 60% width on medium screens and up */
-@media (min-width: 768px) {
-  .searchbar-input-group {
-    width: 60%;
-  }
 }
 
 .searchbar-input {
@@ -56,26 +119,21 @@
   outline: none;
   background-color: #ffffff;
   color: #000000;
+  min-width: 0;
 }
 
 .searchbar-button {
   background-color: #ffffff;
-   background: none; /* ✅ make button background blend with input */
-  border: none;     /* ✅ remove border line */
-  cursor: pointer;  /* ✅ make it clickable */
-  border: 1px solid #d1d5db;
   border-left: none;
   padding: 1rem 1.2rem;
- 
+  outline: none;
   cursor: default;
 }
 
 .searchbar-icon {
   width: 1rem;
   height: 1rem;
-    display: block; /* ✅ prevents inline baseline line */
-
-  
+  flex-shrink: 0;
 }
 
 .sortbar-dropdown {
@@ -83,28 +141,25 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.875rem;
-   position: relative; 
-  left: -100px;         
+  padding: 10px 15px;
+  border-radius: 10px;
 }
 
 .sortbar-label {
-  color: #1f2937; 
+  color: #1f2937;
   font-weight: 500;
-   font-size: 1.25rem; 
+  font-size: 1.25rem;
 }
 
 .sortbar-select {
-  width: 200px;                
-  padding: 1rem 1.2rem;        
-  font-size: 1rem;       
+  width: 200px;
+  padding: 1rem 1.2rem;
+  font-size: 1rem;
   background-color: #ffffff;
   color: #000000;
   border: 1px solid #d1d5db;
-  border-radius: 0;           
-  box-sizing: border-box;      
-  height: auto;               
+  border-radius: 0;
+  box-sizing: border-box;
+  height: auto;
 }
 
-.searchbar-container {
-  margin-left: 32px; /* adjust this value to move more or less */
-}
