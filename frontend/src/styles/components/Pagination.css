@@ -39,8 +39,7 @@
 }
 
 .pagination button:hover:not(:disabled):not(.active) {
-  background-color: #00bcd4;
-  color: white;
+  background-color: #00FF00;
 }
 
 .pagination button:disabled {

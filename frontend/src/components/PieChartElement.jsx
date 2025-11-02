@@ -1,87 +1,50 @@
-import { Cell, Pie, PieChart, ResponsiveContainer, Legend } from "recharts";
-import "../styles/Dashboard.css";
+import React from "react";
+import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 
-const COLORS = ["#4285F4", "#FBBC05", "#EA4335", "#00BCD4", "#34A853"];
-const RADIAN = Math.PI / 180;
+/**
+ * PieChartElement
+ * @param {Array} data - Array of objects [{ name: string, value: number }]
+ */
+const PieChartElement = ({ data }) => {
+  if (!data || data.length === 0) {
+    return <p style={{ textAlign: "center" }}>No data to display</p>;
+  }
 
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.6;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  const total = data.reduce((sum, item) => sum + item.value, 0);
+
+  // Add percentage values
+  const chartData = data.map((item) => ({
+    ...item,
+    label: item.name,
+    value: item.value,
+    percent: total > 0 ? ((item.value / total) * 100).toFixed(1) : 0,
+  }));
 
   return (
-    <text
-      x={x}
-      y={y}
-      fill="white"
-      textAnchor="middle"
-      dominantBaseline="central"
-      fontSize={14}
-      fontWeight={600}
-    >
-      {`${(percent * 100).toFixed(2)}%`}
-    </text>
+    <div style={{ width: "100%", maxWidth: "600px", margin: "0 auto", backgroundColor: "#90E0EF", padding: "1rem", borderRadius: "8px" }}>
+      <h3 style={{ textAlign: "center", marginBottom: "0.5rem" }}>
+        Bias Distribution
+      </h3>
+    <PieChart
+      series={[
+        {
+          data: chartData,
+          arcLabel: (item) => `${item.percent}%`,
+          arcLabelMinAngle: 25,
+          arcLabelRadius: "60%",
+        },
+      ]}
+      sx={{
+        [`& .${pieArcLabelClasses.root}`]: {
+          fontWeight: "bold",
+          fill: "#000",
+        },
+      }}
+      width={300}
+      height={300}
+    />
+    </div>
   );
 };
 
-export default function PieChartElement({ data = [] }) {
-  if (!data.length) {
-    return <p style={{ color: "white" }}>No data available</p>;
-  }
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: "1rem",
-        padding: "1rem",
-        borderRadius: "12px",
-      }}
-    >
-      <ResponsiveContainer width={400} height={300}>
-        <PieChart>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            outerRadius={100}
-            labelLine={false}
-            label={renderCustomizedLabel}
-            dataKey="value"
-          >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-        </PieChart>
-      </ResponsiveContainer>
-
-      <div style={{ color: "black", fontSize: "14px" }}>
-        {data.map((entry, index) => (
-          <div
-            key={index}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              marginBottom: "6px",
-            }}
-          >
-            <span
-              style={{
-                width: "12px",
-                height: "12px",
-                borderRadius: "50%",
-                backgroundColor: COLORS[index % COLORS.length],
-                display: "inline-block",
-                marginRight: "8px",
-              }}
-            ></span>
-            {entry.name}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+export default PieChartElement;

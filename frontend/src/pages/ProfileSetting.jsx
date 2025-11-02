@@ -90,11 +90,11 @@ const ProfileSettings = () => {
               </button>
 
              <button
-  className="settings-btn privacy"
-  onClick={() => navigate("/privacy-policy")}
->
-  <img src={privacyIcon} alt="Privacy" className="btn-icon" /> Privacy Policy
-</button>
+                className="settings-btn privacy"
+                onClick={() => navigate("/privacy-policy")}
+              >
+                <img src={privacyIcon} alt="Privacy" className="btn-icon" /> Privacy Policy
+              </button>
 
               <button className="settings-btn delete">
                 <img src={deleteIcon} alt="Delete" className="btn-icon" /> Delete Account

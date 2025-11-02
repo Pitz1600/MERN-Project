@@ -241,7 +241,7 @@ const AnalysisModal = ({ show, onClose, analysis, onDeleteSuccess }) => {
 
           {/* Raw JSON */}
           <div className="analysis-field"><label>Detected Results</label></div>
-          <div className="results-list">
+          <div className="results-output">
             {results && results.length > 0 ? (
               results.map((r, index) => (
                 <div key={index} className="result-card">

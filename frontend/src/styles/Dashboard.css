@@ -61,28 +61,6 @@
   z-index: 50;
 }
 
-.usage-pie {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: white;
-}
-
-.pie-labels {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.pie-labels .color {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  margin-right: 8px;
-  border-radius: 2px;
-}
-
 .vertical-divider {
   width: 1px;
   background-color: #000;
@@ -178,7 +156,7 @@
   font-size: 14px;
 }
 
-.pie-description {
+.chart-description {
   text-align: center;
   font-size: 13px;
   color: #555;

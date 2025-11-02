@@ -181,6 +181,46 @@
   background-color: #5cc13b;
 }
 
+.activity-item {  
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background-color: #0096C7;
+  transition: transform 0.2s ease;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.activity-item:hover {
+  background-color: #69D84F;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+.activity-item:hover .item-prompt,
+.activity-item:hover .item-details {
+  color: #000;
+}
+
+.activity-item .item-prompt {
+  font-weight: 600;
+  margin: 4px auto;
+  width: 20vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  text-align: center;
+  color: #ffffff;
+}
+
+.activity-item .item-details {
+  font-size: 0.85rem;
+  color: #ffffff;
+  margin-top: 4px;
+}
+
 /* ---------------- STATS & TIPS ---------------- */
 .usage-stats .circle {
   width: 10rem;
@@ -209,5 +249,9 @@
   .verify-email-section {
     width: 95%;
     padding: 1rem;
+  }
+  
+  .activity-item .item-prompt {
+  width: 70vw;
   }
 }

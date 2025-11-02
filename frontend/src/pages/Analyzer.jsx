@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import PopupModal from "../components/LoadingModal";
+import PopupModal from "../components/PopupModal";
 import Container from "../components/Container";
 import AnalyzeButton from "../components/AnalyzeButton";
 import "../styles/Analyzer.css";
@@ -62,10 +62,11 @@ const Analyzer = () => {
             toast.success("Analysis saved successfully!");
           } else {
             console.warn("Save analysis responded with status", saveResp.status);
+            toast.warn("Save analysis responded with status", saveResp.status);
           }
         } catch (saveErr) {
           console.warn("Failed to save analysis:", saveErr);
-          toast.error("Failed to save analysis.");
+          toast.error("Failed to save analysis: "+ saveErr);
         }
       })();
 
@@ -73,6 +74,7 @@ const Analyzer = () => {
       console.log("Response data:", data);
     } catch (error) {
       console.error("Error analyzing text:", error);
+      toast.error("Error analyzing text: ", error);
     } finally {
       setShowPopup(false);
     }
@@ -207,7 +209,7 @@ const labelClass = (category) => {
             {/* Header with Tabs */}
             <div className="results-header">
               <div className="results-tabs">
-                <img src={chevronRight} alt="Chevron Right" className="chevron-right" />
+                {/* <img src={chevronRight} alt="Chevron Right" className="chevron-right" /> */}
 
                 {["All", "Biased", "Reviewable", "Neutral"].map((tab) => (
                   <span
@@ -319,10 +321,7 @@ const labelClass = (category) => {
       </Container>
 
       {/* Popup Modal */}
-      <PopupModal show={showPopup}>
-        <h2 className="popup-title">Analyzing...</h2>
-        <p className="popup-message">Your input is being processed.</p>
-      </PopupModal>
+      <PopupModal show={showPopup}/>
     </div>
   );
 };

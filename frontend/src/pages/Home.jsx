@@ -10,6 +10,7 @@ import StartAnalyzingButton from '../components/StartAnalyzingButton.jsx';
 import PieChartElement from "../components/PieChartElement.jsx";
 import Container from '../components/Container.jsx';
 import TipsContent from '../components/TipsContent.jsx';
+import { computeLineChartData } from "../utils/chartUtils.jsx";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [analyses, setAnalyses] = useState([]);
   const [stats, setStats] = useState({ biased: 0, neutral: 0, unclear: 0 });
+  const [lineChartData, setLineChartData] = useState([]);
   const [hasData, setHasData] = useState(false);
 
   // Send verification OTP
@@ -52,6 +54,7 @@ const Home = () => {
       if (data.success && data.analyses) {
         setAnalyses(data.analyses);
         computeStats(data.analyses);
+        setLineChartData(computeLineChartData(data.analyses || []));
       } else {
         setAnalyses([]);
         setStats({ biased: 0, neutral: 0, unclear: 0 });
@@ -90,9 +93,9 @@ const Home = () => {
 
   // Dynamic PieChart data
   const chartData = [
-    { name: "Biased", value: stats.biased || 1 },
-    { name: "Neutral", value: stats.neutral || 1 },
-    { name: "Unclear", value: stats.unclear || 1 },
+    { name: "Biased", value: stats.biased, color: "#FF7F7F" || 1 },
+    { name: "Neutral", value: stats.neutral, color: "#00FF00" || 1 },
+    { name: "Unclear", value: stats.unclear, color: "#FFFF00" || 1 },
   ];
 
   return (
@@ -105,7 +108,6 @@ const Home = () => {
             <div className="intro-section">
               <img src="/src/assets/Logo_transparent.png" alt="App Logo" className="intro-logo" />
               <h1>PureText</h1>
-              <h1>Bias Text Detector</h1>
               <h2>App for Identifying Biased Language</h2>
               <br />
               <button
@@ -143,9 +145,38 @@ const Home = () => {
                 <h3>Recent Activity</h3>
                 {hasData ? (
                   <>
-                    {analyses.slice(-3).map((a, i) => (
-                      <p key={i}>{a.prompt}</p>
-                    ))}
+                    {analyses.slice(0, 3).map((a, i) => {
+                      const firstResult = a.results?.[0] || {};
+                      const category = firstResult.category || "Category";
+                      const score = firstResult.sentiment_score ?? "N/A";
+                      const dateTime = new Date(a.date)
+                      .toLocaleString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                            hour: "numeric",
+                            minute: "2-digit",
+                            hour12: true,
+                          })
+                          .replace(",", "");
+
+                      return (
+                        <div
+                          key={i}
+                          className="activity-item"
+                          onClick={() => navigate("/history", {
+                            state: { selectedAnalysis: a }, // pass the full analysis object
+                          })}
+                        >
+                          <p className='item-prompt'>{a.prompt}</p>
+                          <p className='item-details'>
+                            <strong>Category:</strong> {category} &nbsp;|&nbsp; 
+                            <strong>Score:</strong> {score} <br/> 
+                            <strong>Date:</strong> {dateTime}
+                          </p>
+                        </div>
+                      );
+                    })}
                   </>
                 ) : (
                   <p>
@@ -157,17 +188,14 @@ const Home = () => {
 
               <div className="dashboard-card usage-stats">
                 <h3>Usage Statistics</h3>
-                <PieChartElement data={chartData} width={200} height={200} />
                 {hasData ? (
                   <>
-                    <p>{((stats.biased / (stats.biased + stats.neutral + stats.unclear)) * 100).toFixed(1)}% Biased</p>
-                    <p>{((stats.neutral / (stats.biased + stats.neutral + stats.unclear)) * 100).toFixed(1)}% Neutral</p>
-                    <p>{((stats.unclear / (stats.biased + stats.neutral + stats.unclear)) * 100).toFixed(1)}% Unclear</p>
+                <span style={{cursor: "pointer"}} onClick={() => navigate('/dashboard')}><PieChartElement data={chartData} /></span>
+                <div></div>
                   </>
                 ) : (
                   <>
                     <p>No statistics yet.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                   </>
                 )}
               </div>

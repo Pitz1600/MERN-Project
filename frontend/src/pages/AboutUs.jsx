@@ -33,15 +33,18 @@ const AboutUs = () => {
             <div className="aboutus-card">
               <h2>About PureText</h2>
               <p>
-                PureText is a platform that simplifies and enhances your text-based
-                workflow. Our mission is to empower users to transform how they
-                handle writing and communication tasks.
+                It is designed to identify and flag biased or discriminatory texts in online/offline settings.
+                The system ensures that all text undergoes spelling and grammatical correction before bias analysis, improving detection accuracy and readability.
               </p>
 
               <h2>Our Purpose</h2>
               <p>
-                We aim to provide users with tools that make writing, editing, and
-                organization effortless and enjoyable.
+                Its purpose is to promote healthier digital communication by detecting potentially prejudiced language using Natural Language Processing (NLP).
+              </p>
+
+              <h2>LLM Model</h2>
+              <p>
+                gpt-oss:120b-cloud
               </p>
 
               <h2>Contact Us</h2>
@@ -60,19 +63,19 @@ const AboutUs = () => {
               and safeguard your data when using our services.
             </p>
 
-            <h3>Information We Collect</h3>
+            <h2>Information We Collect</h2>
             <p>
               We may collect limited personal information (such as name and email)
               to provide better user experiences and maintain account security.
             </p>
 
-            <h3>How We Use Your Information</h3>
+            <h2>How We Use Your Information</h2>
             <p>
               We use collected information solely to enhance platform functionality,
               personalize your experience, and ensure service reliability.
             </p>
 
-            <h3>Your Consent</h3>
+            <h2>Your Consent</h2>
             <p>
               By using PureText, you consent to this privacy policy. You can request
               data removal anytime by contacting us at privacy@puretext.com.
