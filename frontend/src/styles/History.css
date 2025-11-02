@@ -77,6 +77,8 @@
   align-items: center;
   justify-content: flex-start;
    overflow: hidden; 
+  padding-bottom: 2rem;
+
 }
 
 .history-table-wrapper {
