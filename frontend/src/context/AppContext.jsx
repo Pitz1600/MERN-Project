@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { changePassword } from "./userService";
 
 const AppContext = createContext();
 
@@ -49,7 +50,8 @@ const AppContextProvider = (props) => {
         isLoggedIn, setIsLoggedIn,
         userData, setUserData,
         getUserData,
-        loading
+        loading,
+        changePassword
     };
 
     return (

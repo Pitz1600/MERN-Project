@@ -255,3 +255,36 @@ export const resetPassword = async (req, res) => {
         res.json({ success: false, message: error.message });
     }
 }
+
+export const changePassword = async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    return res.json({
+      success: false,
+      message: "Current and new passwords are required",
+    });
+  }
+
+  try {
+    const user = await userModel.findById(req.userId);
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
+    // ✅ Validate current password
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.json({ success: false, message: "Current password is incorrect" });
+    }
+
+    // ✅ Hash new password and save
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    return res.json({ success: true, message: "Password changed successfully" });
+  } catch (error) {
+    return res.json({ success: false, message: error.message });
+  }
+};

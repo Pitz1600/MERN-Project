@@ -1,18 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "../styles/components/ChangePasswordPopup.css";
 import { Save } from "lucide-react";
+import { AppContext } from "../context/AppContext";
 
-const ChangePasswordPopup = ({ onCancel, onSave }) => {
+const ChangePasswordPopup = ({ onCancel }) => {
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const { changePassword } = useContext(AppContext);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (newPassword !== confirmPassword) {
-      alert("Passwords do not match!");
+      alert("New passwords do not match!");
       return;
     }
-    onSave(newPassword);
+
+    const success = await changePassword(currentPassword, newPassword);
+    if (success) onCancel();
   };
 
   return (
@@ -21,6 +27,14 @@ const ChangePasswordPopup = ({ onCancel, onSave }) => {
         <h2 className="popup-title">Change password</h2>
 
         <form onSubmit={handleSubmit} className="popup-form">
+          <label>Current Password:</label>
+          <input
+            type="password"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            required
+          />
+
           <label>New Password:</label>
           <input
             type="password"
