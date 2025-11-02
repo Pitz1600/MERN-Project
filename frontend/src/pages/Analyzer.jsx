@@ -45,8 +45,6 @@ const Analyzer = () => {
       );
 
       setResults(parsedResults);
-
-      // Save to backend (optional)
       (async () => {
         try {
           const payload = {

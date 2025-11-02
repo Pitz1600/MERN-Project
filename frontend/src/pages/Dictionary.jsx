@@ -83,70 +83,72 @@ const Dictionary = () => {
     setSearchValue(e.target.value);
   };
 
-  return (
-    <div className="dictionary-container">
-      <Navbar />
-      <Container>
-        <div className="dictionary-content">
-          <div className="dictionary-card">
-            {/* 🔍 Search & Sort Bar */}
-            <div className="search-bar">
-              <SearchBar
-                searchValue={searchValue}
-                onSearchChange={handleSearchChange}
-                onSearchClick={() => {}}
-                sortBy={sortBy}
-                onSortByChange={handleSortByChange}
-                sortOptions={sortOptions}
-              />
-            </div>
+    return (
+  <div className="dictionary-container">
+    <Navbar />
 
+    <Container>
+      {/* 🔍 Search Bar outside white card but inside main container */}
+      <div className="search-bar-wrapper">
+        <SearchBar
+          searchValue={searchValue}
+          onSearchChange={handleSearchChange}
+          onSearchClick={() => {}}
+          sortBy={sortBy}
+          onSortByChange={handleSortByChange}
+          sortOptions={sortOptions}
+        />
+      </div>
+
+      {/* White container */}
+      <div className="dictionary-content">
+        <div className="dictionary-card">
           {/* 📖 Table (scrollable container) */}
-<div className="table-scroll">
-  <table className="dictionary-table">
-    <thead>
-      <tr>
-        <th>Word</th>
-        <th>Sentiment Score</th>
-        <th>Definition</th>
-      </tr>
-    </thead>
-    <tbody>
-      {currentRows.length > 0 ? (
-        currentRows.map((item, index) => (
-          <tr key={index}>
-            <td>{item.word}</td>
-            <td>{item.score / 5}</td>
-            <td>{item.meaning}</td>
-          </tr>
-        ))
-      ) : (
-        <tr>
-          <td colSpan="3">No results found.</td>
-        </tr>
-      )}
-    </tbody>
-  </table>
-</div>
-
-            <div className="table-divider"></div>
-
-            {/* 📄 Pagination Component */}
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              itemsPerPage={rowsPerPage}
-              onRowsPerPageChange={(val) => {
-                setRowsPerPage(val);
-                setCurrentPage(1);
-              }}
-              onPageChange={setCurrentPage}
-            />
+          <div className="table-scroll">
+            <table className="dictionary-table">
+              <thead>
+                <tr>
+                  <th>Word</th>
+                  <th>Sentiment Score</th>
+                  <th>Definition</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentRows.length > 0 ? (
+                  currentRows.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.word}</td>
+                      <td>{item.score / 5}</td>
+                      <td>{item.meaning}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3">No results found.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
+
+          <div className="table-divider"></div>
+
+          {/* 📄 Pagination Component */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            itemsPerPage={rowsPerPage}
+            onRowsPerPageChange={(val) => {
+              setRowsPerPage(val);
+              setCurrentPage(1);
+            }}
+            onPageChange={setCurrentPage}
+          />
         </div>
-      </Container>
-    </div>
-  );
+      </div>
+    </Container>
+  </div>
+);
 };
 
 export default Dictionary;
