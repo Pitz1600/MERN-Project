@@ -29,6 +29,10 @@ const DictionaryPopup = ({ show, onClose, wordData }) => {
             </div>
             <strong>More Info</strong>
           </p>
+          <p>
+            <a href={`https://www.google.com/search?q=${encodeURIComponent(wordData.word)}`} target="_blank">
+            {wordData.word}</a>
+          </p>  
         <button className="d-popup-btn cancel" onClick={onClose}>
           Close
         </button>
