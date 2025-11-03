@@ -54,8 +54,8 @@ const ProfileSettings = () => {
     <div className="profile-page">
       <Navbar />
       <Container>
+        {/* Top profile card */}
         <div className="profile-card">
-          {/* Header */}
           <div className="profile-header">
             <div className="profile-left">
               <img src={userIcon} alt="User" className="profile-avatar" />
@@ -64,47 +64,98 @@ const ProfileSettings = () => {
                 <p>{userData ? userData.email : "example@email.com"}</p>
               </div>
             </div>
-            <h3 className="profile-label">Profile</h3>
+            {/* <button type="button" className="edit-profile-btn">Edit Profile</button> */}
+          </div>
+        </div>
+
+        {/* Settings card */}
+        <div className="settings-card">
+          <div className="settings-title">
+            <span className="settings-gear" aria-hidden>⚙️</span>
+            <h3>Settings</h3>
           </div>
 
-          <hr className="profile-divider" />
+          <div className="settings-grid">
+            <button className="settings-btn about" onClick={() => navigate("/about-us")}>
+              <div className="btn-content">
+                <div className="btn-left">
+                  <img src={aboutIcon} alt="About" className="btn-icon" />
+                  <div className="btn-text">
+                    <div className="btn-title">About Us</div>
+                    <div className="btn-subtitle">Learn more about our platform</div>
+                  </div>
+                </div>
+                <span className="chevron" aria-hidden>›</span>
+              </div>
+            </button>
 
-          {/* Settings Section */}
-          <div className="profile-settings">
-            <h3 className="profile-setting">Settings</h3>
-            <div className="settings-grid">
+            <button
+              className="settings-btn change"
+              onClick={() => setShowChangePasswordPopup(true)}
+            >
+              <div className="btn-content">
+                <div className="btn-left">
+                  <img src={changeIcon} alt="Change" className="btn-icon" />
+                  <div className="btn-text">
+                    <div className="btn-title">Change Password</div>
+                    <div className="btn-subtitle">Update your security credentials</div>
+                  </div>
+                </div>
+                <span className="chevron" aria-hidden>›</span>
+              </div>
+            </button>
 
-              <button className="settings-btn about" onClick={() => navigate("/about-us")}>
-                <img src={aboutIcon} alt="About" className="btn-icon" /> About Us
-              </button>
+            <button className="settings-btn privacy" onClick={() => navigate("/privacy-policy")}>
+              <div className="btn-content">
+                <div className="btn-left">
+                  <img src={privacyIcon} alt="Privacy" className="btn-icon" />
+                  <div className="btn-text">
+                    <div className="btn-title">Privacy Policy</div>
+                    <div className="btn-subtitle">View our privacy terms</div>
+                  </div>
+                </div>
+                <span className="chevron" aria-hidden>›</span>
+              </div>
+            </button>
 
-              <button
-                className="settings-btn change"
-                onClick={() => setShowChangePasswordPopup(true)}
-              >
-                <img src={changeIcon} alt="Change" className="btn-icon" /> Change Password
-              </button>
+            <button className="settings-btn dark">
+              <div className="btn-content">
+                <div className="btn-left">
+                  <img src={darkIcon} alt="Dark" className="btn-icon" />
+                  <div className="btn-text">
+                    <div className="btn-title">Dark Mode</div>
+                    <div className="btn-subtitle">Toggle dark theme</div>
+                  </div>
+                </div>
+                <span className="toggle-mock" aria-hidden></span>
+              </div>
+            </button>
 
-              <button className="settings-btn dark">
-                <img src={darkIcon} alt="Dark" className="btn-icon" /> Dark Mode
-              </button>
+            <button className="settings-btn delete">
+              <div className="btn-content">
+                <div className="btn-left">
+                  <img src={deleteIcon} alt="Delete" className="btn-icon" />
+                  <div className="btn-text">
+                    <div className="btn-title">Delete Account</div>
+                    <div className="btn-subtitle">Permanently remove your account</div>
+                  </div>
+                </div>
+                <span className="chevron" aria-hidden>›</span>
+              </div>
+            </button>
 
-             <button
-                className="settings-btn privacy"
-                onClick={() => navigate("/privacy-policy")}
-              >
-                <img src={privacyIcon} alt="Privacy" className="btn-icon" /> Privacy Policy
-              </button>
-
-              <button className="settings-btn delete">
-                <img src={deleteIcon} alt="Delete" className="btn-icon" /> Delete Account
-              </button>
-
-              <button className="settings-btn logout" onClick={() => setShowPopup(true)}>
-                <img src={logoutIcon} alt="Logout" className="btn-icon" /> Logout
-              </button>
-
-            </div>
+            <button className="settings-btn logout" onClick={() => setShowPopup(true)}>
+              <div className="btn-content">
+                <div className="btn-left">
+                  <img src={logoutIcon} alt="Logout" className="btn-icon" />
+                  <div className="btn-text">
+                    <div className="btn-title">Logout</div>
+                    <div className="btn-subtitle">Sign out from your account</div>
+                  </div>
+                </div>
+                <span className="chevron" aria-hidden>›</span>
+              </div>
+            </button>
           </div>
         </div>
       </Container>
